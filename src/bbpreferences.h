@@ -6,6 +6,7 @@
 
 class QFileDialog;
 class QLineEdit;
+class QComboBox;
 
 class BBPreferences : public QDialog
 {
@@ -27,6 +28,8 @@ private:
 
     QPointer<QFileDialog> m_directoryDialog;
     QLineEdit *m_directoryWidget;
+
+    QComboBox *m_timerWidget;
 };
 
 #endif

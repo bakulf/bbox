@@ -9,6 +9,7 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QLineEdit>
+#include <QComboBox>
 #include <QLabel>
 
 BBPreferences::BBPreferences()
@@ -92,6 +93,38 @@ BBPreferences::BBPreferences()
                 SLOT(onSVNSearchClicked()));
     }
 
+    row++;
+    {
+        QLabel *label = new QLabel(tr("Timer for remote check:"));
+        layout->addWidget(label, row, 0);
+
+        m_timerWidget = new QComboBox();
+        m_timerWidget->setEditable(false);
+        layout->addWidget(m_timerWidget, row, 1);
+
+        int index(0);
+        m_timerWidget->insertItem(index++, tr("1 minute"),    1);
+        m_timerWidget->insertItem(index++, tr("2 minutes"),   2);
+        m_timerWidget->insertItem(index++, tr("5 minutes"),   5);
+        m_timerWidget->insertItem(index++, tr("10 minutes"), 10);
+        m_timerWidget->insertItem(index++, tr("20 minutes"), 20);
+        m_timerWidget->insertItem(index++, tr("60 minutes"), 60);
+
+        uint timer = BBSettings::instance()->timerRemoteAction();
+        if (timer == 1)
+            m_timerWidget->setCurrentIndex(0);
+        else if (timer == 2)
+            m_timerWidget->setCurrentIndex(1);
+        else if (timer == 5)
+            m_timerWidget->setCurrentIndex(2);
+        else if (timer == 10)
+            m_timerWidget->setCurrentIndex(3);
+        else if (timer == 20)
+            m_timerWidget->setCurrentIndex(4);
+        else if (timer == 60)
+            m_timerWidget->setCurrentIndex(5);
+    }
+
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     box->addLayout(buttonLayout);
 
@@ -131,6 +164,7 @@ void BBPreferences::save()
 
     BBSettings::instance()->setSvn(m_svnWidget->text());
     BBSettings::instance()->setDirectory(m_directoryWidget->text());
+    BBSettings::instance()->setTimerRemoteAction(m_timerWidget->itemData(m_timerWidget->currentIndex()).toUInt());
 
     accept();
 }

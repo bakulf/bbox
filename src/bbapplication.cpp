@@ -14,6 +14,7 @@
 #include <QMessageBox>
 #include <QSystemTrayIcon>
 #include <QTimer>
+#include <QSplashScreen>
 
 QPointer<BBApplication> BBApplication::m_instance;
 
@@ -38,6 +39,19 @@ BBApplication::~BBApplication()
 BBApplication* BBApplication::instance()
 {
     return m_instance;
+}
+
+void BBApplication::splash()
+{
+    BBDEBUG;
+    QPixmap pixmap(":/images/logo.png");
+    QSplashScreen splash(pixmap);
+    splash.show();
+
+    for(int i=0; i<20; i++) {
+        processEvents();
+        usleep(100000);
+    }
 }
 
 void BBApplication::init()
@@ -154,10 +168,11 @@ void BBApplication::scheduleRemoteAction()
 
     BBActionManager::instance()->actionRemoteChanges();
 
-    int when(qrand() % (10 * 60 * 1000)); // Random between 10 minutes
+    uint time = BBSettings::instance()->timerRemoteAction() * 10;
+    int when(qrand() % ((time / 2) * 6) + time); // Random between time/2 and time
     BBDEBUG << "Next: " << when << " milliseconds.";
 
-    QTimer::singleShot(when,
+    QTimer::singleShot(when * 1000,
                        this,
                        SLOT(scheduleRemoteAction()));
 }

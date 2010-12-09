@@ -6,8 +6,9 @@
 #include <QPointer>
 #include <QCoreApplication>
 
-#define BB_SETTINGS_DIRECTORY "directory"
-#define BB_SETTINGS_SVN       "svn"
+#define BB_SETTINGS_TIMERREMOTEACTION "timerRemoteAction"
+#define BB_SETTINGS_DIRECTORY         "directory"
+#define BB_SETTINGS_SVN               "svn"
 
 BBSettings::BBSettings() :
     QObject(QCoreApplication::instance()),
@@ -78,4 +79,20 @@ void BBSettings::setDirectory(const QString &directory)
 
     m_settings.setValue(BB_SETTINGS_DIRECTORY, directory);
     emit directoryChanged();
+}
+
+uint BBSettings::timerRemoteAction() const
+{
+    BBDEBUG;
+
+    uint value = m_settings.value(BB_SETTINGS_TIMERREMOTEACTION).toUInt();
+    return (!value ? 5 : value);
+}
+
+void BBSettings::setTimerRemoteAction(const uint &timerRemoteAction)
+{
+    BBDEBUG << timerRemoteAction;
+
+    m_settings.setValue(BB_SETTINGS_TIMERREMOTEACTION, timerRemoteAction);
+    emit timerRemoteActionChanged();
 }

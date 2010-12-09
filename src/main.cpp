@@ -15,6 +15,7 @@ int main(int argc, char **argv)
 
   app.setQuitOnLastWindowClosed(false);
 
+  app.splash();
   app.init();
 
   return app.exec();

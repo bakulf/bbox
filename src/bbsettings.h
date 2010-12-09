@@ -20,11 +20,15 @@ public:
     void setSvn(const QString &svn);
 
     QString directory() const;
-    void setDirectory( const QString &sdirectory);
+    void setDirectory( const QString &directory);
+
+    uint timerRemoteAction() const;
+    void setTimerRemoteAction( const uint &timerRemoteAction);
 
 Q_SIGNALS:
     void svnChanged();
     void directoryChanged();
+    void timerRemoteActionChanged();
 
 private:
     QSettings m_settings;

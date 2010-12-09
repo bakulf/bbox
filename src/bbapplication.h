@@ -18,6 +18,7 @@ public:
     static BBApplication *instance();
 
 public:
+    void splash();
     void init();
 
     void addError(const QString& error);
