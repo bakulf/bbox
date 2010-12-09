@@ -15,7 +15,7 @@ BBPreferences::BBPreferences()
 {
     BBDEBUG;
 
-    //resize(640, 480);
+    resize(640, 0);
     setWindowTitle(QString(BBPACKAGE " - %1").arg("Preferences"));
 
     QVBoxLayout *box = new QVBoxLayout();

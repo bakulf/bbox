@@ -105,17 +105,17 @@ BBConflict::BBConflict(const QList<BBSvnStatus*> list)
         }
 
         {
-            QLabel *label = new QLabel("");
+            QLabel *label = new QLabel();
             label->setAlignment(Qt::AlignRight);
             layout->addWidget(label, row, 3);
             file->setLabel(label);
+            updateStatus(label, Waiting);
         }
 
         row++;
     }
 
-    layout->setColumnStretch(0, 2);
-    layout->setColumnStretch(3, 1);
+    layout->setColumnStretch(0, 1);
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     box->addLayout(buttonLayout);
@@ -180,17 +180,17 @@ void BBConflict::updateStatus(QLabel *label, Status status)
     BBDEBUG << label << status;
 
     switch(status) {
-        case Empty:
-            label->setText(QString());
+        case Waiting:
+            label->setPixmap(QPixmap::fromImage(QImage(":images/waiting.png")));
             break;
         case Running:
-            label->setText(tr("In progress"));
+            label->setPixmap(QPixmap::fromImage(QImage(":images/running.png")));
             break;
         case Error:
-            label->setText(tr("Error"));
+            label->setPixmap(QPixmap::fromImage(QImage(":images/error.png")));
             break;
         case Done:
-            label->setText(tr("Done"));
+            label->setPixmap(QPixmap::fromImage(QImage(":images/completed.png")));
             break;
     }
 }

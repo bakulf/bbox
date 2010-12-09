@@ -5,5 +5,10 @@
      <file>images/noblink.png</file>
      <file>images/blink.png</file>
      <file>images/logo.png</file>
+     <file>images/completed.png</file>
+     <file>images/error.png</file>
+     <file>images/running.png</file>
+     <file>images/waiting.png</file>
+     <!--file>images/warning.png</file-->
  </qresource>
 </RCC>

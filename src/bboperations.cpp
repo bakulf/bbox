@@ -35,6 +35,7 @@ BBOperations::BBOperations()
         m_localChangesStatus = new QLabel();
         m_localChangesStatus->setAlignment(Qt::AlignRight);
         layout->addWidget(m_localChangesStatus, row, 1);
+        updateStatus(m_localChangesStatus, Waiting);
     }
 
     row++;
@@ -45,6 +46,7 @@ BBOperations::BBOperations()
         m_updateStatus = new QLabel();
         m_updateStatus->setAlignment(Qt::AlignRight);
         layout->addWidget(m_updateStatus, row, 1);
+        updateStatus(m_updateStatus, Waiting);
     }
 
     row++;
@@ -55,6 +57,7 @@ BBOperations::BBOperations()
         m_commitStatus = new QLabel();
         m_commitStatus->setAlignment(Qt::AlignRight);
         layout->addWidget(m_commitStatus, row, 1);
+        updateStatus(m_commitStatus, Waiting);
     }
 
     row++;
@@ -65,6 +68,7 @@ BBOperations::BBOperations()
         m_revisionStatus = new QLabel();
         m_revisionStatus->setAlignment(Qt::AlignRight);
         layout->addWidget(m_revisionStatus, row, 1);
+        updateStatus(m_revisionStatus, Waiting);
     }
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();
@@ -94,17 +98,17 @@ void BBOperations::updateStatus(QLabel *label, Status status)
     BBDEBUG << label << status;
 
     switch(status) {
-        case Empty:
-            label->setText(QString());
+        case Waiting:
+            label->setPixmap(QPixmap::fromImage(QImage(":images/waiting.png")));
             break;
         case Running:
-            label->setText(tr("In progress"));
+            label->setPixmap(QPixmap::fromImage(QImage(":images/running.png")));
             break;
         case Error:
-            label->setText(tr("Error"));
+            label->setPixmap(QPixmap::fromImage(QImage(":images/error.png")));
             break;
         case Done:
-            label->setText(tr("Done"));
+            label->setPixmap(QPixmap::fromImage(QImage(":images/completed.png")));
             break;
     }
 }

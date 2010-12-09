@@ -12,7 +12,7 @@ class BBOperations : public QDialog
     Q_OBJECT
 
     enum Status {
-        Empty,
+        Waiting,
         Running,
         Error,
         Done
