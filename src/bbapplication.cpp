@@ -315,7 +315,6 @@ void BBApplication::onActivated(QSystemTrayIcon::ActivationReason reason)
 {
     BBDEBUG << reason;
 
-    if (reason == QSystemTrayIcon::DoubleClick ||
-        reason == QSystemTrayIcon::Trigger)
+    if (reason == QSystemTrayIcon::DoubleClick)
         onCommitTriggered();
 }
