@@ -197,11 +197,18 @@ void BBApplication::commit()
     blink(true);
 
     if (BBSettings::instance()->autoCommit()) {
-        if (m_sendReceive.isNull())
+        if (m_sendReceive.isNull()) {
             m_sendReceive = new BBSendReceive(this);
+            connect(m_sendReceive,
+                    SIGNAL(done(bool)),
+                    SLOT(onSendReceiveDone(bool)));
+        }
 
-        if (m_sendReceive->isRunning() == false)
+        if (m_sendReceive->isRunning() == false) {
+            m_systemTray->showMessage(tr("Sending and receiving..."), tr("Your changes will be shared soon."), QSystemTrayIcon::Information);
             m_sendReceive->start();
+        }
+
     } else {
         m_systemTray->showMessage(tr("Something new!"), tr("Click to share your changes to other users"), QSystemTrayIcon::Information);
     }
@@ -254,4 +261,14 @@ void BBApplication::onCommitTriggered()
 BBObserver* BBApplication::observer()
 {
     return m_observer;
+}
+
+void BBApplication::onSendReceiveDone(bool status)
+{
+    BBDEBUG;
+    Q_UNUSED(status);
+
+    if (status == true)
+        m_systemTray->showMessage(tr("Sending and receiving done"), tr("Your changes have been shared!"), QSystemTrayIcon::Information);
+    blink(false);
 }

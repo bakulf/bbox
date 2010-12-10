@@ -45,6 +45,8 @@ private Q_SLOTS:
 
     void onCommitTriggered();
 
+    void onSendReceiveDone(bool status);
+
 private:
     QSystemTrayIcon *m_systemTray;
 
