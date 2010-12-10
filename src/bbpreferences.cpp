@@ -2,6 +2,7 @@
 
 #include "bbsettings.h"
 #include "bbdebug.h"
+#include "bbconst.h"
 
 #include <QMessageBox>
 #include <QFileDialog>
@@ -30,7 +31,7 @@ BBPreferences::BBPreferences()
         {
             QLabel *label = new QLabel();
             label->setAlignment(Qt::AlignCenter);
-            label->setPixmap(QPixmap::fromImage(QImage(":images/icon.png")));
+            label->setPixmap(QPixmap::fromImage(QImage(BB_ICON_IMAGE)));
             layout->addWidget(label);
         }
 

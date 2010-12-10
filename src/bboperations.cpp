@@ -5,6 +5,7 @@
 #include "bbactioncommit.h"
 #include "bbsendreceive.h"
 #include "bbdebug.h"
+#include "bbconst.h"
 
 #include <QVBoxLayout>
 #include <QFrame>
@@ -100,16 +101,16 @@ void BBOperations::updateStatus(QLabel *label, Status status)
 
     switch(status) {
         case Waiting:
-            label->setPixmap(QPixmap::fromImage(QImage(":images/waiting.png")));
+            label->setPixmap(QPixmap::fromImage(QImage(BB_STATE_WAITING_IMAGE)));
             break;
         case Running:
-            label->setPixmap(QPixmap::fromImage(QImage(":images/running.png")));
+            label->setPixmap(QPixmap::fromImage(QImage(BB_STATE_RUNNING_IMAGE)));
             break;
         case Error:
-            label->setPixmap(QPixmap::fromImage(QImage(":images/error.png")));
+            label->setPixmap(QPixmap::fromImage(QImage(BB_STATE_ERROR_IMAGE)));
             break;
         case Done:
-            label->setPixmap(QPixmap::fromImage(QImage(":images/completed.png")));
+            label->setPixmap(QPixmap::fromImage(QImage(BB_STATE_COMPLETE_IMAGE)));
             break;
     }
 }

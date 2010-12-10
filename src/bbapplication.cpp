@@ -8,6 +8,7 @@
 #include "bboperations.h"
 #include "bbsendreceive.h"
 #include "bbdebug.h"
+#include "bbconst.h"
 
 #include <QMenu>
 #include <QAction>
@@ -48,7 +49,7 @@ BBApplication* BBApplication::instance()
 void BBApplication::splash()
 {
     BBDEBUG;
-    QPixmap pixmap(":/images/logo.png");
+    QPixmap pixmap(BB_LOGO_IMAGE);
     QSplashScreen splash(pixmap);
     splash.show();
 
@@ -136,7 +137,7 @@ void BBApplication::systemTray()
     m_systemTray = new QSystemTrayIcon();
     m_systemTray->setContextMenu(menu);
 
-    m_systemTray->setIcon(QIcon(":/images/icon.png"));
+    m_systemTray->setIcon(QIcon(BB_ICON_IMAGE));
     m_systemTray->show();
 
     connect(m_systemTray,
@@ -250,7 +251,7 @@ void BBApplication::blink(bool enabled)
     if (enabled == true && !m_timer) {
         m_timer = startTimer(1000);
     } else if(enabled == false && m_timer) {
-        m_systemTray->setIcon(QIcon(":/images/icon.png"));
+        m_systemTray->setIcon(QIcon(BB_ICON_IMAGE));
         killTimer(m_timer);
         m_timer = 0;
     }
@@ -263,9 +264,9 @@ void BBApplication::timerEvent(QTimerEvent *event)
         return;
 
     if (!m_iconBlink)
-        m_systemTray->setIcon(QIcon(":/images/blink.png"));
+        m_systemTray->setIcon(QIcon(BB_BLINK_IMAGE));
     else
-        m_systemTray->setIcon(QIcon(":/images/noblink.png"));
+        m_systemTray->setIcon(QIcon(BB_ICON_IMAGE));
 
     m_iconBlink = !m_iconBlink;
 }

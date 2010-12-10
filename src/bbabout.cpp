@@ -1,6 +1,7 @@
 #include "bbabout.h"
 
 #include "bbdebug.h"
+#include "bbconst.h"
 
 #include <QGridLayout>
 #include <QLabel>
@@ -20,7 +21,7 @@ BBAbout::BBAbout() :
     {
         QLabel *label = new QLabel();
         label->setAlignment(Qt::AlignCenter);
-        label->setPixmap(QPixmap::fromImage(QImage(":images/logo.png")));
+        label->setPixmap(QPixmap::fromImage(QImage(BB_LOGO_IMAGE)));
         layout->addWidget(label, row, 0, 1, 3);
     }
 

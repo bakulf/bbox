@@ -2,7 +2,6 @@
 <RCC version="1.0">
  <qresource>
      <file>images/icon.png</file>
-     <file>images/noblink.png</file>
      <file>images/blink.png</file>
      <file>images/logo.png</file>
      <file>images/completed.png</file>

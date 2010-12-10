@@ -20,7 +20,8 @@ INCLUDEPATH += actions \
 
 DEPENDPATH  += $${INCLUDEPATH}
 
-HEADERS   = bbapplication.h \
+HEADERS   = bbconst.h \
+            bbapplication.h \
             bbpreferences.h \
             bbabout.h \
             bboperations.h \
