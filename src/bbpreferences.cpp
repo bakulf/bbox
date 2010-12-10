@@ -132,6 +132,7 @@ BBPreferences::BBPreferences()
         layout->addWidget(label, row, 0);
 
         m_autocommitWidget = new QCheckBox(tr("Enabled"));
+        m_autocommitWidget->setChecked(BBSettings::instance()->autoCommit());
         layout->addWidget(m_autocommitWidget, row, 1);
     }
 
