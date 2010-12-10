@@ -44,6 +44,7 @@ private Q_SLOTS:
     void onMessageClicked();
 
     void onCommitTriggered();
+    void onOpenTriggered();
 
     void onSendReceiveDone(bool status);
 

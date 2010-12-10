@@ -16,6 +16,8 @@
 #include <QSystemTrayIcon>
 #include <QTimer>
 #include <QSplashScreen>
+#include <QDesktopServices>
+#include <QUrl>
 
 QPointer<BBApplication> BBApplication::m_instance;
 
@@ -89,6 +91,14 @@ void BBApplication::systemTray()
     connect (m_actionCommit,
              SIGNAL(triggered()),
              SLOT(onCommitTriggered()));
+
+    menu->addSeparator();
+
+    QAction *actionOpen = new QAction(tr("&Open directory"), this);
+    menu->addAction(actionOpen);
+    connect (actionOpen,
+             SIGNAL(triggered()),
+             SLOT(onOpenTriggered()));
 
     menu->addSeparator();
 
@@ -271,4 +281,10 @@ void BBApplication::onSendReceiveDone(bool status)
     if (status == true)
         m_systemTray->showMessage(tr("Sending and receiving done"), tr("Your changes have been shared!"), QSystemTrayIcon::Information);
     blink(false);
+}
+
+void BBApplication::onOpenTriggered()
+{
+    BBDEBUG;
+    QDesktopServices::openUrl(QUrl::fromLocalFile(BBSettings::instance()->directory()).toString());
 }
