@@ -11,9 +11,9 @@
 
 #include <QApplication>
 #include <QPointer>
+#include <QSystemTrayIcon>
 
 class QAction;
-class QSystemTrayIcon;
 class BBObserver;
 class BBSendReceive;
 
@@ -50,6 +50,7 @@ private Q_SLOTS:
     void onActionsQueued(int counter);
 
     void onMessageClicked();
+    void onActivated(QSystemTrayIcon::ActivationReason);
 
     void onCommitTriggered();
     void onOpenTriggered();

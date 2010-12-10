@@ -22,7 +22,6 @@
 #include <QAction>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QSystemTrayIcon>
 #include <QTimer>
 #include <QSplashScreen>
 #include <QDesktopServices>
@@ -151,6 +150,9 @@ void BBApplication::systemTray()
     connect(m_systemTray,
             SIGNAL(messageClicked()),
             SLOT(onMessageClicked()));
+    connect(m_systemTray,
+            SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+            SLOT(onActivated(QSystemTrayIcon::ActivationReason)));
 
     onActionsQueued(0);
 }
@@ -307,4 +309,13 @@ void BBApplication::onOpenTriggered()
 {
     BBDEBUG;
     QDesktopServices::openUrl(QUrl::fromLocalFile(BBSettings::instance()->directory()).toString());
+}
+
+void BBApplication::onActivated(QSystemTrayIcon::ActivationReason reason)
+{
+    BBDEBUG << reason;
+
+    if (reason == QSystemTrayIcon::DoubleClick ||
+        reason == QSystemTrayIcon::Trigger)
+        onCommitTriggered();
 }
