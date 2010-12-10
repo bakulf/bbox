@@ -10,7 +10,8 @@
 #include <QMessageBox>
 
 BBObserver::BBObserver(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    m_operationOnFs(0)
 {
     BBDEBUG;
 
@@ -73,7 +74,7 @@ void BBObserver::addDirectory(const QString& dirname)
 
 void BBObserver::onSomethingChanged(const QString &filename)
 {
-    BBDEBUG << filename;
+    BBDEBUG << filename << m_operationOnFs;
 
     QFileInfo info(filename);
 
@@ -82,7 +83,7 @@ void BBObserver::onSomethingChanged(const QString &filename)
     else if (info.isDir())
         addDirectory(filename);
 
-    if (!m_changes.contains(filename))
+    if (m_operationOnFs == 0 && !m_changes.contains(filename))
         m_changes << filename;
 }
 
@@ -99,4 +100,18 @@ void BBObserver::timerEvent(QTimerEvent *event)
     }
 
     m_changes.clear();
+}
+
+void BBObserver::operationOnFileSystemRef()
+{
+    BBDEBUG << m_operationOnFs;
+    m_operationOnFs++;
+}
+
+void BBObserver::operationOnFileSystemUnref()
+{
+    BBDEBUG << m_operationOnFs;
+
+    if (m_operationOnFs > 0)
+        m_operationOnFs--;
 }

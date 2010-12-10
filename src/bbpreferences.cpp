@@ -10,6 +10,7 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QComboBox>
+#include <QCheckBox>
 #include <QLabel>
 
 BBPreferences::BBPreferences()
@@ -125,6 +126,15 @@ BBPreferences::BBPreferences()
             m_timerWidget->setCurrentIndex(5);
     }
 
+    row++;
+    {
+        QLabel *label = new QLabel(tr("AutoCommit on changes:"));
+        layout->addWidget(label, row, 0);
+
+        m_autocommitWidget = new QCheckBox(tr("Enabled"));
+        layout->addWidget(m_autocommitWidget, row, 1);
+    }
+
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     box->addLayout(buttonLayout);
 
@@ -165,6 +175,7 @@ void BBPreferences::save()
     BBSettings::instance()->setSvn(m_svnWidget->text());
     BBSettings::instance()->setDirectory(m_directoryWidget->text());
     BBSettings::instance()->setTimerRemoteAction(m_timerWidget->itemData(m_timerWidget->currentIndex()).toUInt());
+    BBSettings::instance()->setAutoCommit(m_autocommitWidget->checkState() == Qt::Checked);
 
     accept();
 }

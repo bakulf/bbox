@@ -3,6 +3,8 @@
 #include "bbsvn.h"
 #include "bbsvnstatus.h"
 #include "bbconflictfile.h"
+#include "bbobserver.h"
+#include "bbapplication.h"
 #include "bbdebug.h"
 
 #include <QVBoxLayout>
@@ -146,6 +148,8 @@ void BBConflict::apply()
             SIGNAL(done(bool)),
             SLOT(applyMerge(bool)));
 
+    BBApplication::instance()->observer()->operationOnFileSystemRef();
+
     applyMerge(true /* First status is fake */);
 }
 
@@ -156,6 +160,8 @@ void BBConflict::applyMerge(bool status)
     if (status == false && !m_conflictFile.isNull()) {
         updateStatus(m_conflictFile->label(), Error);
         m_conflictFile->deleteLater();
+
+        BBApplication::instance()->observer()->operationOnFileSystemUnref();
         return;
     }
 
@@ -166,6 +172,8 @@ void BBConflict::applyMerge(bool status)
 
     if (m_list.isEmpty()) {
         accept();
+
+        BBApplication::instance()->observer()->operationOnFileSystemUnref();
         return;
     }
 

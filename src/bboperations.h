@@ -2,10 +2,11 @@
 #define _BB_OPERATIONS_H_
 
 #include <QDialog>
+#include <QPointer>
 
 class QLabel;
 class QPushButton;
-class BBAction;
+class BBSendReceive;
 
 class BBOperations : public QDialog
 {
@@ -25,13 +26,14 @@ public:
 private:
     void updateStatus(QLabel *label, Status status);
 
-    void actionLocalChanges();
+    void start();
 
 private Q_SLOTS:
-    void onActionLocalChangesDone(bool status);
-    void onActionUpdateDone(bool status);
-    void onActionCommitDone(bool status);
-    void onActionRevisionDone(bool status);
+    void onLocalChangesDone(bool status);
+    void onUpdateDone(bool status);
+    void onCommitDone(bool status);
+    void onRevisionDone(bool status);
+    void onDone(bool status);
 
 private:
     QLabel *m_localChangesStatus;
@@ -40,7 +42,7 @@ private:
     QLabel *m_revisionStatus;
     QPushButton *m_closeButton;
 
-    BBAction *m_action;
+    QPointer<BBSendReceive> m_sendReceive;
 };
 
 #endif

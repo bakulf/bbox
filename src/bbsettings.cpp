@@ -6,6 +6,7 @@
 #include <QPointer>
 #include <QCoreApplication>
 
+#define BB_SETTINGS_AUTOCOMMIT        "autoCommit"
 #define BB_SETTINGS_TIMERREMOTEACTION "timerRemoteAction"
 #define BB_SETTINGS_DIRECTORY         "directory"
 #define BB_SETTINGS_SVN               "svn"
@@ -95,4 +96,19 @@ void BBSettings::setTimerRemoteAction(const uint &timerRemoteAction)
 
     m_settings.setValue(BB_SETTINGS_TIMERREMOTEACTION, timerRemoteAction);
     emit timerRemoteActionChanged();
+}
+
+bool BBSettings::autoCommit() const
+{
+    BBDEBUG;
+
+    return m_settings.value(BB_SETTINGS_AUTOCOMMIT).toBool();
+}
+
+void BBSettings::setAutoCommit(const bool &autoCommit)
+{
+    BBDEBUG << autoCommit;
+
+    m_settings.setValue(BB_SETTINGS_AUTOCOMMIT, autoCommit);
+    emit autoCommitChanged();
 }

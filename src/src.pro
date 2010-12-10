@@ -30,6 +30,7 @@ HEADERS   = bbapplication.h \
             bbsvninfo.h \
             bbconflict.h \
             bbconflictfile.h \
+            bbsendreceive.h \
             bbactionmanager.h \
             bbaction.h \
             bbactionadd.h \
@@ -51,6 +52,7 @@ SOURCES   = main.cpp \
             bbsvninfo.cpp \
             bbconflict.cpp \
             bbconflictfile.cpp \
+            bbsendreceive.cpp \
             bbactionmanager.cpp \
             bbaction.cpp \
             bbactionadd.cpp \

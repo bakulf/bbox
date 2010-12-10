@@ -23,12 +23,16 @@ public:
     void setDirectory( const QString &directory);
 
     uint timerRemoteAction() const;
-    void setTimerRemoteAction( const uint &timerRemoteAction);
+    void setTimerRemoteAction(const uint &timerRemoteAction);
+
+    bool autoCommit() const;
+    void setAutoCommit(const bool &autoCommit);
 
 Q_SIGNALS:
     void svnChanged();
     void directoryChanged();
     void timerRemoteActionChanged();
+    void autoCommitChanged();
 
 private:
     QSettings m_settings;

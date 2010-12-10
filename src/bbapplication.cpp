@@ -6,6 +6,7 @@
 #include "bbobserver.h"
 #include "bbactionmanager.h"
 #include "bboperations.h"
+#include "bbsendreceive.h"
 #include "bbdebug.h"
 
 #include <QMenu>
@@ -64,12 +65,12 @@ void BBApplication::init()
         !preferences())
         quit();
     else {
-        BBActionManager::instance()->actionAdd(BBSettings::instance()->directory());
-        BBActionManager::instance()->actionLocalChanges();
+        m_observer = new BBObserver(this);
 
         scheduleRemoteAction();
 
-        new BBObserver(this);
+        BBActionManager::instance()->actionAdd(BBSettings::instance()->directory());
+        BBActionManager::instance()->actionLocalChanges();
     }
 }
 
@@ -195,7 +196,15 @@ void BBApplication::commit()
     BBDEBUG;
     blink(true);
 
-    m_systemTray->showMessage(tr("Something new!"), tr("Click to share your changes to other users"), QSystemTrayIcon::Information);
+    if (BBSettings::instance()->autoCommit()) {
+        if (m_sendReceive.isNull())
+            m_sendReceive = new BBSendReceive(this);
+
+        if (m_sendReceive->isRunning() == false)
+            m_sendReceive->start();
+    } else {
+        m_systemTray->showMessage(tr("Something new!"), tr("Click to share your changes to other users"), QSystemTrayIcon::Information);
+    }
 }
 
 void BBApplication::update()
@@ -240,4 +249,9 @@ void BBApplication::onCommitTriggered()
 
     BBOperations operations;
     operations.exec();
+}
+
+BBObserver* BBApplication::observer()
+{
+    return m_observer;
 }

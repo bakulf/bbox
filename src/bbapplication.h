@@ -6,6 +6,8 @@
 
 class QAction;
 class QSystemTrayIcon;
+class BBObserver;
+class BBSendReceive;
 
 class BBApplication : public QApplication
 {
@@ -20,6 +22,8 @@ public:
 public:
     void splash();
     void init();
+
+    BBObserver *observer();
 
     void addError(const QString& error);
     void commit();
@@ -50,6 +54,9 @@ private:
     bool m_errorShown;
     int m_timer;
     bool m_iconBlink;
+
+    QPointer<BBObserver> m_observer;
+    QPointer<BBSendReceive> m_sendReceive;
 
     static QPointer<BBApplication> m_instance;
 };

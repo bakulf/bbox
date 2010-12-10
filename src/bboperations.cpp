@@ -3,6 +3,7 @@
 #include "bbactionlocalchanges.h"
 #include "bbactionupdate.h"
 #include "bbactioncommit.h"
+#include "bbsendreceive.h"
 #include "bbdebug.h"
 
 #include <QVBoxLayout>
@@ -85,7 +86,7 @@ BBOperations::BBOperations()
 
     setFocus();
 
-    actionLocalChanges();
+    start();
 }
 
 BBOperations::~BBOperations()
@@ -113,89 +114,83 @@ void BBOperations::updateStatus(QLabel *label, Status status)
     }
 }
 
-void BBOperations::actionLocalChanges()
+void BBOperations::start()
 {
     BBDEBUG;
 
-    updateStatus(m_localChangesStatus, Running);
-    m_action = new BBActionLocalChanges(false, this);
-    connect(m_action,
+    if (m_sendReceive.isNull())
+        m_sendReceive = new BBSendReceive(this);
+
+    connect(m_sendReceive,
+            SIGNAL(localChangesDone(bool)),
+            SLOT(onLocalChangesDone(bool)));
+    connect(m_sendReceive,
+            SIGNAL(updateDone(bool)),
+            SLOT(onUpdateDone(bool)));
+    connect(m_sendReceive,
+            SIGNAL(commitDone(bool)),
+            SLOT(onCommitDone(bool)));
+    connect(m_sendReceive,
+            SIGNAL(revisionDone(bool)),
+            SLOT(onRevisionDone(bool)));
+    connect(m_sendReceive,
             SIGNAL(done(bool)),
-            SLOT(onActionLocalChangesDone(bool)));
-    m_action->run();
+            SLOT(onDone(bool)));
+
+    m_sendReceive->start();
 }
 
-void BBOperations::onActionLocalChangesDone(bool status)
+void BBOperations::onLocalChangesDone(bool status)
 {
     BBDEBUG;
 
     if (status == false) {
         updateStatus(m_localChangesStatus, Error);
-        m_closeButton->setEnabled(true);
-        m_action->deleteLater();
         return;
     }
 
     updateStatus(m_localChangesStatus, Done);
-    m_action->deleteLater();
-
     updateStatus(m_updateStatus, Running);
-    m_action = new BBActionUpdate(this);
-    connect(m_action,
-            SIGNAL(done(bool)),
-            SLOT(onActionUpdateDone(bool)));
-    m_action->run();
 }
 
-void BBOperations::onActionUpdateDone(bool status)
+void BBOperations::onUpdateDone(bool status)
 {
     if (status == false) {
         updateStatus(m_updateStatus, Error);
-        m_closeButton->setEnabled(true);
-        m_action->deleteLater();
         return;
     }
 
     updateStatus(m_updateStatus, Done);
-    m_action->deleteLater();
-
     updateStatus(m_commitStatus, Running);
-    m_action = new BBActionCommit(this);
-    connect(m_action,
-            SIGNAL(done(bool)),
-            SLOT(onActionCommitDone(bool)));
-    m_action->run();
 }
 
-void BBOperations::onActionCommitDone(bool status)
+void BBOperations::onCommitDone(bool status)
 {
     if (status == false) {
         updateStatus(m_commitStatus, Error);
-        m_closeButton->setEnabled(true);
         return;
     }
 
     updateStatus(m_commitStatus, Done);
-    m_action->deleteLater();
-
     updateStatus(m_revisionStatus, Running);
-    m_action = new BBActionUpdate(this);
-    connect(m_action,
-            SIGNAL(done(bool)),
-            SLOT(onActionRevisionDone(bool)));
-    m_action->run();
 }
 
-void BBOperations::onActionRevisionDone(bool status)
+void BBOperations::onRevisionDone(bool status)
 {
     if (status == false) {
         updateStatus(m_commitStatus, Error);
-        m_closeButton->setEnabled(true);
         return;
     }
 
     updateStatus(m_revisionStatus, Done);
-    m_action->deleteLater();
+}
+
+void BBOperations::onDone(bool status)
+{
+    if (status == false) {
+        m_closeButton->setEnabled(true);
+        return;
+    }
 
     m_closeButton->setEnabled(true);
 }

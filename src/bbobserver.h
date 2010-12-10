@@ -15,6 +15,10 @@ public:
     BBObserver(QObject *parent = 0);
     ~BBObserver();
 
+public:
+    void operationOnFileSystemRef();
+    void operationOnFileSystemUnref();
+
 private:
     void addDirectory(const QString &dirname);
     void timerEvent(QTimerEvent *event);
@@ -26,6 +30,8 @@ private Q_SLOTS:
 private:
     QPointer<QFileSystemWatcher> m_watcher;
     QStringList m_changes;
+
+    uint m_operationOnFs;
 };
 
 #endif
