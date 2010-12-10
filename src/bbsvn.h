@@ -15,6 +15,7 @@ public:
     ~BBSvn();
 
 public:
+    void cleanup();
     void addFile(const QString &filename);
     void deleteFile(const QString &filename);
 

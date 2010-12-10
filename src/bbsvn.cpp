@@ -38,6 +38,12 @@ void BBSvn::onFinished(int exitCode, QProcess::ExitStatus exitStatus)
     emit done(status);
 }
 
+void BBSvn::cleanup()
+{
+    BBDEBUG;
+    start(QStringList() << "cleanup" << "--non-interactive" << BBSettings::instance()->directory());
+}
+
 void BBSvn::addFile(const QString &filename)
 {
     BBDEBUG << filename;

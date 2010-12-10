@@ -1,5 +1,6 @@
 #include "bbactionmanager.h"
 
+#include "bbactioncleanup.h"
 #include "bbactionadd.h"
 #include "bbactiondelete.h"
 #include "bbactionlocalchanges.h"
@@ -30,6 +31,12 @@ BBActionManager* BBActionManager::instance()
         instance = new BBActionManager();
 
     return instance;
+}
+
+void BBActionManager::actionCleanup()
+{
+    BBDEBUG;
+    addAction(new BBActionCleanup(this));
 }
 
 void BBActionManager::actionAdd(const QString &dirname)

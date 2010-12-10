@@ -18,6 +18,7 @@ public:
     virtual ~BBActionManager();
 
 public Q_SLOTS:
+    void actionCleanup();
     void actionAdd(const QString &dirname);
     void actionDelete(const QString &filename);
     void actionLocalChanges();

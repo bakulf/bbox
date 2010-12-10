@@ -70,6 +70,8 @@ void BBApplication::init()
     else {
         m_observer = new BBObserver(this);
 
+        BBActionManager::instance()->actionCleanup();
+
         scheduleRemoteAction();
 
         BBActionManager::instance()->actionAdd(BBSettings::instance()->directory());

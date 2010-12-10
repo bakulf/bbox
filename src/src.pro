@@ -10,6 +10,7 @@ QMAKE_CXXFLAGS *= -Werror
 DEFINES = BBPACKAGE=\\\"BBox\\\"
 
 INCLUDEPATH += actions \
+               actions/cleanup \
                actions/add \
                actions/delete \
                actions/update \
@@ -33,6 +34,7 @@ HEADERS   = bbapplication.h \
             bbsendreceive.h \
             bbactionmanager.h \
             bbaction.h \
+            bbactioncleanup.h \
             bbactionadd.h \
             bbactiondelete.h \
             bbactionupdate.h \
@@ -55,6 +57,7 @@ SOURCES   = main.cpp \
             bbsendreceive.cpp \
             bbactionmanager.cpp \
             bbaction.cpp \
+            bbactioncleanup.cpp \
             bbactionadd.cpp \
             bbactiondelete.cpp \
             bbactionupdate.cpp \
