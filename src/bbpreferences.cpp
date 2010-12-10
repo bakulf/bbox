@@ -87,7 +87,7 @@ BBPreferences::BBPreferences()
         m_svnWidget->setText(BBSettings::instance()->svn());
         box->addWidget(m_svnWidget);
 
-        QPushButton *button = new QPushButton(tr("Browser"));
+        QPushButton *button = new QPushButton(tr("Browse"));
         box->addWidget(button);
         connect(button,
                 SIGNAL(clicked()),
