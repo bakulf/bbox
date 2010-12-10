@@ -5,6 +5,7 @@
 #include "bbdebug.h"
 
 #include <QFileSystemWatcher>
+#include <QCoreApplication>
 #include <QFileInfo>
 #include <QDir>
 #include <QMessageBox>
@@ -21,11 +22,16 @@ BBObserver::BBObserver(QObject *parent) :
 
     directoryChanged();
 
+    connect(QCoreApplication::instance(),
+            SIGNAL(aboutToQuit()),
+            SLOT(onAboutToQuit()));
+
     startTimer(1000);
 }
 
 BBObserver::~BBObserver()
 {
+    BBDEBUG;
 }
 
 void BBObserver::directoryChanged()
@@ -114,4 +120,11 @@ void BBObserver::operationOnFileSystemUnref()
 
     if (m_operationOnFs > 0)
         m_operationOnFs--;
+}
+
+void BBObserver::onAboutToQuit()
+{
+    BBDEBUG;
+    if (!m_watcher.isNull())
+        delete m_watcher;
 }

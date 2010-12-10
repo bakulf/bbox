@@ -37,6 +37,7 @@ BBApplication::BBApplication(int argc, char **argv) :
 BBApplication::~BBApplication()
 {
     BBDEBUG;
+    delete m_systemTray;
 }
 
 BBApplication* BBApplication::instance()
@@ -122,7 +123,15 @@ void BBApplication::systemTray()
              SIGNAL(triggered()),
              SLOT(about()));
 
-    m_systemTray = new QSystemTrayIcon(this);
+    menu->addSeparator();
+
+    QAction *actionQuit = new QAction(tr("&Quit"), this);
+    menu->addAction(actionQuit);
+    connect (actionQuit,
+             SIGNAL(triggered()),
+             SLOT(quit()));
+
+    m_systemTray = new QSystemTrayIcon();
     m_systemTray->setContextMenu(menu);
 
     m_systemTray->setIcon(QIcon(":/images/icon.png"));

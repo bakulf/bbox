@@ -26,6 +26,7 @@ private:
 private Q_SLOTS:
     void directoryChanged();
     void onSomethingChanged(const QString &filename);
+    void onAboutToQuit();
 
 private:
     QPointer<QFileSystemWatcher> m_watcher;
