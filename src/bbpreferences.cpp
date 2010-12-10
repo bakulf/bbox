@@ -199,6 +199,7 @@ void BBPreferences::onSVNSearchClicked()
     }
 
     m_svnDialog->show();
+    m_svnDialog->setFocus();
 }
 
 void BBPreferences::onDirectorySearchClicked()
@@ -219,4 +220,5 @@ void BBPreferences::onDirectorySearchClicked()
     }
 
     m_directoryDialog->show();
+    m_directoryDialog->setFocus();
 }
