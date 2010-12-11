@@ -118,14 +118,6 @@ void BBApplication::systemTray()
 
     menu->addSeparator();
 
-    m_actionCounter = new QAction(this);
-    menu->addAction(m_actionCounter);
-    connect(BBActionManager::instance(),
-            SIGNAL(actionsQueued(int)),
-            SLOT(onActionsQueued(int)));
-
-    menu->addSeparator();
-
     QAction *preferences = new QAction(tr("&Preferences"), this);
     menu->addAction(preferences);
     connect (preferences,
@@ -139,6 +131,13 @@ void BBApplication::systemTray()
              SLOT(about()));
 
     menu->addSeparator();
+
+    m_actionCounter = new QAction(this);
+    m_actionCounter->setVisible(false);
+    menu->addAction(m_actionCounter);
+    connect(BBActionManager::instance(),
+            SIGNAL(actionsQueued(int)),
+            SLOT(onActionsQueued(int)));
 
     QAction *actionQuit = new QAction(tr("&Quit"), this);
     menu->addAction(actionQuit);
@@ -192,6 +191,7 @@ void BBApplication::onActionsQueued(int counter)
 {
     BBDEBUG << "Counter: " << counter;
 
+    m_actionCounter->setVisible((counter > 0));
     m_actionCounter->setText(tr("Actions in queue: %1").arg(counter));
 }
 
