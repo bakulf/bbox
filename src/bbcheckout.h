@@ -21,6 +21,9 @@ public:
 
 protected:
     void closeEvent(QCloseEvent *event);
+
+private Q_SLOTS:
+    void onRejected();
 };
 
 #endif

@@ -38,7 +38,7 @@ BBCheckoutLastPage::BBCheckoutLastPage() :
     }
 
     {
-        m_counterLabel = new QLabel(tr("Waiting..."));
+        m_counterLabel = new QLabel();
         layout->addWidget(m_counterLabel);
 
         m_listWidget = new QListWidget();
@@ -74,6 +74,8 @@ void BBCheckoutLastPage::initializePage()
 
     wizard()->setOption(QWizard::NoBackButtonOnLastPage, true);
 
+    m_counterLabel->setText(tr("Waiting..."));
+    m_errorLabel->setText(QString());
     m_listWidget->clear();
     m_counter = 0;
 

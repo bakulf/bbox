@@ -37,8 +37,7 @@ BBCheckout::BBCheckout()
 
     connect(this,
             SIGNAL(rejected()),
-            BBApplication::instance(),
-            SLOT(quit()));
+            SLOT(onRejected()));
 }
 
 BBCheckout::~BBCheckout()
@@ -64,4 +63,12 @@ void BBCheckout::closeEvent(QCloseEvent *event)
     } else {
         event->accept();
     }
+}
+
+void BBCheckout::onRejected()
+{
+    BBDEBUG;
+
+    if (!page(pageIds().last())->isComplete())
+        BBApplication::instance()->quit();
 }
