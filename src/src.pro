@@ -5,11 +5,13 @@ QT       += network
 MOC_DIR     = .moc
 OBJECTS_DIR = .obj
 
-QMAKE_CXXFLAGS *= -Werror
+unix:QMAKE_CXXFLAGS *= -Werror
+win32:LIBS = -lAdvapi32
 
 DEFINES = BBPACKAGE=\\\"BBox\\\"
 
-INCLUDEPATH += actions \
+INCLUDEPATH += . \
+               actions \
                actions/cleanup \
                actions/add \
                actions/delete \

@@ -28,6 +28,11 @@
 #include <QDesktopServices>
 #include <QUrl>
 
+#ifdef Q_OS_WIN32
+    #include <windows.h>
+    #include <winbase.h>
+#endif
+
 QPointer<BBApplication> BBApplication::m_instance;
 
 BBApplication::BBApplication(int argc, char **argv) :
@@ -63,7 +68,11 @@ void BBApplication::splash()
 
     for(int i=0; i<20; i++) {
         processEvents();
+#ifdef Q_OS_WIN32
+        Sleep(100);
+#else
         usleep(100000);
+#endif
     }
 }
 

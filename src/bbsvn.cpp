@@ -16,6 +16,12 @@
 #include <QDir>
 #include <QDateTime>
 
+#ifdef Q_OS_WIN32
+    #include <windows.h>
+    #include <winbase.h>
+    #include <Lmcons.h>
+#endif
+
 BBSvn::BBSvn(QObject *parent) :
     QProcess(parent)
 {
