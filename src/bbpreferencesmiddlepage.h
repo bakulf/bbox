@@ -6,24 +6,18 @@
  * the BSD License. See license.txt for more details.
  */
 
-#ifndef _BB_CHECKOUT_H_
-#define _BB_CHECKOUT_H_
+#ifndef _BB_PREFERENCES_MIDDLEPAGE_H_
+#define _BB_PREFERENCES_MIDDLEPAGE_H_
 
-#include <QWizard>
+#include <QWizardPage>
 
-class BBCheckout : public QWizard
+class BBPreferencesMiddlePage : public QWizardPage
 {
     Q_OBJECT
 
 public:
-    BBCheckout();
-    virtual ~BBCheckout();
-
-protected:
-    void closeEvent(QCloseEvent *event);
-
-private Q_SLOTS:
-    void onRejected();
+    BBPreferencesMiddlePage();
+    virtual ~BBPreferencesMiddlePage();
 };
 
 #endif

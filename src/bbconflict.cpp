@@ -52,6 +52,7 @@ BBConflict::BBConflict(const QList<BBSvnStatus*> list)
 
     resize(640, 0);
     setWindowTitle(tr(BBPACKAGE " - %1").arg(tr("Conflict detected!")));
+    setWindowIcon(QIcon(BB_ICON_IMAGE));
 
     QVBoxLayout *box = new QVBoxLayout();
     setLayout(box);

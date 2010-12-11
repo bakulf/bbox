@@ -8,170 +8,35 @@
 
 #include "bbpreferences.h"
 
+#include "bbpreferencesfirstpage.h"
+#include "bbpreferencesmiddlepage.h"
+#include "bbpreferenceslastpage.h"
+#include "bbapplication.h"
 #include "bbsettings.h"
 #include "bbdebug.h"
 #include "bbconst.h"
 
+#include <QCloseEvent>
 #include <QMessageBox>
-#include <QFileDialog>
-#include <QGridLayout>
-#include <QHBoxLayout>
-#include <QPushButton>
-#include <QLineEdit>
-#include <QComboBox>
-#include <QCheckBox>
-#include <QLabel>
 
 BBPreferences::BBPreferences()
 {
     BBDEBUG;
 
-    resize(640, 0);
+    resize(640, 480);
     setWindowTitle(QString(BBPACKAGE " - %1").arg("Preferences"));
+    setWindowIcon(QIcon(BB_ICON_IMAGE));
 
-    QVBoxLayout *box = new QVBoxLayout();
-    setLayout(box);
+    addPage(new BBPreferencesFirstPage());
+    addPage(new BBPreferencesMiddlePage());
+    addPage(new BBPreferencesLastPage());
 
-    {
-        QHBoxLayout *layout = new QHBoxLayout();
-        box->addLayout(layout);
+    setOption(QWizard::NoCancelButton, true);
 
-        {
-            QLabel *label = new QLabel();
-            label->setAlignment(Qt::AlignCenter);
-            label->setPixmap(QPixmap::fromImage(QImage(BB_ICON_IMAGE)));
-            layout->addWidget(label);
-        }
+    setPixmap(QWizard::LogoPixmap,      QPixmap::fromImage(QImage(BB_ICON_IMAGE)));
+    setPixmap(QWizard::WatermarkPixmap, QPixmap::fromImage(QImage(BB_LOGO_IMAGE)));
 
-        {
-            QLabel *label = new QLabel(tr("Preferences"));
-            label->setAlignment(Qt::AlignCenter);
-            layout->addWidget(label);
-
-            QFont font;
-            font.setBold(true);
-            font.setPointSize(font.pointSize() * 2);
-            label->setFont(font);
-        }
-
-        layout->addItem(new QSpacerItem(20, 20, QSizePolicy::Expanding));
-    }
-
-    QTabWidget *tabs = new QTabWidget();
-    box->addWidget(tabs);
-
-    // Tab general ----------------------------------------------------------
-    QWidget *generalTab = new QWidget();
-    tabs->addTab(generalTab, tr("General"));
-
-    QGridLayout *generalLayout = new QGridLayout();
-    generalTab->setLayout(generalLayout);
-
-    int row(0);
-    {
-        QLabel *label = new QLabel(tr("Directory:"));
-        generalLayout->addWidget(label, row, 0);
-
-        QHBoxLayout *box = new QHBoxLayout();
-        generalLayout->addLayout(box, row, 1);
-
-        m_directoryWidget = new QLineEdit();
-        m_directoryWidget->setText(BBSettings::instance()->directory());
-        box->addWidget(m_directoryWidget);
-
-        QPushButton *button = new QPushButton(tr("Browse"));
-        box->addWidget(button);
-        connect(button,
-                SIGNAL(clicked()),
-                SLOT(onDirectorySearchClicked()));
-    }
-
-    row++;
-    {
-        QLabel *label = new QLabel(tr("Timer for remote check:"));
-        generalLayout->addWidget(label, row, 0);
-
-        m_timerWidget = new QComboBox();
-        m_timerWidget->setEditable(false);
-        generalLayout->addWidget(m_timerWidget, row, 1);
-
-        int index(0);
-        m_timerWidget->insertItem(index++, tr("1 minute"),    1);
-        m_timerWidget->insertItem(index++, tr("2 minutes"),   2);
-        m_timerWidget->insertItem(index++, tr("5 minutes"),   5);
-        m_timerWidget->insertItem(index++, tr("10 minutes"), 10);
-        m_timerWidget->insertItem(index++, tr("20 minutes"), 20);
-        m_timerWidget->insertItem(index++, tr("60 minutes"), 60);
-
-        uint timer = BBSettings::instance()->timerRemoteAction();
-        if (timer == 1)
-            m_timerWidget->setCurrentIndex(0);
-        else if (timer == 2)
-            m_timerWidget->setCurrentIndex(1);
-        else if (timer == 5)
-            m_timerWidget->setCurrentIndex(2);
-        else if (timer == 10)
-            m_timerWidget->setCurrentIndex(3);
-        else if (timer == 20)
-            m_timerWidget->setCurrentIndex(4);
-        else if (timer == 60)
-            m_timerWidget->setCurrentIndex(5);
-    }
-
-    row++;
-    {
-        QLabel *label = new QLabel(tr("AutoCommit on changes:"));
-        generalLayout->addWidget(label, row, 0);
-
-        m_autocommitWidget = new QCheckBox(tr("Enabled"));
-        m_autocommitWidget->setChecked(BBSettings::instance()->autoCommit());
-        generalLayout->addWidget(m_autocommitWidget, row, 1);
-    }
-
-    // Tab advanced ---------------------------------------------------------
-    QWidget *advTab = new QWidget();
-    tabs->addTab(advTab, tr("Advanced"));
-
-    QGridLayout *advLayout = new QGridLayout();
-    advTab->setLayout(advLayout);
-
-    row = 0;
-    {
-        QLabel *label = new QLabel(tr("Subversion:"));
-        advLayout->addWidget(label, row, 0);
-
-        QHBoxLayout *box = new QHBoxLayout();
-        advLayout->addLayout(box, row, 1);
-
-        m_svnWidget = new QLineEdit();
-        m_svnWidget->setText(BBSettings::instance()->svn());
-        box->addWidget(m_svnWidget);
-
-        QPushButton *button = new QPushButton(tr("Browse"));
-        box->addWidget(button);
-        connect(button,
-                SIGNAL(clicked()),
-                SLOT(onSVNSearchClicked()));
-    }
-
-    // Buttons --------------------------------------------------------------
-    QHBoxLayout *buttonLayout = new QHBoxLayout();
-    box->addLayout(buttonLayout);
-
-    buttonLayout->addWidget(new QWidget(), 1, 0);
-
-    {
-        QPushButton *button = new QPushButton(tr("&Cancel"));
-        buttonLayout->addWidget(button, 0, 0);
-        connect(button, SIGNAL(clicked()), SLOT(reject()));
-    }
-
-    {
-        QPushButton *button = new QPushButton(tr("&Save"));
-        buttonLayout->addWidget(button, 0, 0);
-        connect(button, SIGNAL(clicked()), SLOT(save()));
-    }
-
+    setModal(true);
     setFocus();
 }
 
@@ -180,64 +45,20 @@ BBPreferences::~BBPreferences()
     BBDEBUG;
 }
 
-void BBPreferences::save()
+void BBPreferences::closeEvent(QCloseEvent *event)
 {
     BBDEBUG;
 
-    if (m_svnWidget->text().isEmpty() ||
-        m_directoryWidget->text().isEmpty()) {
-        QMessageBox::warning(this,
-                             QString(BBPACKAGE " - %1").arg("Preferences"),
-                             tr("Please, all the fields are required."));
-        return;
+    if (!BBSettings::instance()->isValid()) {
+        event->ignore();
+
+        if (QMessageBox::warning(this,
+                                 QString(BBPACKAGE " - %1").arg(tr("Warning")),
+                                 tr("Do you want to quit?"),
+                                 QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes) {
+            BBApplication::instance()->quit();
+        }
+    } else {
+        event->accept();
     }
-
-    BBSettings::instance()->setSvn(m_svnWidget->text());
-    BBSettings::instance()->setDirectory(m_directoryWidget->text());
-    BBSettings::instance()->setTimerRemoteAction(m_timerWidget->itemData(m_timerWidget->currentIndex()).toUInt());
-    BBSettings::instance()->setAutoCommit(m_autocommitWidget->checkState() == Qt::Checked);
-
-    accept();
-}
-
-void BBPreferences::onSVNSearchClicked()
-{
-    BBDEBUG;
-
-    if (m_svnDialog.isNull()) {
-        m_svnDialog = new QFileDialog(this);
-        m_svnDialog->setAcceptMode(QFileDialog::AcceptOpen);
-        m_svnDialog->setFileMode(QFileDialog::ExistingFile);
-        m_svnDialog->setWindowTitle(tr("Select the 'subversion' tool."));
-        m_svnDialog->setModal(true);
-
-        connect(m_svnDialog,
-                SIGNAL(fileSelected(QString)),
-                m_svnWidget,
-                SLOT(setText(QString)));
-    }
-
-    m_svnDialog->show();
-    m_svnDialog->setFocus();
-}
-
-void BBPreferences::onDirectorySearchClicked()
-{
-    BBDEBUG;
-
-    if (m_directoryDialog.isNull()) {
-        m_directoryDialog = new QFileDialog(this);
-        m_directoryDialog->setAcceptMode(QFileDialog::AcceptOpen);
-        m_directoryDialog->setFileMode(QFileDialog::Directory);
-        m_directoryDialog->setWindowTitle(tr("Select the subversion directory."));
-        m_directoryDialog->setModal(true);
-
-        connect(m_directoryDialog,
-                SIGNAL(fileSelected(QString)),
-                m_directoryWidget,
-                SLOT(setText(QString)));
-    }
-
-    m_directoryDialog->show();
-    m_directoryDialog->setFocus();
 }

@@ -40,7 +40,6 @@ private:
     void systemTray();
     void blink(bool enabled);
     void timerEvent(QTimerEvent *event);
-    void checkCheckout();
 
 public Q_SLOTS:
     void init();

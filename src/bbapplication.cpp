@@ -9,7 +9,6 @@
 #include "bbapplication.h"
 
 #include "bbpreferences.h"
-#include "bbcheckout.h"
 #include "bbabout.h"
 #include "bbsettings.h"
 #include "bbobserver.h"
@@ -79,8 +78,6 @@ void BBApplication::init()
         quit();
         return;
     }
-
-    checkCheckout();
 
     m_observer = new BBObserver(this);
 
@@ -175,7 +172,6 @@ bool BBApplication::preferences()
         return false;
     }
 
-    checkCheckout();
     return true;
 }
 
@@ -323,13 +319,4 @@ void BBApplication::onActivated(QSystemTrayIcon::ActivationReason reason)
 
     if (reason == QSystemTrayIcon::DoubleClick)
         onCommitTriggered();
-}
-
-void BBApplication::checkCheckout()
-{
-    if (BBSvn::isACheckout())
-        return;
-
-    BBCheckout checkout;
-    checkout.exec();
 }

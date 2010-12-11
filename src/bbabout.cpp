@@ -21,6 +21,7 @@ BBAbout::BBAbout() :
     BBDEBUG;
 
     setWindowTitle(QString(BBPACKAGE " - %1").arg(tr("About")));
+    setWindowIcon(QIcon(BB_ICON_IMAGE));
 
     QGridLayout *layout = new QGridLayout();
     setLayout(layout);

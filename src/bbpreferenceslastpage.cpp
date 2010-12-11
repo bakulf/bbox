@@ -6,7 +6,7 @@
  * the BSD License. See license.txt for more details.
  */
 
-#include "bbcheckoutlastpage.h"
+#include "bbpreferenceslastpage.h"
 
 #include "bbsettings.h"
 #include "bbsvn.h"
@@ -18,7 +18,7 @@
 #include <QSpacerItem>
 #include <QVBoxLayout>
 
-BBCheckoutLastPage::BBCheckoutLastPage() :
+BBPreferencesLastPage::BBPreferencesLastPage() :
     m_complete(false),
     m_counter(0)
 {
@@ -63,12 +63,12 @@ BBCheckoutLastPage::BBCheckoutLastPage() :
     }
 }
 
-BBCheckoutLastPage::~BBCheckoutLastPage()
+BBPreferencesLastPage::~BBPreferencesLastPage()
 {
     BBDEBUG;
 }
 
-void BBCheckoutLastPage::initializePage()
+void BBPreferencesLastPage::initializePage()
 {
     BBDEBUG;
 
@@ -94,7 +94,7 @@ void BBCheckoutLastPage::initializePage()
                     field("passwordField").toString());
 }
 
-void BBCheckoutLastPage::onSvnDone(bool status)
+void BBPreferencesLastPage::onSvnDone(bool status)
 {
     BBDEBUG;
 
@@ -110,7 +110,7 @@ void BBCheckoutLastPage::onSvnDone(bool status)
     emit completeChanged();
 }
 
-void BBCheckoutLastPage::onSvnRead()
+void BBPreferencesLastPage::onSvnRead()
 {
     while (1) {
         QByteArray array = m_svn->readLine();
@@ -127,7 +127,7 @@ void BBCheckoutLastPage::onSvnRead()
     }
 }
 
-bool BBCheckoutLastPage::isComplete() const
+bool BBPreferencesLastPage::isComplete() const
 {
     BBDEBUG << m_complete;
     return m_complete;

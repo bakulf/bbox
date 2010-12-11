@@ -6,8 +6,8 @@
  * the BSD License. See license.txt for more details.
  */
 
-#ifndef _BB_CHECKOUT_LASTPAGE_H_
-#define _BB_CHECKOUT_LASTPAGE_H_
+#ifndef _BB_PREFERENCES_LASTPAGE_H_
+#define _BB_PREFERENCES_LASTPAGE_H_
 
 #include <QWizardPage>
 #include <QPointer>
@@ -16,13 +16,13 @@ class QListWidget;
 class QLabel;
 class BBSvn;
 
-class BBCheckoutLastPage : public QWizardPage
+class BBPreferencesLastPage : public QWizardPage
 {
     Q_OBJECT
 
 public:
-    BBCheckoutLastPage();
-    virtual ~BBCheckoutLastPage();
+    BBPreferencesLastPage();
+    virtual ~BBPreferencesLastPage();
 
 public:
     bool isComplete() const;

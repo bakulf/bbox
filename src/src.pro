@@ -25,9 +25,9 @@ DEPENDPATH  += $${INCLUDEPATH}
 HEADERS   = bbconst.h \
             bbapplication.h \
             bbpreferences.h \
-            bbcheckout.h \
-            bbcheckoutfirstpage.h \
-            bbcheckoutlastpage.h \
+            bbpreferencesfirstpage.h \
+            bbpreferencesmiddlepage.h \
+            bbpreferenceslastpage.h \
             bbabout.h \
             bboperations.h \
             bbsettings.h \
@@ -53,9 +53,9 @@ HEADERS   = bbconst.h \
 SOURCES   = main.cpp \
             bbapplication.cpp \
             bbpreferences.cpp \
-            bbcheckout.cpp \
-            bbcheckoutfirstpage.cpp \
-            bbcheckoutlastpage.cpp \
+            bbpreferencesfirstpage.cpp \
+            bbpreferencesmiddlepage.cpp \
+            bbpreferenceslastpage.cpp \
             bbabout.cpp \
             bboperations.cpp \
             bbsettings.cpp \

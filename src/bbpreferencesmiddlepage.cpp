@@ -6,7 +6,7 @@
  * the BSD License. See license.txt for more details.
  */
 
-#include "bbcheckoutfirstpage.h"
+#include "bbpreferencesmiddlepage.h"
 
 #include "bbsettings.h"
 #include "bbdebug.h"
@@ -17,11 +17,11 @@
 #include <QLineEdit>
 #include <QGridLayout>
 
-BBCheckoutFirstPage::BBCheckoutFirstPage()
+BBPreferencesMiddlePage::BBPreferencesMiddlePage()
 {
     BBDEBUG;
 
-    setTitle(tr("Introduction"));
+    setTitle(tr("Checkout helper"));
     setSubTitle(
         tr(
            "The directory '<b>%1</b>' is not a subversion directory.<br />"
@@ -87,7 +87,7 @@ BBCheckoutFirstPage::BBCheckoutFirstPage()
     }
 }
 
-BBCheckoutFirstPage::~BBCheckoutFirstPage()
+BBPreferencesMiddlePage::~BBPreferencesMiddlePage()
 {
     BBDEBUG;
 }

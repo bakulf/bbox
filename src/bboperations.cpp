@@ -24,8 +24,9 @@ BBOperations::BBOperations()
 {
     BBDEBUG;
 
-    setWindowTitle(QString(BBPACKAGE " - %1").arg("Operations"));
     resize(640, 0);
+    setWindowTitle(QString(BBPACKAGE " - %1").arg("Operations"));
+    setWindowIcon(QIcon(BB_ICON_IMAGE));
 
     QVBoxLayout *box = new QVBoxLayout();
     setLayout(box);

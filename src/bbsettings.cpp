@@ -7,7 +7,8 @@
  */
 
 #include "bbsettings.h"
-
+ 
+#include "bbsvn.h"
 #include "bbdebug.h"
 
 #include <QFile>
@@ -57,7 +58,8 @@ bool BBSettings::isValid() const
     BBDEBUG;
 
     return (m_settings.contains(BB_SETTINGS_DIRECTORY) &&
-            m_settings.contains(BB_SETTINGS_SVN));
+            m_settings.contains(BB_SETTINGS_SVN) &&
+            BBSvn::isACheckout());
 }
 
 QString BBSettings::svn() const
@@ -67,12 +69,14 @@ QString BBSettings::svn() const
     return m_settings.value(BB_SETTINGS_SVN).toString();
 }
 
-void BBSettings::setSvn(const QString &svn)
+void BBSettings::setSvn(const QString &aSvn)
 {
-    BBDEBUG << svn;
+    BBDEBUG << aSvn;
 
-    m_settings.setValue(BB_SETTINGS_SVN, svn);
-    emit svnChanged();
+    if (aSvn != svn()) {
+        m_settings.setValue(BB_SETTINGS_SVN, aSvn);
+        emit svnChanged();
+    }
 }
 
 QString BBSettings::directory() const
@@ -82,12 +86,14 @@ QString BBSettings::directory() const
     return m_settings.value(BB_SETTINGS_DIRECTORY).toString();
 }
 
-void BBSettings::setDirectory(const QString &directory)
+void BBSettings::setDirectory(const QString &aDirectory)
 {
-    BBDEBUG << directory;
+    BBDEBUG << aDirectory;
 
-    m_settings.setValue(BB_SETTINGS_DIRECTORY, directory);
-    emit directoryChanged();
+    if (aDirectory != directory()) {
+        m_settings.setValue(BB_SETTINGS_DIRECTORY, aDirectory);
+        emit directoryChanged();
+    }
 }
 
 uint BBSettings::timerRemoteAction() const
@@ -98,12 +104,14 @@ uint BBSettings::timerRemoteAction() const
     return (!value ? 5 : value);
 }
 
-void BBSettings::setTimerRemoteAction(const uint &timerRemoteAction)
+void BBSettings::setTimerRemoteAction(const uint &aTimerRemoteAction)
 {
-    BBDEBUG << timerRemoteAction;
+    BBDEBUG << aTimerRemoteAction;
 
-    m_settings.setValue(BB_SETTINGS_TIMERREMOTEACTION, timerRemoteAction);
-    emit timerRemoteActionChanged();
+    if (aTimerRemoteAction != timerRemoteAction()) {
+        m_settings.setValue(BB_SETTINGS_TIMERREMOTEACTION, aTimerRemoteAction);
+        emit timerRemoteActionChanged();
+    }
 }
 
 bool BBSettings::autoCommit() const
@@ -113,10 +121,12 @@ bool BBSettings::autoCommit() const
     return m_settings.value(BB_SETTINGS_AUTOCOMMIT).toBool();
 }
 
-void BBSettings::setAutoCommit(const bool &autoCommit)
+void BBSettings::setAutoCommit(const bool &aAutoCommit)
 {
-    BBDEBUG << autoCommit;
+    BBDEBUG << aAutoCommit;
 
-    m_settings.setValue(BB_SETTINGS_AUTOCOMMIT, autoCommit);
-    emit autoCommitChanged();
+    if (aAutoCommit != autoCommit()) {
+        m_settings.setValue(BB_SETTINGS_AUTOCOMMIT, aAutoCommit);
+        emit autoCommitChanged();
+    }
 }
