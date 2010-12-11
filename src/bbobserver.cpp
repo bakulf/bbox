@@ -46,6 +46,10 @@ void BBObserver::directoryChanged()
 {
     BBDEBUG;
 
+    BBActionManager::instance()->actionCleanup();
+    BBActionManager::instance()->actionAdd(BBSettings::instance()->directory());
+    BBActionManager::instance()->actionLocalChanges();
+
     if (!m_watcher.isNull())
         m_watcher->deleteLater();
 

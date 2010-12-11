@@ -81,12 +81,7 @@ void BBApplication::init()
 
     m_observer = new BBObserver(this);
 
-    BBActionManager::instance()->actionCleanup();
-
     scheduleRemoteAction();
-
-    BBActionManager::instance()->actionAdd(BBSettings::instance()->directory());
-    BBActionManager::instance()->actionLocalChanges();
 }
 
 void BBApplication::systemTray()
