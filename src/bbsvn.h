@@ -23,6 +23,9 @@ public:
     ~BBSvn();
 
 public:
+    static bool isACheckout();
+
+public:
     void cleanup();
     void addFile(const QString &filename);
     void deleteFile(const QString &filename);
@@ -40,6 +43,12 @@ public:
 
     void resolveConflict(const QString& file, bool isLocal);
 
+    void checkout(const QString& url,
+                  const QString& username,
+                  const QString& password);
+
+    QString errorMessage() { return m_errorMessage; }
+
 Q_SIGNALS:
     void done(bool ok);
 
@@ -51,6 +60,9 @@ private:
 
 private Q_SLOTS:
     void onFinished(int exitCode, QProcess::ExitStatus extiStatus);
+
+private:
+    QString m_errorMessage;
 };
 
 #endif

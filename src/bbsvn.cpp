@@ -13,6 +13,7 @@
 #include "bbsettings.h"
 #include "bbdebug.h"
 
+#include <QDir>
 #include <QDateTime>
 
 BBSvn::BBSvn(QObject *parent) :
@@ -37,7 +38,8 @@ void BBSvn::start(const QStringList &arguments)
 
 void BBSvn::onFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-    BBDEBUG << exitCode << exitStatus << readAllStandardError();
+    BBDEBUG << exitCode << exitStatus;
+    m_errorMessage = readAllStandardError().trimmed();
 
     bool status(true);
     if (exitCode || exitStatus != QProcess::NormalExit)
@@ -268,4 +270,29 @@ void BBSvn::resolveConflict(const QString& file, bool isLocal)
 {
     BBDEBUG << file << isLocal;
     start(QStringList() << "resolve" << "--accept" << (isLocal ? "mine-full" : "theirs-full") << file);
+}
+
+bool BBSvn::isACheckout()
+{
+    QDir dir(BBSettings::instance()->directory());
+    QFileInfo info(dir.absoluteFilePath(".svn"));
+
+    return info.exists();
+}
+
+void BBSvn::checkout(const QString& url, const QString& username, const QString& password)
+{
+    BBDEBUG << url << username << password;
+
+    QStringList list;
+    list << "checkout" << "--non-interactive";
+
+    if (!username.isEmpty())
+       list << "--username" << username;
+    if (!password.isEmpty())
+       list << "--password" << password;
+
+    list << url << BBSettings::instance()->directory();
+
+    start(list);
 }

@@ -9,12 +9,14 @@
 #include "bbapplication.h"
 
 #include "bbpreferences.h"
+#include "bbcheckout.h"
 #include "bbabout.h"
 #include "bbsettings.h"
 #include "bbobserver.h"
 #include "bbactionmanager.h"
 #include "bboperations.h"
 #include "bbsendreceive.h"
+#include "bbsvn.h"
 #include "bbdebug.h"
 #include "bbconst.h"
 
@@ -73,18 +75,21 @@ void BBApplication::init()
     systemTray();
 
     if (!BBSettings::instance()->isValid() &&
-        !preferences())
+        !preferences()) {
         quit();
-    else {
-        m_observer = new BBObserver(this);
-
-        BBActionManager::instance()->actionCleanup();
-
-        scheduleRemoteAction();
-
-        BBActionManager::instance()->actionAdd(BBSettings::instance()->directory());
-        BBActionManager::instance()->actionLocalChanges();
+        return;
     }
+
+    checkCheckout();
+
+    m_observer = new BBObserver(this);
+
+    BBActionManager::instance()->actionCleanup();
+
+    scheduleRemoteAction();
+
+    BBActionManager::instance()->actionAdd(BBSettings::instance()->directory());
+    BBActionManager::instance()->actionLocalChanges();
 }
 
 void BBApplication::systemTray()
@@ -171,6 +176,7 @@ bool BBApplication::preferences()
         return false;
     }
 
+    checkCheckout();
     return true;
 }
 
@@ -317,4 +323,13 @@ void BBApplication::onActivated(QSystemTrayIcon::ActivationReason reason)
 
     if (reason == QSystemTrayIcon::DoubleClick)
         onCommitTriggered();
+}
+
+void BBApplication::checkCheckout()
+{
+    if (BBSvn::isACheckout())
+        return;
+
+    BBCheckout checkout;
+    checkout.exec();
 }

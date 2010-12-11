@@ -12,19 +12,19 @@
 
 int main(int argc, char **argv)
 {
-  BBApplication app(argc, argv);
+    BBApplication app(argc, argv);
 
-  if(!QSystemTrayIcon::isSystemTrayAvailable()) {
-    QMessageBox::critical(0,
-                          QObject::tr("Systray"),
-                          QObject::tr("I cannot detect any system tray on this system."));
-    return 1;
-  }
+    if(!QSystemTrayIcon::isSystemTrayAvailable()) {
+       QMessageBox::critical(0,
+                             QObject::tr("Systray"),
+                             QObject::tr("I cannot detect any system tray on this system."));
+       return 1;
+    }
 
-  app.setQuitOnLastWindowClosed(false);
+    app.setQuitOnLastWindowClosed(false);
 
-  app.splash();
-  app.init();
+    app.splash();
 
-  return app.exec();
+    QTimer::singleShot(0, &app, SLOT(init()));
+    return app.exec();
 }

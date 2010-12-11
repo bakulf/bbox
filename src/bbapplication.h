@@ -29,7 +29,6 @@ public:
 
 public:
     void splash();
-    void init();
 
     BBObserver *observer();
 
@@ -41,6 +40,10 @@ private:
     void systemTray();
     void blink(bool enabled);
     void timerEvent(QTimerEvent *event);
+    void checkCheckout();
+
+public Q_SLOTS:
+    void init();
 
 private Q_SLOTS:
     bool preferences();
