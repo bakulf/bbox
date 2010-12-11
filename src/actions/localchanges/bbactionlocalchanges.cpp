@@ -94,7 +94,7 @@ void BBActionLocalChanges::checkStatus(const QList<BBSvnStatus *>& list)
     }
 
     if (m_commit)
-        BBApplication::instance()->commit();
+        BBActionManager::instance()->actionScheduleCommit();
 }
 
 bool BBActionLocalChanges::compare(const BBAction *action)
@@ -105,6 +105,6 @@ bool BBActionLocalChanges::compare(const BBAction *action)
     if (!a)
         return false;
 
-    BBDEBUG << "Yes!";
-    return true;
+    BBDEBUG << m_commit << a->commit();
+    return (m_commit == a->commit());
 }

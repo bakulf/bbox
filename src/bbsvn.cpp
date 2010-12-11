@@ -38,8 +38,8 @@ void BBSvn::start(const QStringList &arguments)
 
 void BBSvn::onFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-    BBDEBUG << exitCode << exitStatus;
     m_errorMessage = readAllStandardError().trimmed();
+    BBDEBUG << exitCode << exitStatus << m_errorMessage;
 
     bool status(true);
     if (exitCode || exitStatus != QProcess::NormalExit)

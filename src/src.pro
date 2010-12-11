@@ -16,7 +16,9 @@ INCLUDEPATH += actions \
                actions/update \
                actions/commit \
                actions/localchanges \
-               actions/remotechanges
+               actions/remotechanges \
+               actions/schedulecommit \
+               actions/scheduleupdate
 
 DEPENDPATH  += $${INCLUDEPATH}
 
@@ -44,7 +46,9 @@ HEADERS   = bbconst.h \
             bbactionupdate.h \
             bbactioncommit.h \
             bbactionlocalchanges.h \
-            bbactionremotechanges.h
+            bbactionremotechanges.h \
+            bbactionschedulecommit.h \
+            bbactionscheduleupdate.h
 
 SOURCES   = main.cpp \
             bbapplication.cpp \
@@ -70,6 +74,8 @@ SOURCES   = main.cpp \
             bbactionupdate.cpp \
             bbactioncommit.cpp \
             bbactionlocalchanges.cpp \
-            bbactionremotechanges.cpp
+            bbactionremotechanges.cpp \
+            bbactionschedulecommit.cpp \
+            bbactionscheduleupdate.cpp
 
 RESOURCES = bbox.qrc

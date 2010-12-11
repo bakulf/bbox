@@ -31,6 +31,8 @@ public Q_SLOTS:
     void actionDelete(const QString &filename);
     void actionLocalChanges();
     void actionRemoteChanges();
+    void actionScheduleCommit();
+    void actionScheduleUpdate();
 
 Q_SIGNALS:
     void actionsQueued(int actions);

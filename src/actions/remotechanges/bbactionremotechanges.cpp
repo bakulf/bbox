@@ -9,6 +9,7 @@
 #include "bbactionremotechanges.h"
 
 #include "bbapplication.h"
+#include "bbactionmanager.h"
 #include "bbsvn.h"
 #include "bbsvninfo.h"
 #include "bbdebug.h"
@@ -78,7 +79,7 @@ void BBActionRemoteChanges::onRemoteSvnDone(bool status)
 void BBActionRemoteChanges::check()
 {
     if (m_remoteRevision > m_localRevision)
-        BBApplication::instance()->update();
+        BBActionManager::instance()->actionScheduleUpdate();
 
     emit done(true);
 }

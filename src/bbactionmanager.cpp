@@ -13,6 +13,8 @@
 #include "bbactiondelete.h"
 #include "bbactionlocalchanges.h"
 #include "bbactionremotechanges.h"
+#include "bbactionschedulecommit.h"
+#include "bbactionscheduleupdate.h"
 #include "bbdebug.h"
 
 #include <QPointer>
@@ -22,7 +24,7 @@ BBActionManager::BBActionManager() :
     QObject(QCoreApplication::instance())
 {
     BBDEBUG;
-    startTimer(1000);
+    startTimer(500);
 }
 
 BBActionManager::~BBActionManager()
@@ -69,6 +71,18 @@ void BBActionManager::actionRemoteChanges()
 {
     BBDEBUG;
     addAction(new BBActionRemoteChanges(this));
+}
+
+void BBActionManager::actionScheduleCommit()
+{
+    BBDEBUG;
+    addAction(new BBActionScheduleCommit(this));
+}
+
+void BBActionManager::actionScheduleUpdate()
+{
+    BBDEBUG;
+    addAction(new BBActionScheduleUpdate(this));
 }
 
 void BBActionManager::addAction(BBAction *action)

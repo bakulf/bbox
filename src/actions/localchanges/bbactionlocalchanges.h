@@ -25,6 +25,7 @@ public:
 public:
     void run();
     bool compare(const BBAction *action);
+    bool commit() const { return m_commit; }
 
 private:
     void checkStatus(const QList<BBSvnStatus*>& list);
