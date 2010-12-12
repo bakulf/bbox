@@ -133,7 +133,7 @@ QList<BBSvnStatus*> BBSvn::parseStatus()
         if (file[2] == 'L')
             status->setLocked(true);
 
-        status->setFile(QString(file.remove(0, 8)));
+        status->setFile(QString(file.remove(0, 8)).trimmed());
 
         if (!status->isValid()) {
             status->deleteLater();
@@ -168,7 +168,7 @@ BBSvnInfo* BBSvn::parseInfo()
 
     foreach (QByteArray line, lines) {
         if (line.startsWith("URL: "))
-            info->setURL(QString(line.remove(0, 5)));
+            info->setURL(QString(line.remove(0, 5)).trimmed());
         else if(line.startsWith("Revision: "))
             info->setRevision(QString(line.remove(0, 10)).toUInt());
     }
@@ -260,7 +260,7 @@ QList<BBSvnStatus*> BBSvn::parseUpdate()
                 break;
         }
 
-        status->setFile(QString(file.remove(0, 5)));
+        status->setFile(QString(file.remove(0, 5)).trimmed());
 
         if (!status->isValid()) {
             status->deleteLater();

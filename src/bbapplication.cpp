@@ -19,6 +19,7 @@
 #include "bbdebug.h"
 #include "bbconst.h"
 
+#include <QTime>
 #include <QMenu>
 #include <QAction>
 #include <QFileDialog>
@@ -45,7 +46,7 @@ BBApplication::BBApplication(int argc, char **argv) :
 
     m_instance = this;
 
-    qsrand(time(0));
+    qsrand(QTime::currentTime().msec());
 }
 
 BBApplication::~BBApplication()
