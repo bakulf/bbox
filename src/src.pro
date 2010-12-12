@@ -7,6 +7,7 @@ OBJECTS_DIR = .obj
 
 unix:QMAKE_CXXFLAGS *= -Werror
 win32:LIBS = -lAdvapi32
+win32:RC_FILE = win32.rc
 
 DEFINES = BBPACKAGE=\\\"BBox\\\"
 
