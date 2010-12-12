@@ -22,6 +22,8 @@
 #include <QRadioButton>
 #include <QButtonGroup>
 #include <QScrollArea>
+#include <QComboBox>
+#include <QFileInfo>
 
 QPointer<BBConflict> BBConflict::m_dialog;
 
@@ -50,7 +52,7 @@ BBConflict::BBConflict(const QList<BBSvnStatus*> list)
 {
     BBDEBUG << list;
 
-    resize(640, 320);
+    resize(700, 320);
     setWindowTitle(tr(BBPACKAGE " - %1").arg(tr("Conflict detected!")));
     setWindowIcon(QIcon(BB_ICON_IMAGE));
 
@@ -94,29 +96,53 @@ BBConflict::BBConflict(const QList<BBSvnStatus*> list)
 
         m_list << file;
 
-        QLabel *label = new QLabel(status->file());
+        int col(0);
+        QLabel *label = new QLabel(QFileInfo(status->file()).fileName());
         layout->addWidget(label, row, 0);
+
+        col++;
+        layout->addItem(new QSpacerItem(20, 20, QSizePolicy::Expanding), row, col);
+
+        col++;
+        {
+            QComboBox *actionsWidget = new QComboBox();
+            layout->addWidget(actionsWidget, row, col);
+
+            actionsWidget->insertItem(0, tr("Choose an action..."));
+            actionsWidget->insertItem(1, tr("Open your version"), status->file());
+            actionsWidget->insertItem(2, tr("Open remote version"), status->file());
+
+            connect(actionsWidget,
+                    SIGNAL(currentIndexChanged(int)),
+                    SLOT(onActionIndexChanged(int)));
+        }
+
+        col++;
+        layout->addItem(new QSpacerItem(20, 20, QSizePolicy::Expanding), row, col);
 
         QButtonGroup *group = new QButtonGroup();
 
+        col++;
         {
             QRadioButton *button = new QRadioButton(tr("Local"));
             button->setChecked(true);
             group->addButton(button);
-            layout->addWidget(button, row, 1);
+            layout->addWidget(button, row, col);
             file->setLocalButton(button);
         }
 
+        col++;
         {
             QRadioButton *button = new QRadioButton(tr("Remote"));
             group->addButton(button);
-            layout->addWidget(button, row, 2);
+            layout->addWidget(button, row, col);
         }
 
+        col++;
         {
             QLabel *label = new QLabel();
             label->setAlignment(Qt::AlignRight);
-            layout->addWidget(label, row, 3);
+            layout->addWidget(label, row, col);
             file->setLabel(label);
             updateStatus(label, Waiting);
         }
@@ -124,10 +150,9 @@ BBConflict::BBConflict(const QList<BBSvnStatus*> list)
         row++;
     }
 
-    layout->setColumnStretch(0, 1);
-
     QScrollArea *scrollArea = new QScrollArea;
     scrollArea->setWidgetResizable(true);
+    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scrollArea->setWidget(widget);
     box->addWidget(scrollArea);
 
@@ -212,5 +237,26 @@ void BBConflict::updateStatus(QLabel *label, Status status)
         case Done:
             label->setPixmap(QPixmap::fromImage(QImage(BB_STATE_COMPLETE_IMAGE)));
             break;
+    }
+}
+
+void BBConflict::onActionIndexChanged(int index)
+{
+    BBDEBUG << index;
+    QComboBox *widget = qobject_cast<QComboBox*>(sender());
+
+    if (!widget || index == 0)
+        return;
+
+    QString file = widget->itemData(index).toString();
+    if (file.isEmpty())
+        return;
+
+    widget->setCurrentIndex(0);
+
+    if (index == 1) {
+        BBSvn::openFile(file, true);
+    } else if (index == 2) {
+        BBSvn::openFile(file, false);
     }
 }

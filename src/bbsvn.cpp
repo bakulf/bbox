@@ -15,6 +15,9 @@
 
 #include <QDir>
 #include <QDateTime>
+#include <QMessageBox>
+#include <QDesktopServices>
+#include <QUrl>
 
 #ifdef Q_OS_WIN32
     #include <windows.h>
@@ -301,4 +304,62 @@ void BBSvn::checkout(const QString& url, const QString& username, const QString&
     list << url << BBSettings::instance()->directory();
 
     start(list);
+}
+
+void BBSvn::openFile(const QString& file, bool local)
+{
+    BBDEBUG << file << local;
+
+    QFileInfo info(file);
+    QString filename(info.fileName());
+
+    if (local) {
+        if (QFile::exists(QString("%1.mine").arg(file)))
+            openFile(QString("%1.mine").arg(file), filename);
+        else {
+            QMessageBox::warning(0,
+                                 QString(BBPACKAGE " - %1").arg(tr("Warning")),
+                                 tr("The local version seems missing."));
+        }
+    } else {
+        QDir dir(info.dir());
+        uint max(0);
+
+        QFileInfoList list = dir.entryInfoList();
+        foreach (QFileInfo info, list) {
+            if (!info.fileName().startsWith(filename))
+                continue;
+
+            QString ext = info.completeSuffix();
+            if (!ext.startsWith("r"))
+                continue;
+
+            ext.remove(0, 1);
+            uint value(ext.toUInt());
+            if (max < value)
+                max = value;
+        }
+
+        if (max == 0) {
+            QMessageBox::warning(0,
+                                 QString(BBPACKAGE " - %1").arg(tr("Warning")),
+                                 tr("The remove version seems missing."));
+        } else {
+            openFile(QString("%1.r%2").arg(file).arg(max), filename);
+        }
+    }
+}
+
+void BBSvn::openFile(const QString& file, const QString& name)
+{
+    BBDEBUG << file << name;
+
+    QString newFile(QDir::temp().absoluteFilePath(name));
+
+    if (QFile::exists(newFile))
+        QFile::remove(newFile);
+
+    QFile::copy(file, newFile);
+
+    QDesktopServices::openUrl(QUrl::fromLocalFile(newFile));
 }

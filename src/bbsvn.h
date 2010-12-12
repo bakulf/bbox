@@ -24,6 +24,7 @@ public:
 
 public:
     static bool isACheckout();
+    static void openFile(const QString& file, bool local);
 
 public:
     void cleanup();
@@ -51,6 +52,9 @@ public:
 
 Q_SIGNALS:
     void done(bool ok);
+
+public:
+    static void openFile(const QString& file, const QString& name);
 
 private:
     QString commitMessage();

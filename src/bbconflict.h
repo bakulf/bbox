@@ -38,6 +38,7 @@ public:
 private Q_SLOTS:
     void apply();
     void applyMerge(bool status);
+    void onActionIndexChanged(int index);
 
 private:
     void updateStatus(QLabel *label, Status status);

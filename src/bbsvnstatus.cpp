@@ -51,7 +51,7 @@ void BBSvnStatus::setFile(const QString &filename)
     m_filename = filename;
 }
 
-const QString& BBSvnStatus::file() const
+QString BBSvnStatus::file() const
 {
     return m_filename;
 }

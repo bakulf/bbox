@@ -41,7 +41,7 @@ public:
     bool locked() const;
 
     void setFile(const QString& filename);
-    const QString& file() const;
+    QString file() const;
 
     bool isValid();
 
