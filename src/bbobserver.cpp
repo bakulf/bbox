@@ -94,6 +94,9 @@ void BBObserver::onSomethingChanged(const QString &filename)
 {
     BBDEBUG << filename << m_operationOnFs;
 
+    if (m_operationOnFs)
+        return;
+
     QFileInfo info(filename);
 
     if (!info.exists())
@@ -101,7 +104,7 @@ void BBObserver::onSomethingChanged(const QString &filename)
     else if (info.isDir())
         addDirectory(filename);
 
-    if (m_operationOnFs == 0 && !m_changes.contains(filename))
+    if (!m_changes.contains(filename))
         m_changes << filename;
 }
 
@@ -132,6 +135,10 @@ void BBObserver::operationOnFileSystemUnref()
 
     if (m_operationOnFs > 0)
         m_operationOnFs--;
+
+    if (m_operationOnFs == 0) {
+        onSomethingChanged(BBSettings::instance()->directory());
+    }
 }
 
 void BBObserver::onAboutToQuit()

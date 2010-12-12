@@ -17,11 +17,11 @@
 #include "bbconst.h"
 
 #include <QVBoxLayout>
-#include <QFrame>
 #include <QLabel>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QButtonGroup>
+#include <QScrollArea>
 
 QPointer<BBConflict> BBConflict::m_dialog;
 
@@ -50,7 +50,7 @@ BBConflict::BBConflict(const QList<BBSvnStatus*> list)
 {
     BBDEBUG << list;
 
-    resize(640, 0);
+    resize(640, 320);
     setWindowTitle(tr(BBPACKAGE " - %1").arg(tr("Conflict detected!")));
     setWindowIcon(QIcon(BB_ICON_IMAGE));
 
@@ -82,12 +82,9 @@ BBConflict::BBConflict(const QList<BBSvnStatus*> list)
         layout->addItem(new QSpacerItem(20, 20, QSizePolicy::Expanding));
     }
 
-    QFrame *frame = new QFrame();
-    frame->setFrameStyle(QFrame::Panel);
-    box->addWidget(frame);
-
+    QWidget *widget = new QWidget();
     QGridLayout *layout = new QGridLayout();
-    frame->setLayout(layout);
+    widget->setLayout(layout);
 
     int row(0);
 
@@ -128,6 +125,11 @@ BBConflict::BBConflict(const QList<BBSvnStatus*> list)
     }
 
     layout->setColumnStretch(0, 1);
+
+    QScrollArea *scrollArea = new QScrollArea;
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setWidget(widget);
+    box->addWidget(scrollArea);
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     box->addLayout(buttonLayout);

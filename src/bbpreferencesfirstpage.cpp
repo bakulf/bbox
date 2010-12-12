@@ -33,23 +33,19 @@ BBPreferencesFirstPage::BBPreferencesFirstPage()
     QGridLayout *layout = new QGridLayout();
     setLayout(layout);
 
-    QTabWidget *tabs = new QTabWidget();
-    layout->addWidget(tabs);
-
-    // Tab general ----------------------------------------------------------
-    QWidget *generalTab = new QWidget();
-    tabs->addTab(generalTab, tr("General"));
-
-    QGridLayout *generalLayout = new QGridLayout();
-    generalTab->setLayout(generalLayout);
-
     int row(0);
     {
+        QSpacerItem *spacer = new QSpacerItem(20, 20, QSizePolicy::Expanding, QSizePolicy::Expanding);
+        layout->addItem(spacer, row, 0, 1, 2);
+    }
+
+    row++;
+    {
         QLabel *label = new QLabel(tr("Directory:"));
-        generalLayout->addWidget(label, row, 0);
+        layout->addWidget(label, row, 0);
 
         QHBoxLayout *box = new QHBoxLayout();
-        generalLayout->addLayout(box, row, 1);
+        layout->addLayout(box, row, 1);
 
         m_directoryWidget = new QLineEdit();
         registerField("directoryField*", m_directoryWidget);
@@ -64,12 +60,31 @@ BBPreferencesFirstPage::BBPreferencesFirstPage()
 
     row++;
     {
+        QLabel *label = new QLabel(tr("Subversion:"));
+        layout->addWidget(label, row, 0);
+
+        QHBoxLayout *box = new QHBoxLayout();
+        layout->addLayout(box, row, 1);
+
+        m_svnWidget = new QLineEdit();
+        registerField("svnField*", m_svnWidget);
+        box->addWidget(m_svnWidget);
+
+        QPushButton *button = new QPushButton(tr("Browse"));
+        box->addWidget(button);
+        connect(button,
+                SIGNAL(clicked()),
+                SLOT(onSVNSearchClicked()));
+    }
+
+    row++;
+    {
         QLabel *label = new QLabel(tr("Timer for remote check:"));
-        generalLayout->addWidget(label, row, 0);
+        layout->addWidget(label, row, 0);
 
         m_timerWidget = new QComboBox();
         m_timerWidget->setEditable(false);
-        generalLayout->addWidget(m_timerWidget, row, 1);
+        layout->addWidget(m_timerWidget, row, 1);
 
         int index(0);
         m_timerWidget->insertItem(index++, tr("1 minute"),    1);
@@ -83,36 +98,16 @@ BBPreferencesFirstPage::BBPreferencesFirstPage()
     row++;
     {
         QLabel *label = new QLabel(tr("AutoCommit on changes:"));
-        generalLayout->addWidget(label, row, 0);
+        layout->addWidget(label, row, 0);
 
         m_autocommitWidget = new QCheckBox(tr("Enabled"));
-        generalLayout->addWidget(m_autocommitWidget, row, 1);
+        layout->addWidget(m_autocommitWidget, row, 1);
     }
 
-    // Tab advanced ---------------------------------------------------------
-    QWidget *advTab = new QWidget();
-    tabs->addTab(advTab, tr("Advanced"));
-
-    QGridLayout *advLayout = new QGridLayout();
-    advTab->setLayout(advLayout);
-
-    row = 0;
+    row++;
     {
-        QLabel *label = new QLabel(tr("Subversion:"));
-        advLayout->addWidget(label, row, 0);
-
-        QHBoxLayout *box = new QHBoxLayout();
-        advLayout->addLayout(box, row, 1);
-
-        m_svnWidget = new QLineEdit();
-        registerField("svnField*", m_svnWidget);
-        box->addWidget(m_svnWidget);
-
-        QPushButton *button = new QPushButton(tr("Browse"));
-        box->addWidget(button);
-        connect(button,
-                SIGNAL(clicked()),
-                SLOT(onSVNSearchClicked()));
+        QSpacerItem *spacer = new QSpacerItem(20, 20, QSizePolicy::Expanding, QSizePolicy::Expanding);
+        layout->addItem(spacer, row, 0, 1, 2);
     }
 }
 
