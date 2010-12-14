@@ -32,12 +32,16 @@ HEADERS   = bbconst.h \
             bbpreferencesmiddlepage.h \
             bbpreferenceslastpage.h \
             bbabout.h \
+            bblogs.h \
+            bblogsitem.h \
+            bblogsmodel.h \
             bboperations.h \
             bbsettings.h \
             bbobserver.h \
             bbsvn.h \
             bbsvnstatus.h \
             bbsvninfo.h \
+            bbsvnlog.h \
             bbconflict.h \
             bbconflictfile.h \
             bbsendreceive.h \
@@ -60,12 +64,16 @@ SOURCES   = main.cpp \
             bbpreferencesmiddlepage.cpp \
             bbpreferenceslastpage.cpp \
             bbabout.cpp \
+            bblogs.cpp \
+            bblogsitem.cpp \
+            bblogsmodel.cpp \
             bboperations.cpp \
             bbsettings.cpp \
             bbobserver.cpp \
             bbsvn.cpp \
             bbsvnstatus.cpp \
             bbsvninfo.cpp \
+            bbsvnlog.cpp \
             bbconflict.cpp \
             bbconflictfile.cpp \
             bbsendreceive.cpp \

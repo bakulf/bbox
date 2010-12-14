@@ -11,6 +11,7 @@
 
 #include <QProcess>
 
+class BBSvnLog;
 class BBSvnInfo;
 class BBSvnStatus;
 
@@ -47,6 +48,9 @@ public:
     void checkout(const QString& url,
                   const QString& username,
                   const QString& password);
+
+    void remoteLog(const QString& url);
+    QList<BBSvnLog*> parseLog();
 
     QString errorMessage() { return m_errorMessage; }
 

@@ -15,6 +15,7 @@
 #include "bbactionmanager.h"
 #include "bboperations.h"
 #include "bbsendreceive.h"
+#include "bblogs.h"
 #include "bbsvn.h"
 #include "bbdebug.h"
 #include "bbconst.h"
@@ -109,6 +110,12 @@ void BBApplication::systemTray()
     connect (m_actionCommit,
              SIGNAL(triggered()),
              SLOT(onCommitTriggered()));
+
+    m_actionCommit = new QAction(tr("&See logs"), this);
+    menu->addAction(m_actionCommit);
+    connect (m_actionCommit,
+             SIGNAL(triggered()),
+             SLOT(onLogsTriggered()));
 
     menu->addSeparator();
 
@@ -316,6 +323,12 @@ void BBApplication::onOpenTriggered()
 {
     BBDEBUG;
     QDesktopServices::openUrl(QUrl::fromLocalFile(BBSettings::instance()->directory()).toString());
+}
+
+void BBApplication::onLogsTriggered()
+{
+    BBDEBUG;
+    new BBLogs(this);
 }
 
 void BBApplication::onActivated(QSystemTrayIcon::ActivationReason reason)

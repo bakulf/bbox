@@ -10,6 +10,7 @@
 
 #include "bbsvnstatus.h"
 #include "bbsvninfo.h"
+#include "bbsvnlog.h"
 #include "bbsettings.h"
 #include "bbdebug.h"
 
@@ -182,7 +183,9 @@ BBSvnInfo* BBSvn::parseInfo()
 void BBSvn::commit()
 {
     BBDEBUG;
-    start(QStringList() << "commit" << "-m" << commitMessage() << BBSettings::instance()->directory());
+    start(QStringList() << "commit" << "--non-interactive"
+                        << "--trust-server-cert" << "-m" << commitMessage()
+                        << BBSettings::instance()->directory());
 }
 
 QString BBSvn::userName() {
@@ -304,6 +307,59 @@ void BBSvn::checkout(const QString& url, const QString& username, const QString&
     list << url << BBSettings::instance()->directory();
 
     start(list);
+}
+
+void BBSvn::remoteLog(const QString& url)
+{
+    BBDEBUG << url;
+    start(QStringList() << "log" << "-v" << url);
+}
+
+QList<BBSvnLog*> BBSvn::parseLog()
+{
+    BBDEBUG;
+
+    QByteArray output = readAllStandardOutput();
+    QList<QByteArray> lines = output.split('\n');
+
+    QList<BBSvnLog*> list;
+
+    while(!lines.isEmpty()) {
+        QByteArray line;
+
+        line = lines.takeFirst();
+        if (!line.startsWith("----------------"))
+            continue;
+
+        line = lines.takeFirst();
+        if (!line.startsWith("r"))
+            break;
+
+        QList<QByteArray> parts = line.split('|');
+        if (parts.size() < 3)
+            break;
+
+        BBSvnLog *log = new BBSvnLog(parts[0].remove(0,1).trimmed().toUInt(),
+                                     parts[1].trimmed(),
+                                     parts[2].trimmed(),
+                                     this);
+
+        line = lines.takeFirst();
+        if (!line.startsWith("Changed paths:"))
+            break;
+
+        while (1) {
+            line = lines.takeFirst();
+            if (line.isEmpty() || line.trimmed().isEmpty())
+                break;
+
+            log->addOperation(line);
+        }
+
+        list << log;
+    }
+
+    return list;
 }
 
 void BBSvn::openFile(const QString& file, bool local)

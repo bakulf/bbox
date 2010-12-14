@@ -56,6 +56,7 @@ private Q_SLOTS:
 
     void onCommitTriggered();
     void onOpenTriggered();
+    void onLogsTriggered();
 
     void onSendReceiveDone(bool status);
 
