@@ -13,8 +13,10 @@
 #include <QPointer>
 #include <QSystemTrayIcon>
 
+class QMenu;
 class QAction;
 class BBObserver;
+class BBSvnStatus;
 class BBSendReceive;
 
 class BBApplication : public QApplication
@@ -35,6 +37,7 @@ public:
     void addError(const QString& error);
     void commit();
     void update();
+    void changes(const QList<BBSvnStatus*>& changes);
 
 private:
     void systemTray();
@@ -65,6 +68,8 @@ private:
 
     QAction *m_actionCounter;
     QAction *m_actionCommit;
+
+    QMenu *m_menuChanges;
 
     bool m_errorShown;
     int m_timer;

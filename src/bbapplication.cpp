@@ -17,6 +17,7 @@
 #include "bbsendreceive.h"
 #include "bblogs.h"
 #include "bbsvn.h"
+#include "bbsvnstatus.h"
 #include "bbdebug.h"
 #include "bbconst.h"
 
@@ -110,6 +111,14 @@ void BBApplication::systemTray()
     connect (m_actionCommit,
              SIGNAL(triggered()),
              SLOT(onCommitTriggered()));
+
+    QAction *actionChanges = new QAction(tr("&Changes"), this);
+    menu->addAction(actionChanges);
+    m_menuChanges = new QMenu();
+    actionChanges->setMenu(m_menuChanges);
+    changes(QList<BBSvnStatus*>());
+
+    menu->addSeparator();
 
     m_actionCommit = new QAction(tr("&See logs"), this);
     menu->addAction(m_actionCommit);
@@ -337,4 +346,71 @@ void BBApplication::onActivated(QSystemTrayIcon::ActivationReason reason)
 
     if (reason == QSystemTrayIcon::DoubleClick)
         onCommitTriggered();
+}
+
+void BBApplication::changes(const QList<BBSvnStatus*>& changes)
+{
+    BBDEBUG << changes;
+
+    m_menuChanges->clear();
+
+    if (changes.isEmpty()) {
+        QFont font;
+        font.setStyle(QFont::StyleItalic);
+
+        QAction* emptyAction = new QAction(tr("No changes"), this);
+        emptyAction->setFont(font);
+        m_menuChanges->addAction(emptyAction);
+        return;
+    }
+
+    foreach(BBSvnStatus* status, changes) {
+        QString message;
+
+        switch(status->status()) {
+            case BBSvnStatus::StatusUnknown:
+               message = tr("%1 (unknown operation)").arg(status->file().remove(BBSettings::instance()->directory()));
+               break;
+
+            case BBSvnStatus::StatusAdded:
+               message = tr("%1 added").arg(status->file().remove(BBSettings::instance()->directory()));
+               break;
+
+            case BBSvnStatus::StatusConflicted:
+               message = tr("%1 conflicted").arg(status->file().remove(BBSettings::instance()->directory()));
+               break;
+
+            case BBSvnStatus::StatusDeleted:
+               message = tr("%1 deleted").arg(status->file().remove(BBSettings::instance()->directory()));
+               break;
+
+            case BBSvnStatus::StatusModified:
+               message = tr("%1 modified").arg(status->file().remove(BBSettings::instance()->directory()));
+               break;
+
+            case BBSvnStatus::StatusReplaced:
+               message = tr("%1 replaced").arg(status->file().remove(BBSettings::instance()->directory()));
+               break;
+
+            case BBSvnStatus::StatusMissing:
+               message = tr("%1 missing").arg(status->file().remove(BBSettings::instance()->directory()));
+               break;
+
+            case BBSvnStatus::StatusUpdated:
+               message = tr("%1 updated").arg(status->file().remove(BBSettings::instance()->directory()));
+               break;
+
+            case BBSvnStatus::StatusMerged:
+               message = tr("%1 merged").arg(status->file().remove(BBSettings::instance()->directory()));
+               break;
+
+            case BBSvnStatus::StatusExisted:
+               message = tr("%1 existed").arg(status->file().remove(BBSettings::instance()->directory()));
+               break;
+
+        }
+
+        QAction* action = new QAction(message, this);
+        m_menuChanges->addAction(action);
+    }
 }

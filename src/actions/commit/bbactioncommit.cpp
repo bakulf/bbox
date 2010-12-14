@@ -54,6 +54,8 @@ void BBActionCommit::onSvnDone(bool status)
 
     if (status == false) {
         BBApplication::instance()->addError(tr("Error committing files."));
+    } {
+        BBApplication::instance()->changes(QList<BBSvnStatus*>());
     }
 
     m_svn->deleteLater();
