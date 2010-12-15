@@ -112,6 +112,8 @@ void BBPreferencesLastPage::onSvnDone(bool status)
 
 void BBPreferencesLastPage::onSvnRead()
 {
+    QString path = BBSettings::instance()->directory();
+
     while (1) {
         QByteArray array = m_svn->readLine();
         if (array.isEmpty())
@@ -120,7 +122,7 @@ void BBPreferencesLastPage::onSvnRead()
         if (!array.startsWith("A "))
             continue;
 
-        m_listWidget->addItem(array.remove(0, 1).trimmed());
+        m_listWidget->addItem(QString(array.remove(0, 1)).remove(path).trimmed());
 
         m_counter++;
         m_counterLabel->setText(tr("Downloading files: %1").arg(m_counter));
