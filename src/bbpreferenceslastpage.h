@@ -36,6 +36,7 @@ private:
     QLabel *m_errorLabel;
     QListWidget *m_listWidget;
     QLabel *m_counterLabel;
+    QLabel *m_loaderLabel;
 
     QPointer<BBSvn> m_svn;
     bool m_complete;

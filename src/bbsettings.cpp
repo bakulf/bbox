@@ -7,7 +7,7 @@
  */
 
 #include "bbsettings.h"
- 
+
 #include "bbsvn.h"
 #include "bbdebug.h"
 

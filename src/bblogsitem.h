@@ -16,6 +16,7 @@ class BBLogsItem
 {
 public:
     BBLogsItem(const QList<QVariant> &data, BBLogsItem *parent = 0);
+    BBLogsItem(const QList<QVariant> &data, const QString& file, int revision, BBLogsItem *parent = 0);
     ~BBLogsItem();
 
     void appendChild(BBLogsItem *child);
@@ -27,10 +28,17 @@ public:
     int row() const;
     BBLogsItem *parent();
 
+    bool hasFile() { return !m_file.isEmpty(); }
+    const QString& file() { return m_file; }
+    int revision() { return m_revision; }
+
 private:
-    QList<BBLogsItem*> childItems;
-    QList<QVariant> itemData;
-    BBLogsItem *parentItem;
+    QList<BBLogsItem*> m_childItems;
+    QList<QVariant> m_itemData;
+    BBLogsItem *m_parentItem;
+
+    QString m_file;
+    int m_revision;
 };
 
 #endif

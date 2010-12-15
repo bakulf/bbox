@@ -19,30 +19,26 @@ BBLogsModel::BBLogsModel(const QList<BBSvnLog*>& logs, QObject *parent) :
 
     QList<QVariant> rootData;
     rootData << tr("Revision") << tr("User") << tr("Date");
-    rootItem = new BBLogsItem(rootData);
-    setupModelData(logs, rootItem);
+    m_rootItem = new BBLogsItem(rootData);
+    setupModelData(logs, m_rootItem);
 }
 
 BBLogsModel::~BBLogsModel()
 {
     BBDEBUG;
-    delete rootItem;
+    delete m_rootItem;
 }
 
 int BBLogsModel::columnCount(const QModelIndex &parent) const
 {
-    BBDEBUG;
-
     if (parent.isValid())
         return static_cast<BBLogsItem*>(parent.internalPointer())->columnCount();
     else
-        return rootItem->columnCount();
+        return m_rootItem->columnCount();
 }
 
 QVariant BBLogsModel::data(const QModelIndex &index, int role) const
 {
-    BBDEBUG;
-
     if (!index.isValid())
         return QVariant();
 
@@ -56,8 +52,6 @@ QVariant BBLogsModel::data(const QModelIndex &index, int role) const
 
 Qt::ItemFlags BBLogsModel::flags(const QModelIndex &index) const
 {
-    BBDEBUG;
-
     if (!index.isValid())
         return 0;
 
@@ -65,12 +59,10 @@ Qt::ItemFlags BBLogsModel::flags(const QModelIndex &index) const
 }
 
 QVariant BBLogsModel::headerData(int section, Qt::Orientation orientation,
-                               int role) const
+                                 int role) const
 {
-    BBDEBUG;
-
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-        return rootItem->data(section);
+        return m_rootItem->data(section);
 
     return QVariant();
 }
@@ -78,15 +70,13 @@ QVariant BBLogsModel::headerData(int section, Qt::Orientation orientation,
 QModelIndex BBLogsModel::index(int row, int column, const QModelIndex &parent)
             const
 {
-    BBDEBUG;
-
     if (!hasIndex(row, column, parent))
         return QModelIndex();
 
     BBLogsItem *parentItem;
 
     if (!parent.isValid())
-        parentItem = rootItem;
+        parentItem = m_rootItem;
     else
         parentItem = static_cast<BBLogsItem*>(parent.internalPointer());
 
@@ -99,15 +89,13 @@ QModelIndex BBLogsModel::index(int row, int column, const QModelIndex &parent)
 
 QModelIndex BBLogsModel::parent(const QModelIndex &index) const
 {
-    BBDEBUG;
-
     if (!index.isValid())
         return QModelIndex();
 
     BBLogsItem *childItem = static_cast<BBLogsItem*>(index.internalPointer());
     BBLogsItem *parentItem = childItem->parent();
 
-    if (parentItem == rootItem)
+    if (parentItem == m_rootItem)
         return QModelIndex();
 
     return createIndex(parentItem->row(), 0, parentItem);
@@ -115,14 +103,12 @@ QModelIndex BBLogsModel::parent(const QModelIndex &index) const
 
 int BBLogsModel::rowCount(const QModelIndex &parent) const
 {
-    BBDEBUG;
-
     BBLogsItem *parentItem;
     if (parent.column() > 0)
         return 0;
 
     if (!parent.isValid())
-        parentItem = rootItem;
+        parentItem = m_rootItem;
     else
         parentItem = static_cast<BBLogsItem*>(parent.internalPointer());
 
@@ -142,6 +128,8 @@ void BBLogsModel::setupModelData(const QList<BBSvnLog*>& logs, BBLogsItem *paren
 
         foreach(QString file, files) {
             QString message;
+            bool addFile(true);
+
             switch (map.value(file)) {
                case BBSvnLog::Added:
                    message = tr("%1 added").arg(file);
@@ -152,6 +140,7 @@ void BBLogsModel::setupModelData(const QList<BBSvnLog*>& logs, BBLogsItem *paren
                    break;
 
                case BBSvnLog::Deleted:
+                   addFile = false;
                    message = tr("%1 deleted").arg(file);
                    break;
 
@@ -160,12 +149,13 @@ void BBLogsModel::setupModelData(const QList<BBSvnLog*>& logs, BBLogsItem *paren
                    break;
 
                case BBSvnLog::Unknown:
+                   addFile = false;
                    message = tr("%1 (unknown operation)").arg(file);
                    break;
 
             }
 
-            item->appendChild(new BBLogsItem(QVariantList() << message, item));
+            item->appendChild(new BBLogsItem(QVariantList() << message, addFile ? file : QString(), log->revision(), item));
         }
 
         parent->appendChild(item);

@@ -37,7 +37,8 @@ public:
 private:
     void setupModelData(const QList<BBSvnLog*> &logs, BBLogsItem *parent);
 
-    BBLogsItem *rootItem;
+private:
+    BBLogsItem *m_rootItem;
 };
 
 #endif

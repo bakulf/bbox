@@ -8,51 +8,59 @@
 
 #include "bblogsitem.h"
 
-BBLogsItem::BBLogsItem(const QList<QVariant> &data, BBLogsItem *parent)
+BBLogsItem::BBLogsItem(const QList<QVariant> &data, BBLogsItem *parent) :
+    m_itemData(data),
+    m_parentItem(parent)
 {
-    parentItem = parent;
-    itemData = data;
+}
+
+BBLogsItem::BBLogsItem(const QList<QVariant> &data, const QString& file, int revision, BBLogsItem *parent) :
+    m_itemData(data),
+    m_parentItem(parent),
+    m_file(file),
+    m_revision(revision)
+{
 }
 
 BBLogsItem::~BBLogsItem()
 {
-    qDeleteAll(childItems);
+    qDeleteAll(m_childItems);
 }
 
 void BBLogsItem::appendChild(BBLogsItem *item)
 {
-    childItems.append(item);
+    m_childItems.append(item);
 }
 
 BBLogsItem *BBLogsItem::child(int row)
 {
-    return childItems.value(row);
+    return m_childItems.value(row);
 }
 
 int BBLogsItem::childCount() const
 {
-    return childItems.count();
+    return m_childItems.count();
 }
 
 int BBLogsItem::columnCount() const
 {
-    return itemData.count();
+    return m_itemData.count();
 }
 
 QVariant BBLogsItem::data(int column) const
 {
-    return itemData.value(column);
+    return m_itemData.value(column);
 }
 
 BBLogsItem *BBLogsItem::parent()
 {
-    return parentItem;
+    return m_parentItem;
 }
 
 int BBLogsItem::row() const
 {
-    if (parentItem)
-        return parentItem->childItems.indexOf(const_cast<BBLogsItem*>(this));
+    if (m_parentItem)
+        return m_parentItem->m_childItems.indexOf(const_cast<BBLogsItem*>(this));
 
     return 0;
 }

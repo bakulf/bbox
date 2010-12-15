@@ -52,6 +52,8 @@ public:
     void remoteLog(const QString& url);
     QList<BBSvnLog*> parseLog();
 
+    void restoreFile(const QString& file, int revision, const QString& destFile);
+
     QString errorMessage() { return m_errorMessage; }
 
 Q_SIGNALS:

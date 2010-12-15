@@ -13,6 +13,7 @@
 #include "bbdebug.h"
 #include "bbconst.h"
 
+#include <QMovie>
 #include <QLabel>
 #include <QListWidget>
 #include <QSpacerItem>
@@ -38,8 +39,19 @@ BBPreferencesLastPage::BBPreferencesLastPage() :
     }
 
     {
+        QHBoxLayout *box = new QHBoxLayout();
+        layout->addLayout(box);
+
         m_counterLabel = new QLabel();
-        layout->addWidget(m_counterLabel);
+        box->setStretch(1,1);
+        box->addWidget(m_counterLabel);
+
+        m_loaderLabel = new QLabel();
+        m_loaderLabel->setAlignment(Qt::AlignRight);
+        box->addWidget(m_loaderLabel);
+        QMovie *movie = new QMovie(":images/loader.gif");
+        m_loaderLabel->setMovie(movie);
+        movie->start();
 
         m_listWidget = new QListWidget();
         m_listWidget->setSelectionMode(QAbstractItemView::NoSelection);
@@ -104,9 +116,11 @@ void BBPreferencesLastPage::onSvnDone(bool status)
         return;
     }
 
+    m_counterLabel->setText(tr("Downloaded files: %1").arg(m_counter));
     m_errorLabel->setText(tr("Checkout completed!"));
-    m_complete = true;
+    m_loaderLabel->setVisible(false);
 
+    m_complete = true;
     emit completeChanged();
 }
 

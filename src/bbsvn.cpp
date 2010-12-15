@@ -152,13 +152,13 @@ QList<BBSvnStatus*> BBSvn::parseStatus()
 void BBSvn::remoteInfo(const QString& url)
 {
     BBDEBUG;
-    start(QStringList() << "info" << url);
+    start(QStringList() << "info" << "--non-interactive" << url);
 }
 
 void BBSvn::localInfo()
 {
     BBDEBUG;
-    start(QStringList() << "info" << BBSettings::instance()->directory());
+    start(QStringList() << "info" << "--non-interactive" << BBSettings::instance()->directory());
 }
 
 BBSvnInfo* BBSvn::parseInfo()
@@ -226,7 +226,7 @@ QString BBSvn::commitMessage()
 void BBSvn::update()
 {
     BBDEBUG;
-    start(QStringList() << "update" << "--accept" << "postpone" << BBSettings::instance()->directory());
+    start(QStringList() << "update" << "--non-interactive" << "--accept" << "postpone" << BBSettings::instance()->directory());
 }
 
 QList<BBSvnStatus*> BBSvn::parseUpdate()
@@ -281,7 +281,7 @@ QList<BBSvnStatus*> BBSvn::parseUpdate()
 void BBSvn::resolveConflict(const QString& file, bool isLocal)
 {
     BBDEBUG << file << isLocal;
-    start(QStringList() << "resolve" << "--accept" << (isLocal ? "mine-full" : "theirs-full") << file);
+    start(QStringList() << "resolve" << "--non-interactive" << "--accept" << (isLocal ? "mine-full" : "theirs-full") << file);
 }
 
 bool BBSvn::isACheckout()
@@ -312,7 +312,7 @@ void BBSvn::checkout(const QString& url, const QString& username, const QString&
 void BBSvn::remoteLog(const QString& url)
 {
     BBDEBUG << url;
-    start(QStringList() << "log" << "-v" << url);
+    start(QStringList() << "log" << "--non-interactive" << "-v" << url);
 }
 
 QList<BBSvnLog*> BBSvn::parseLog()
@@ -360,6 +360,14 @@ QList<BBSvnLog*> BBSvn::parseLog()
     }
 
     return list;
+}
+
+void BBSvn::restoreFile(const QString& file, int revision, const QString& destFile)
+{
+    BBDEBUG << file << revision << destFile;
+    start(QStringList() << "export" << "--non-interactive"
+                        << QString("%1@%2").arg(file).arg(revision)
+                        << destFile);
 }
 
 void BBSvn::openFile(const QString& file, bool local)

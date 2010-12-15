@@ -9,5 +9,7 @@
      <file>images/running.png</file>
      <file>images/waiting.png</file>
      <!--file>images/warning.png</file-->
+
+     <file>images/loader.gif</file>
  </qresource>
 </RCC>
