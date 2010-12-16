@@ -34,7 +34,7 @@ BBPreferences::BBPreferences()
     setOption(QWizard::NoCancelButton, true);
 
     setPixmap(QWizard::LogoPixmap,      QPixmap::fromImage(QImage(BB_ICON_IMAGE)));
-    setPixmap(QWizard::WatermarkPixmap, QPixmap::fromImage(QImage(BB_LOGO_IMAGE)));
+    setPixmap(QWizard::WatermarkPixmap, QPixmap::fromImage(QImage(BB_PREFS_IMAGE)));
 
     setModal(true);
     setFocus();

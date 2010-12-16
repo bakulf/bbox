@@ -12,6 +12,7 @@
 #define BB_ICON_IMAGE	":/images/icon.png"
 #define BB_BLINK_IMAGE	":/images/blink.png"
 #define BB_LOGO_IMAGE	":images/logo.png"
+#define BB_PREFS_IMAGE	":images/preferences.png"
 
 #define BB_STATE_WAITING_IMAGE	":images/waiting.png"
 #define BB_STATE_RUNNING_IMAGE	":images/running.png"
