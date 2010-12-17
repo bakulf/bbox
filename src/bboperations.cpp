@@ -12,6 +12,7 @@
 #include "bbactionupdate.h"
 #include "bbactioncommit.h"
 #include "bbsendreceive.h"
+#include "bbsettings.h"
 #include "bbdebug.h"
 #include "bbconst.h"
 
@@ -19,6 +20,8 @@
 #include <QFrame>
 #include <QLabel>
 #include <QPushButton>
+#include <QCheckBox>
+#include <QTimer>
 
 BBOperations::BBOperations()
 {
@@ -84,6 +87,15 @@ BBOperations::BBOperations()
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     box->addLayout(buttonLayout);
+
+    {
+        m_closeBox = new QCheckBox(tr("Close this window when finished"));
+        m_closeBox->setCheckState(BBSettings::instance()->operationClosed() == true ? Qt::Checked : Qt::Unchecked);
+        buttonLayout->addWidget(m_closeBox, 0, 0);
+        connect(m_closeBox,
+                SIGNAL(stateChanged(int)),
+                SLOT(onClosedStateChanged(int)));
+    }
 
     buttonLayout->addWidget(new QWidget(), 1, 0);
 
@@ -203,4 +215,15 @@ void BBOperations::onDone(bool status)
     }
 
     m_closeButton->setEnabled(true);
+
+    if (BBSettings::instance()->operationClosed() == true)
+        QTimer::singleShot(1500, this, SLOT(accept()));
+}
+
+void BBOperations::onClosedStateChanged(int state)
+{
+    if ((Qt::CheckState)state == Qt::Checked)
+        BBSettings::instance()->setOperationClosed(true);
+    else
+        BBSettings::instance()->setOperationClosed(false);
 }

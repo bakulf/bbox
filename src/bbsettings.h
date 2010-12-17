@@ -36,11 +36,15 @@ public:
     bool autoCommit() const;
     void setAutoCommit(const bool &autoCommit);
 
+    bool operationClosed() const;
+    void setOperationClosed(const bool &operationClosed);
+
 Q_SIGNALS:
     void svnChanged();
     void directoryChanged();
     void timerRemoteActionChanged();
     void autoCommitChanged();
+    void operationClosedChanged();
 
 private:
     QSettings m_settings;

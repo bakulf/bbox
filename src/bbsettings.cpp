@@ -16,6 +16,7 @@
 #include <QCoreApplication>
 
 #define BB_SETTINGS_AUTOCOMMIT        "autoCommit"
+#define BB_SETTINGS_OPERATIONCLOSED   "operationClosed"
 #define BB_SETTINGS_TIMERREMOTEACTION "timerRemoteAction"
 #define BB_SETTINGS_DIRECTORY         "directory"
 #define BB_SETTINGS_SVN               "svn"
@@ -128,5 +129,22 @@ void BBSettings::setAutoCommit(const bool &aAutoCommit)
     if (aAutoCommit != autoCommit()) {
         m_settings.setValue(BB_SETTINGS_AUTOCOMMIT, aAutoCommit);
         emit autoCommitChanged();
+    }
+}
+
+bool BBSettings::operationClosed() const
+{
+    BBDEBUG;
+
+    return m_settings.value(BB_SETTINGS_OPERATIONCLOSED).toBool();
+}
+
+void BBSettings::setOperationClosed(const bool &aOperationClosed)
+{
+    BBDEBUG << aOperationClosed;
+
+    if (aOperationClosed != operationClosed()) {
+        m_settings.setValue(BB_SETTINGS_OPERATIONCLOSED, aOperationClosed);
+        emit operationClosedChanged();
     }
 }

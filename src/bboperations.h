@@ -13,6 +13,7 @@
 #include <QPointer>
 
 class QLabel;
+class QCheckBox;
 class QPushButton;
 class BBSendReceive;
 
@@ -43,12 +44,15 @@ private Q_SLOTS:
     void onRevisionDone(bool status);
     void onDone(bool status);
 
+    void onClosedStateChanged(int state);
+
 private:
     QLabel *m_localChangesStatus;
     QLabel *m_updateStatus;
     QLabel *m_commitStatus;
     QLabel *m_revisionStatus;
     QPushButton *m_closeButton;
+    QCheckBox *m_closeBox;
 
     QPointer<BBSendReceive> m_sendReceive;
 };
