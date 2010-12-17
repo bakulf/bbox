@@ -54,7 +54,10 @@ then, this command should be enough:
 I use Microsoft [Visual Studio Express 2010][msvc] and then [Qt4][qt] for visual studio 2008.
 Then, I load some env variables using this script:
 
-    (cmd)$ vcs.bat
+    (cmd)$ vcvars32.bat
+
+This script is under 'Microsoft Visual Studio 10.0\VC\bin' folder. Then,
+
     (cmd)$ qmake -r -spec win32-mvsc2010 CONFIG+=release
     (cmd)$ nmake
 
