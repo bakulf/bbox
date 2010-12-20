@@ -59,7 +59,7 @@ public:
 Q_SIGNALS:
     void done(bool ok);
 
-public:
+private:
     static void openFile(const QString& file, const QString& name);
 
 private:
