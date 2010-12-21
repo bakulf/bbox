@@ -1,3 +1,8 @@
+BBVERSION=0.1
+
+message('BBox: $$BBVERSION')
+message("Qt version: $$[QT_VERSION]")
+
 TEMPLATE  = app
 TARGET    = bbox
 QT       += network
@@ -5,13 +10,21 @@ QT       += network
 MOC_DIR     = .moc
 OBJECTS_DIR = .obj
 
-unix:QMAKE_CXXFLAGS *= -Werror
-win32:LIBS = -lAdvapi32
-win32:RC_FILE = win32.rc
+unix {
+    QMAKE_CXXFLAGS *= -Werror
+}
 
-DEFINES = BBPACKAGE=\\\"BBox\\\"
+win32 {
+    LIBS = -lAdvapi32
+    RC_FILE = win32.rc
+}
 
-macx:DEFINES += BBFILESYSTEMWATCHER
+macx {
+    DEFINES += BBFILESYSTEMWATCHER
+}
+
+DEFINES += BBPACKAGE=\\\"BBox\\\" \
+           BBVERSION=\\\"$$BBVERSION\\\"
 
 INCLUDEPATH += . \
                actions \
@@ -94,3 +107,20 @@ SOURCES   = main.cpp \
             bbactionscheduleupdate.cpp
 
 RESOURCES = bbox.qrc
+
+!isEmpty(INSTALL_PREFIX) {
+    message("Target path will be $$INSTALL_PREFIX")
+    target.path = $$INSTALL_PREFIX
+} else {
+    unix {
+        contains($$system(id -u), 0) {
+                message("installing as root. Target path will be /usr/local/bin/")
+                target.path = /usr/local/bin
+        } else {
+                message("installing as user. Target path will be ~/bin/")
+                target.path = ~/bin
+        }
+    }
+}
+
+INSTALLS += target

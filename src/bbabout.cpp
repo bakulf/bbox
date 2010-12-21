@@ -36,7 +36,7 @@ BBAbout::BBAbout() :
 
     row++;
     {
-        QLabel *label = new QLabel(BBPACKAGE);
+        QLabel *label = new QLabel(QString(BBPACKAGE " " BBVERSION));
         label->setAlignment(Qt::AlignCenter);
         layout->addWidget(label, row, 0, 1, 3);
 
