@@ -41,6 +41,12 @@ BBPreferencesFirstPage::BBPreferencesFirstPage()
 
     row++;
     {
+        QLabel *label = new QLabel(tr("Choose the directory for your checkout. This will be keet in sync by bbox."));
+        layout->addWidget(label, row, 0, 1, 2);
+    }
+
+    row++;
+    {
         QLabel *label = new QLabel(tr("Directory:"));
         layout->addWidget(label, row, 0);
 
@@ -56,6 +62,18 @@ BBPreferencesFirstPage::BBPreferencesFirstPage()
         connect(button,
                 SIGNAL(clicked()),
                 SLOT(onDirectorySearchClicked()));
+    }
+
+    row++;
+    {
+        QSpacerItem *spacer = new QSpacerItem(20, 20, QSizePolicy::Expanding, QSizePolicy::Expanding);
+        layout->addItem(spacer, row, 0, 1, 2);
+    }
+
+    row++;
+    {
+        QLabel *label = new QLabel(tr("Advanced configuration fields: change only if you know what you are doing."));
+        layout->addWidget(label, row, 0, 1, 2);
     }
 
     row++;
