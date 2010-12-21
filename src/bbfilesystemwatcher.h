@@ -11,6 +11,7 @@
 
 #include <QObject>
 #include <QDateTime>
+#include <QTimer>
 
 class BBFileSystemWatcher : public QObject
 {
@@ -27,12 +28,13 @@ public:
 Q_SIGNALS:
     void fileChanged(const QString& path);
 
-private:
-    void timerEvent(QTimerEvent *event);
+private Q_SLOTS:
+    void onTimeout();
 
 private:
     QList<QString> m_paths;
     QDateTime m_dateTime;
+    QTimer m_timer;
 };
 
 #endif

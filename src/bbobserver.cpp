@@ -12,7 +12,7 @@
 #include "bbactionmanager.h"
 #include "bbdebug.h"
 
-#ifdef Q_OS_MAC
+#ifdef BBFILESYSTEMWATCHER
 #include "bbfilesystemwatcher.h"
 #else
 #include <QFileSystemWatcher>
@@ -58,7 +58,7 @@ void BBObserver::directoryChanged()
     if (!m_watcher.isNull())
         m_watcher->deleteLater();
 
-#ifdef Q_OS_MAC
+#ifdef BBFILESYSTEMWATCHER
     m_watcher = new BBFileSystemWatcher(this);
 #else
     m_watcher = new QFileSystemWatcher(this);

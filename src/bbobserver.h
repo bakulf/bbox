@@ -13,7 +13,7 @@
 #include <QPointer>
 #include <QStringList>
 
-#ifdef Q_OS_MAC
+#ifdef BBFILESYSTEMWATCHER
 class BBFileSystemWatcher;
 #else
 class QFileSystemWatcher;
@@ -41,7 +41,7 @@ private Q_SLOTS:
     void onAboutToQuit();
 
 private:
-#ifdef Q_OS_MAC
+#ifdef BBFILESYSTEMWATCHER
     QPointer<BBFileSystemWatcher> m_watcher;
 #else
     QPointer<QFileSystemWatcher> m_watcher;

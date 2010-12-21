@@ -18,7 +18,13 @@ BBFileSystemWatcher::BBFileSystemWatcher(QObject *parent) :
 {
     BBDEBUG;
 
-    startTimer(5000);
+    m_timer.setInterval(5000);
+    m_timer.setSingleShot(true);
+    m_timer.start();
+
+    connect(&m_timer,
+            SIGNAL(timeout()),
+            SLOT(onTimeout()));
 }
 
 BBFileSystemWatcher::~BBFileSystemWatcher()
@@ -26,10 +32,9 @@ BBFileSystemWatcher::~BBFileSystemWatcher()
     BBDEBUG;
 }
 
-void BBFileSystemWatcher::timerEvent(QTimerEvent *event)
+void BBFileSystemWatcher::onTimeout()
 {
     BBDEBUG;
-    Q_UNUSED(event);
 
     QDateTime now = QDateTime::currentDateTime();
 
@@ -44,6 +49,8 @@ void BBFileSystemWatcher::timerEvent(QTimerEvent *event)
     }
 
     m_dateTime = now;
+
+    m_timer.start();
 }
 
 void BBFileSystemWatcher::addPath(const QString& path)

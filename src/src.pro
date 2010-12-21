@@ -11,6 +11,8 @@ win32:RC_FILE = win32.rc
 
 DEFINES = BBPACKAGE=\\\"BBox\\\"
 
+macx:DEFINES += BBFILESYSTEMWATCHER
+
 INCLUDEPATH += . \
                actions \
                actions/cleanup \
