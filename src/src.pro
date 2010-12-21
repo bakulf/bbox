@@ -38,6 +38,7 @@ HEADERS   = bbconst.h \
             bboperations.h \
             bbsettings.h \
             bbobserver.h \
+            bbfilesystemwatcher.h \
             bbsvn.h \
             bbsvnstatus.h \
             bbsvninfo.h \
@@ -70,6 +71,7 @@ SOURCES   = main.cpp \
             bboperations.cpp \
             bbsettings.cpp \
             bbobserver.cpp \
+            bbfilesystemwatcher.cpp \
             bbsvn.cpp \
             bbsvnstatus.cpp \
             bbsvninfo.cpp \
