@@ -64,10 +64,10 @@ void BBSvn::cleanup()
     start(QStringList() << "cleanup" << "--non-interactive" << BBSettings::instance()->directory());
 }
 
-void BBSvn::addFile(const QString &filename)
+void BBSvn::addFile(const QStringList &filenames)
 {
-    BBDEBUG << filename;
-    start(QStringList() << "add" << filename);
+    BBDEBUG << filenames;
+    start(QStringList() << "add" << filenames);
 }
 
 void BBSvn::deleteFile(const QString &filename)

@@ -29,7 +29,7 @@ public:
 
 public:
     void cleanup();
-    void addFile(const QString &filename);
+    void addFile(const QStringList &filenames);
     void deleteFile(const QString &filename);
 
     void status();

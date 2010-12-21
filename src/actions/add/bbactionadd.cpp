@@ -11,6 +11,7 @@
 #include "bbsvn.h"
 #include "bbapplication.h"
 #include "bbsettings.h"
+#include "bbconst.h"
 #include "bbdebug.h"
 
 #include <QFileInfo>
@@ -58,15 +59,20 @@ void BBActionAdd::runAdd()
         return;
     }
 
-    m_currentFile = m_files.takeLast();
-    BBDEBUG << "Adding " << m_currentFile;
+    QStringList list;
+    for (int i=0; i<BB_SVN_ADD_MAX && !m_files.isEmpty(); i++) {
+        QString filename = m_files.takeLast();
+
+        BBDEBUG << "Adding " << filename;
+        list << filename;
+    }
 
     m_svn = new BBSvn(this);
     connect(m_svn,
             SIGNAL(done(bool)),
             SLOT(onSvnDone(bool)));
 
-    m_svn->addFile(m_currentFile);
+    m_svn->addFile(list);
 }
 
 void BBActionAdd::onSvnDone(bool status)
@@ -74,7 +80,7 @@ void BBActionAdd::onSvnDone(bool status)
     BBDEBUG << status;
 
     if (status == false) {
-        BBApplication::instance()->addError(tr("Error adding file '%1'.").arg(m_currentFile));
+        BBApplication::instance()->addError(tr("Error adding files."));
     }
 
     m_svn->deleteLater();

@@ -43,7 +43,6 @@ private:
     QStringList m_files;
 
     BBSvn *m_svn;
-    QString m_currentFile;
 };
 
 #endif

@@ -19,4 +19,6 @@
 #define BB_STATE_ERROR_IMAGE	":images/error.png"
 #define BB_STATE_COMPLETE_IMAGE	":images/completed.png"
 
+#define BB_SVN_ADD_MAX 15
+
 #endif
