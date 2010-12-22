@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=BBox
+Comment=...something like dropbox based on subversion.
+Exec=bbox
+Icon=bbox
+Terminal=false
+Type=Application
+Categories=Network;
+StartupNotify=true

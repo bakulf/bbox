@@ -1,0 +1,14 @@
+Source: bbox
+Section: universe/net
+Priority: extra
+Maintainer: Andrea Marchesini <baku@ippolita.net>
+Build-Depends: debhelper (>= 7.0.50~), libqt4-dev (>=4.7)
+Standards-Version: 3.8.4
+Homepage: http://bbox.nois3lab.it
+
+Package: bbox
+Architecture: any
+Depends: libqtcore4 (>=4.7), subversion (>=1.6),
+         ${shlibs:Depends}, ${misc:Depends}
+Description: ...something like dropbox based on subversion.
+ ...something like dropbox based on subversion.

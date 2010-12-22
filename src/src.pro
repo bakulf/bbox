@@ -1,7 +1,6 @@
 BBVERSION=0.1
 
 message('BBox: $$BBVERSION')
-message("Qt version: $$[QT_VERSION]")
 
 TEMPLATE  = app
 TARGET    = bbox
@@ -108,19 +107,18 @@ SOURCES   = main.cpp \
 
 RESOURCES = bbox.qrc
 
-!isEmpty(INSTALL_PREFIX) {
-    message("Target path will be $$INSTALL_PREFIX")
-    target.path = $$INSTALL_PREFIX
-} else {
-    unix {
-        contains($$system(id -u), 0) {
-                message("installing as root. Target path will be /usr/local/bin/")
-                target.path = /usr/local/bin
-        } else {
-                message("installing as user. Target path will be ~/bin/")
-                target.path = ~/bin
-        }
+unix {
+    isEmpty(PREFIX) {
+        PREFIX = /usr
     }
-}
 
-INSTALLS += target
+    BINDIR = $$PREFIX/bin
+    DATADIR =$$PREFIX/share
+
+    target.path =$$BINDIR
+
+    desktop.path = $$DATADIR/applications
+    desktop.files += ../utils/$${TARGET}.desktop
+
+    INSTALLS += target desktop
+}
