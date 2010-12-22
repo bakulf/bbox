@@ -11,3 +11,9 @@ core.*
 *.o
 bbox
 qrc_*
+builddir
+build-stamp
+debian/bbox.debhelper.log
+debian/bbox.substvars
+debian/files
+debian/tmp
