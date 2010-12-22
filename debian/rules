@@ -4,15 +4,13 @@ APPNAME := bbox
 builddir:
 	mkdir -p builddir
 
-# TODO: remove the debug flag
 builddir/Makefile: builddir
-	cd builddir && qmake-qt4 PREFIX=/usr ../$(APPNAME).pro
+	cd builddir && qmake-qt4 PREFIX=/usr ../$(APPNAME).pro DEFINES+=QT_NO_DEBUG_OUTPUT
 
 build: build-stamp
 
 build-stamp: builddir/Makefile
 	dh_testdir
-	# Add here commands to compile the package.
 	cd builddir && $(MAKE)
 	touch $@
 
@@ -20,7 +18,6 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp
-	# Add here commands to clean up after the build process.
 	rm -rf builddir
 	dh_clean
 
@@ -30,7 +27,6 @@ install: build
 	dh_clean -k
 	dh_installdirs
 
-	# Add here commands to install the package into debian/your_appname
 	cd builddir && $(MAKE) INSTALL_ROOT=$(CURDIR)/debian/$(APPNAME) install
 
 # Build architecture-independent files here.
