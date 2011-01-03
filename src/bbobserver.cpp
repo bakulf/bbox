@@ -24,6 +24,11 @@
 #include <QDir>
 #include <QMessageBox>
 
+#ifdef Q_OS_WIN32
+    #include <windows.h>
+    #include <winbase.h>
+#endif
+
 BBObserver::BBObserver(QObject *parent) :
     QObject(parent),
     m_operationOnFs(0)
@@ -92,7 +97,7 @@ void BBObserver::addDirectory(const QString& dirname)
     m_watcher->addPath(dirname);
 
     QDir dir(dirname);
-    QFileInfoList list = dir.entryInfoList();
+    QFileInfoList list = dir.entryInfoList(QDir::AllEntries | QDir::NoSymLinks);
     foreach (QFileInfo info, list) {
         if (info.fileName().startsWith("."))
             continue;
@@ -127,8 +132,14 @@ void BBObserver::checkEmptyDirectory(const QString &dirname)
 
     QString filename(dir.absoluteFilePath(BB_KEEP_EMPTY));
     if (!QFile::exists(filename)) {
-        QFile file(filename);
-        file.open(QIODevice::WriteOnly | QIODevice::Text);
+        {
+            QFile file(filename);
+            file.open(QIODevice::WriteOnly | QIODevice::Text);
+        }
+
+#ifdef Q_OS_WIN32
+        SetFileAttributes(filename.utf16(), FILE_ATTRIBUTE_HIDDEN);
+#endif
     }
 }
 
@@ -140,11 +151,11 @@ void BBObserver::timerEvent(QTimerEvent *event)
         return;
 
     foreach(QString filename, m_changes) {
-        BBActionManager::instance()->actionAdd(filename);
-
         QFileInfo info(filename);
         if (info.isDir())
             checkEmptyDirectory(filename);
+
+        BBActionManager::instance()->actionAdd(filename);
     }
 
     BBActionManager::instance()->actionLocalChanges();

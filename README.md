@@ -58,7 +58,7 @@ Then, I load some env variables using this script:
 
 This script is under 'Microsoft Visual Studio 10.0\VC\bin' folder. Then,
 
-    (cmd)$ qmake -r -spec win32-mvsc2010 CONFIG+=release
+    (cmd)$ qmake -r -spec win32-msvc2010 CONFIG+=release
     (cmd)$ nmake
 
 then, the binary should be here: .\src\release\bbox.exe

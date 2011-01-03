@@ -105,12 +105,12 @@ QStringList BBActionAdd::addDirectory(const QString& dirname)
 
     if (info.isDir()) {
         QDir dir(dirname);
-        QFileInfoList files = dir.entryInfoList();
-        foreach (QFileInfo info, files) {
-            if (info.fileName().startsWith(".") && info.fileName() != BB_KEEP_EMPTY)
+        QFileInfoList files = dir.entryInfoList(QDir::AllEntries | QDir::Hidden | QDir::NoSymLinks);
+        foreach (QFileInfo file, files) {
+            if (file.fileName().startsWith(".") && file.fileName() != BB_KEEP_EMPTY)
                 continue;
 
-            list << addDirectory(info.absoluteFilePath());
+            list << addDirectory(file.absoluteFilePath());
         }
     }
 

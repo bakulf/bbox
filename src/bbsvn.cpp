@@ -190,21 +190,10 @@ void BBSvn::commit()
 
 QString BBSvn::userName() {
 #ifdef Q_OS_WIN32
-#if defined(UNICODE)
-    if ( qWinVersion() & Qt::WV_NT_based )
-    {
-        TCHAR winUserName[UNLEN + 1]; // UNLEN is defined in LMCONS.H
-        DWORD winUserNameSize = sizeof(winUserName);
-        GetUserName( winUserName, &winUserNameSize );
-        return qt_winQString( winUserName );
-    } else
-#endif
-    {
-        char winUserName[UNLEN + 1]; // UNLEN is defined in LMCONS.H
-        DWORD winUserNameSize = sizeof(winUserName);
-        GetUserNameA( winUserName, &winUserNameSize );
-        return QString::fromLocal8Bit( winUserName );
-    }
+    wchar_t winUserName[UNLEN + 1]; // UNLEN is defined in LMCONS.H
+    DWORD winUserNameSize = sizeof(winUserName);
+    GetUserNameW( winUserName, &winUserNameSize );
+    return QString::fromWCharArray( winUserName );
 #endif
 
 #ifdef Q_OS_UNIX
@@ -387,9 +376,9 @@ void BBSvn::openFile(const QString& file, bool local)
         }
     } else {
         QDir dir(info.dir());
-        uint max(0);
+        uint maxValue(0);
 
-        QFileInfoList list = dir.entryInfoList();
+        QFileInfoList list = dir.entryInfoList(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
         foreach (QFileInfo info, list) {
             if (!info.fileName().startsWith(filename))
                 continue;
@@ -400,16 +389,16 @@ void BBSvn::openFile(const QString& file, bool local)
 
             ext.remove(0, 1);
             uint value(ext.toUInt());
-            if (max < value)
-                max = value;
+            if (maxValue < value)
+                maxValue = value;
         }
 
-        if (max == 0) {
+        if (maxValue == 0) {
             QMessageBox::warning(0,
                                  QString(BBPACKAGE " - %1").arg(tr("Warning")),
                                  tr("The remove version seems missing."));
         } else {
-            openFile(QString("%1.r%2").arg(file).arg(max), filename);
+            openFile(QString("%1.r%2").arg(file).arg(maxValue), filename);
         }
     }
 }
