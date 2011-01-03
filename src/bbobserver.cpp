@@ -127,9 +127,9 @@ void BBObserver::timerEvent(QTimerEvent *event)
 
     foreach(QString filename, m_changes) {
         BBActionManager::instance()->actionAdd(filename);
-        BBActionManager::instance()->actionLocalChanges();
     }
 
+    BBActionManager::instance()->actionLocalChanges();
     m_changes.clear();
 }
 
