@@ -34,6 +34,7 @@ public:
 private:
     void addDirectory(const QString &dirname);
     void timerEvent(QTimerEvent *event);
+    void checkEmptyDirectory(const QString &dirname);
 
 private Q_SLOTS:
     void directoryChanged();

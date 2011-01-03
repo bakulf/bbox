@@ -11,6 +11,7 @@
 #include "bbsettings.h"
 #include "bbactionmanager.h"
 #include "bbdebug.h"
+#include "bbconst.h"
 
 #ifdef BBFILESYSTEMWATCHER
 #include "bbfilesystemwatcher.h"
@@ -118,6 +119,19 @@ void BBObserver::onSomethingChanged(const QString &filename)
         m_changes << filename;
 }
 
+void BBObserver::checkEmptyDirectory(const QString &dirname)
+{
+    BBDEBUG << dirname;
+
+    QDir dir(dirname);
+
+    QString filename(dir.absoluteFilePath(BB_KEEP_EMPTY));
+    if (!QFile::exists(filename)) {
+        QFile file(filename);
+        file.open(QIODevice::WriteOnly | QIODevice::Text);
+    }
+}
+
 void BBObserver::timerEvent(QTimerEvent *event)
 {
     Q_UNUSED(event);
@@ -127,6 +141,10 @@ void BBObserver::timerEvent(QTimerEvent *event)
 
     foreach(QString filename, m_changes) {
         BBActionManager::instance()->actionAdd(filename);
+
+        QFileInfo info(filename);
+        if (info.isDir())
+            checkEmptyDirectory(filename);
     }
 
     BBActionManager::instance()->actionLocalChanges();
