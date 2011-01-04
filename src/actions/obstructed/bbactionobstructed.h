@@ -6,30 +6,30 @@
  * the BSD License. See license.txt for more details.
  */
 
-#ifndef _BB_ACTION_DELETE_H_
-#define _BB_ACTION_DELETE_H_
+#ifndef _BB_ACTION_OBSTRCUTED_H_
+#define _BB_ACTION_OBSTRCUTED_H_
 
 #include "bbaction.h"
 
-class BBActionDelete : public BBAction
+class BBActionObstructed : public BBAction
 {
     Q_OBJECT
 
 public:
-    BBActionDelete(const QString& filename, QObject *parent = 0);
-    ~BBActionDelete();
+    BBActionObstructed(const QString& dirname, QObject *parent = 0);
+    ~BBActionObstructed();
 
 public:
     void run();
     bool compare(const BBAction *action);
 
-    const QString& filename() const { return m_filename; }
+    const QString& dirname() const { return m_dirname; }
 
 private Q_SLOTS:
     void onSvnDone(bool status);
 
 private:
-    QString m_filename;
+    QString m_dirname;
 };
 
 #endif

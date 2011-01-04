@@ -10,6 +10,7 @@
 
 #include "bbsvn.h"
 #include "bbapplication.h"
+#include "bbsettings.h"
 #include "bbdebug.h"
 
 BBActionDelete::BBActionDelete(const QString& filename, QObject *parent) :
@@ -41,12 +42,22 @@ void BBActionDelete::run()
 {
     BBDEBUG;
 
-    m_svn = new BBSvn(this);
-    connect(m_svn,
+    if (m_filename == BBSettings::instance()->directory() ||
+        QFile::exists(m_filename)) {
+        emit done(true);
+        return;
+    }
+
+    BBSvn *svn = new BBSvn(this);
+    connect(svn,
             SIGNAL(done(bool)),
             SLOT(onSvnDone(bool)));
+    connect(svn,
+            SIGNAL(done(bool)),
+            svn,
+            SLOT(deleteLater()));
 
-    m_svn->deleteFile(m_filename);
+    svn->deleteFile(m_filename);
 }
 
 void BBActionDelete::onSvnDone(bool status)
@@ -57,6 +68,5 @@ void BBActionDelete::onSvnDone(bool status)
         BBApplication::instance()->addError(tr("Error deleting file '%1'.").arg(m_filename));
     }
 
-    m_svn->deleteLater();
     emit done(status);
 }

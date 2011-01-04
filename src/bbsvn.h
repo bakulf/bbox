@@ -10,6 +10,7 @@
 #define _BB_SVN_H_
 
 #include <QProcess>
+#include <QDir>
 
 class BBSvnLog;
 class BBSvnInfo;
@@ -26,6 +27,7 @@ public:
 public:
     static bool isACheckout();
     static void openFile(const QString& file, bool local);
+    static void removeDir(const QDir& dir);
 
 public:
     void cleanup();
@@ -61,6 +63,7 @@ Q_SIGNALS:
 
 private:
     static void openFile(const QString& file, const QString& name);
+    static void removeDir(const QDir& dir, const QString& filename);
 
 private:
     QString commitMessage();

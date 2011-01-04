@@ -23,10 +23,12 @@ public:
         StatusDeleted,
         StatusModified,
         StatusReplaced,
+        StatusNew,
         StatusMissing,
         StatusUpdated,
         StatusMerged,
         StatusExisted,
+        StatusObstructed,
     };
 
 public:

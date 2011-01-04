@@ -14,8 +14,9 @@
 #include "bbapplication.h"
 #include "bbdebug.h"
 
-BBActionUpdate::BBActionUpdate(QObject *parent) :
-    BBAction(parent)
+BBActionUpdate::BBActionUpdate(bool withError, QObject *parent) :
+    BBAction(parent),
+    m_withError(withError)
 {
     BBDEBUG;
 }
@@ -52,11 +53,11 @@ void BBActionUpdate::onSvnDone(bool status)
 {
     BBDEBUG << status;
 
-    if (status == false) {
+    if (status == false && m_withError) {
         BBApplication::instance()->addError(tr("Error updating the directory."));
+    } else {
+        BBConflict::check(m_svn->parseUpdate());
     }
-
-    BBConflict::check(m_svn->parseUpdate());
 
     m_svn->deleteLater();
     emit done(status);

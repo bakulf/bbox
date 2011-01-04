@@ -49,18 +49,6 @@ void BBActionManager::actionCleanup()
     addAction(new BBActionCleanup(this));
 }
 
-void BBActionManager::actionAdd(const QString &dirname)
-{
-    BBDEBUG << dirname;
-    addAction(new BBActionAdd(dirname, this));
-}
-
-void BBActionManager::actionDelete(const QString &filename)
-{
-    BBDEBUG << filename;
-    addAction(new BBActionDelete(filename, this));
-}
-
 void BBActionManager::actionLocalChanges()
 {
     BBDEBUG;

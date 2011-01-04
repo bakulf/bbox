@@ -9,13 +9,16 @@
 #include "bbactioncommit.h"
 
 #include "bbsvn.h"
+#include "bbobserver.h"
 #include "bbapplication.h"
+#include "bbactionlocalchanges.h"
 #include "bbdebug.h"
 
 #include <QFile>
 
-BBActionCommit::BBActionCommit(QObject *parent) :
-    BBAction(parent)
+BBActionCommit::BBActionCommit(bool withError, QObject *parent) :
+    BBAction(parent),
+    m_withError(withError)
 {
     BBDEBUG;
 }
@@ -40,12 +43,16 @@ void BBActionCommit::run()
 {
     BBDEBUG;
 
-    m_svn = new BBSvn(this);
-    connect(m_svn,
+    BBSvn *svn = new BBSvn(this);
+    connect(svn,
             SIGNAL(done(bool)),
             SLOT(onSvnDone(bool)));
+    connect(svn,
+            SIGNAL(done(bool)),
+            svn,
+            SLOT(deleteLater()));
 
-    m_svn->commit();
+    svn->commit();
 }
 
 void BBActionCommit::onSvnDone(bool status)
@@ -53,11 +60,59 @@ void BBActionCommit::onSvnDone(bool status)
     BBDEBUG << status;
 
     if (status == false) {
-        BBApplication::instance()->addError(tr("Error committing files."));
-    } {
-        BBApplication::instance()->changes(QList<BBSvnStatus*>());
+        if (m_withError)
+            BBApplication::instance()->addError(tr("Error committing files."));
+        emit done(false);
+        return;
     }
 
-    m_svn->deleteLater();
-    emit done(status);
+    // Remove the changes:
+    BBApplication::instance()->changes(QList<BBSvnStatus*>());
+
+    // Let's check obstructed files:
+    bool found(false);
+    if (BBObserver::checkObstructedFiles(&found) == false) {
+        if (m_withError)
+            BBApplication::instance()->addError(tr("Error committing files."));
+        emit done(false);
+        return;
+    }
+
+    if (found == false) {
+        emit done(true);
+        return;
+    }
+
+    // Another loop of add/delete & C:
+    BBActionLocalChanges *action = new BBActionLocalChanges(false, this);
+    connect(action,
+            SIGNAL(done(bool)),
+            SLOT(onLocalChangesDone(bool)));
+    connect(action,
+            SIGNAL(done(bool)),
+            action,
+            SLOT(deleteLater()));
+    action->run();
+}
+
+void BBActionCommit::onLocalChangesDone(bool status)
+{
+    if (status == false) {
+        if (m_withError)
+            BBApplication::instance()->addError(tr("Error committing files."));
+        emit done(false);
+        return;
+    }
+
+    // The last commit:
+    BBSvn *svn = new BBSvn(this);
+    connect(svn,
+            SIGNAL(done(bool)),
+            SLOT(onSvnDone(bool)));
+    connect(svn,
+            SIGNAL(done(bool)),
+            svn,
+            SLOT(deleteLater()));
+
+    svn->commit();
 }

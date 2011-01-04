@@ -32,10 +32,13 @@ private:
 
 private Q_SLOTS:
     void onSvnDone(bool status);
+    void runActions(bool status);
 
 private:
     BBSvn *m_svn;
     bool m_commit;
+
+    QList<BBAction*> m_actions;
 };
 
 #endif

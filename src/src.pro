@@ -31,6 +31,7 @@ INCLUDEPATH += . \
                actions/add \
                actions/delete \
                actions/update \
+               actions/obstructed \
                actions/commit \
                actions/localchanges \
                actions/remotechanges \
@@ -66,6 +67,7 @@ HEADERS   = bbconst.h \
             bbactionadd.h \
             bbactiondelete.h \
             bbactionupdate.h \
+            bbactionobstructed.h \
             bbactioncommit.h \
             bbactionlocalchanges.h \
             bbactionremotechanges.h \
@@ -99,6 +101,7 @@ SOURCES   = main.cpp \
             bbactionadd.cpp \
             bbactiondelete.cpp \
             bbactionupdate.cpp \
+            bbactionobstructed.cpp \
             bbactioncommit.cpp \
             bbactionlocalchanges.cpp \
             bbactionremotechanges.cpp \

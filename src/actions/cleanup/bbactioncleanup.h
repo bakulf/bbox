@@ -11,8 +11,6 @@
 
 #include "bbaction.h"
 
-class BBSvn;
-
 class BBActionCleanup : public BBAction
 {
     Q_OBJECT
@@ -27,9 +25,6 @@ public:
 
 private Q_SLOTS:
     void onSvnDone(bool status);
-
-private:
-    BBSvn *m_svn;
 };
 
 #endif

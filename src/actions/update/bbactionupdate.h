@@ -18,7 +18,7 @@ class BBActionUpdate : public BBAction
     Q_OBJECT
 
 public:
-    BBActionUpdate(QObject *parent = 0);
+    BBActionUpdate(bool withError, QObject *parent = 0);
     ~BBActionUpdate();
 
 public:
@@ -30,6 +30,7 @@ private Q_SLOTS:
 
 private:
     BBSvn *m_svn;
+    bool m_withError;
 };
 
 #endif

@@ -104,7 +104,7 @@ void BBApplication::systemTray()
     QFont font;
     font.setBold(true);
 
-    m_actionCommit = new QAction(tr("&Update and Send"), this);
+    m_actionCommit = new QAction(tr("&Sync"), this);
     m_actionCommit->setFont(font);
     menu->addAction(m_actionCommit);
     connect (m_actionCommit,
@@ -119,7 +119,7 @@ void BBApplication::systemTray()
 
     menu->addSeparator();
 
-    m_actionCommit = new QAction(tr("&See logs"), this);
+    m_actionCommit = new QAction(tr("See &logs"), this);
     menu->addAction(m_actionCommit);
     connect (m_actionCommit,
              SIGNAL(triggered()),
@@ -212,7 +212,7 @@ void BBApplication::scheduleRemoteAction()
 {
     BBDEBUG;
 
-    BBActionManager::instance()->actionRemoteChanges();
+    m_observer->scheduleRemoteChanges();
 
     uint time = BBSettings::instance()->timerRemoteAction() * 10;
     int when(qrand() % ((time / 2) * 6) + time); // Random between time/2 and time
@@ -267,7 +267,7 @@ void BBApplication::blink(bool enabled)
     BBDEBUG << enabled;
 
     if (enabled == true && !m_timer) {
-        m_timer = startTimer(1000);
+        m_timer = startTimer(BB_BLINK_TIMEOUT);
     } else if(enabled == false && m_timer) {
         m_systemTray->setIcon(QIcon(BB_ICON_IMAGE));
         killTimer(m_timer);
@@ -376,6 +376,10 @@ void BBApplication::changes(const QList<BBSvnStatus*>& changes)
                message = tr("%1 replaced").arg(status->file().remove(BBSettings::instance()->directory()));
                break;
 
+            case BBSvnStatus::StatusNew:
+               message = tr("%1 is new").arg(status->file().remove(BBSettings::instance()->directory()));
+               break;
+
             case BBSvnStatus::StatusMissing:
                message = tr("%1 missing").arg(status->file().remove(BBSettings::instance()->directory()));
                break;
@@ -392,6 +396,9 @@ void BBApplication::changes(const QList<BBSvnStatus*>& changes)
                message = tr("%1 existed").arg(status->file().remove(BBSettings::instance()->directory()));
                break;
 
+            case BBSvnStatus::StatusObstructed:
+               message = tr("%1 obstructed").arg(status->file().remove(BBSettings::instance()->directory()));
+               break;
         }
 
         QAction* action = new QAction(message, this);

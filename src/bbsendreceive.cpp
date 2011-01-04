@@ -13,10 +13,14 @@
 #include "bbactioncommit.h"
 #include "bbapplication.h"
 #include "bbobserver.h"
+#include "bbconst.h"
 #include "bbdebug.h"
 
+#include <QTimer>
+
 BBSendReceive::BBSendReceive(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    m_running(false)
 {
     BBDEBUG;
 
@@ -35,18 +39,49 @@ void BBSendReceive::start()
     BBDEBUG;
 
     m_running = true;
+    m_commitStatus = BBCommitUnknown;
 
     BBApplication::instance()->observer()->operationOnFileSystemRef();
 
-    m_action = new BBActionLocalChanges(false, this);
-    connect(m_action,
+    checkCommitStatus();
+}
+
+void BBSendReceive::checkCommitStatus()
+{
+    BBDEBUG << m_commitStatus;
+
+    if (m_commitStatus == BBCommitTooMuch) {
+        emit commitDone(false);
+        emit done(false);
+        return;
+    }
+
+    m_commitStatus = (BBCommitStatus) ((int)m_commitStatus + 1);
+
+    if (m_commitStatus == BBCommitOk) {
+        onCommitTimeout();
+    } else {
+        QTimer::singleShot(BB_COMMIT_TIMEOUT, this, SLOT(onCommitTimeout()));
+    }
+}
+
+void BBSendReceive::onCommitTimeout()
+{
+    BBDEBUG;
+
+    BBActionLocalChanges *action = new BBActionLocalChanges(false, this);
+    connect(action,
             SIGNAL(done(bool)),
             SLOT(onActionLocalChangesDone(bool)));
-    connect(m_action,
+    connect(action,
             SIGNAL(done(bool)),
             SIGNAL(localChangesDone(bool)));
+    connect(action,
+            SIGNAL(done(bool)),
+            action,
+            SLOT(deleteLater()));
 
-    m_action->run();
+    action->run();
 }
 
 void BBSendReceive::onActionLocalChangesDone(bool status)
@@ -54,70 +89,79 @@ void BBSendReceive::onActionLocalChangesDone(bool status)
     BBDEBUG;
 
     if (status == false) {
-        m_action->deleteLater();
-        BBApplication::instance()->observer()->operationOnFileSystemUnref();
         emit done(false);
         return;
     }
 
-    m_action->deleteLater();
-
-    m_action = new BBActionUpdate(this);
-    connect(m_action,
-            SIGNAL(done(bool)),
-            SLOT(onActionUpdateDone(bool)));
-    connect(m_action,
-            SIGNAL(done(bool)),
-            SIGNAL(updateDone(bool)));
-
-    m_action->run();
-}
-
-void BBSendReceive::onActionUpdateDone(bool status)
-{
-    BBDEBUG;
-
-    if (status == false) {
-        m_action->deleteLater();
-        BBApplication::instance()->observer()->operationOnFileSystemUnref();
-        emit done(false);
-        return;
+    BBAction *action;
+    if (m_commitStatus == BBCommitOk) {
+        action = new BBActionCommit(false, this);
+        connect(action,
+                SIGNAL(done(bool)),
+                SLOT(onActionCommitDone(bool)));
+    } else {
+        action = new BBActionUpdate((m_commitStatus == BBCommitLast), this);
+        connect(action,
+                SIGNAL(done(bool)),
+                SLOT(onActionUpdateDone(bool)));
     }
 
-    m_action->deleteLater();
-
-    m_action = new BBActionCommit(this);
-    connect(m_action,
+    connect(action,
             SIGNAL(done(bool)),
-            SLOT(onActionCommitDone(bool)));
-    connect(m_action,
-            SIGNAL(done(bool)),
-            SIGNAL(commitDone(bool)));
+            action,
+            SLOT(deleteLater()));
 
-    m_action->run();
+    action->run();
 }
 
 void BBSendReceive::onActionCommitDone(bool status)
 {
     BBDEBUG;
 
+    // If the commit fails, we need to check the status:
     if (status == false) {
-        BBApplication::instance()->observer()->operationOnFileSystemUnref();
-        emit done(false);
+        checkCommitStatus();
         return;
     }
 
-    m_action->deleteLater();
+    emit commitDone(true);
 
-    m_action = new BBActionUpdate(this);
-    connect(m_action,
+    BBActionUpdate *action = new BBActionUpdate((m_commitStatus == BBCommitLast), this);
+    connect(action,
             SIGNAL(done(bool)),
             SLOT(onActionRevisionDone(bool)));
-    connect(m_action,
+    connect(action,
             SIGNAL(done(bool)),
             SIGNAL(revisionDone(bool)));
+    connect(action,
+            SIGNAL(done(bool)),
+            action,
+            SLOT(deleteLater()));
 
-    m_action->run();
+    action->run();
+}
+
+// If this method is called, we need to procede again with the 'commit'
+void BBSendReceive::onActionUpdateDone(bool status)
+{
+    BBDEBUG;
+
+    // If the commit fails, we need to check the status:
+    if (status == false) {
+        checkCommitStatus();
+        return;
+    }
+
+    BBActionCommit *action = new BBActionCommit((m_commitStatus == BBCommitLast), this);
+    connect(action,
+            SIGNAL(done(bool)),
+            SLOT(onActionCommitDone(bool)));
+    connect(action,
+            SIGNAL(done(bool)),
+            action,
+            SLOT(deleteLater()));
+
+    action->run();
 }
 
 void BBSendReceive::onActionRevisionDone(bool status)
@@ -125,20 +169,18 @@ void BBSendReceive::onActionRevisionDone(bool status)
     BBDEBUG;
 
     if (status == false) {
-        BBApplication::instance()->observer()->operationOnFileSystemUnref();
         emit done(false);
         return;
     }
 
-    m_action->deleteLater();
-
-    BBApplication::instance()->observer()->operationOnFileSystemUnref();
     emit done(true);
 }
 
 void BBSendReceive::onDone(bool status)
 {
-    BBDEBUG;
+    BBDEBUG << status;
     Q_UNUSED(status);
+
     m_running = false;
+    BBApplication::instance()->observer()->operationOnFileSystemUnref();
 }

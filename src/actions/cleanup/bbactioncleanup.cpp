@@ -39,12 +39,16 @@ void BBActionCleanup::run()
 {
     BBDEBUG;
 
-    m_svn = new BBSvn(this);
-    connect(m_svn,
+    BBSvn *svn = new BBSvn(this);
+    connect(svn,
             SIGNAL(done(bool)),
             SLOT(onSvnDone(bool)));
+    connect(svn,
+            SIGNAL(done(bool)),
+            svn,
+            SLOT(deleteLater()));
 
-    m_svn->cleanup();
+    svn->cleanup();
 }
 
 void BBActionCleanup::onSvnDone(bool status)
@@ -55,6 +59,5 @@ void BBActionCleanup::onSvnDone(bool status)
         BBApplication::instance()->addError(tr("Error cleaning the directory."));
     }
 
-    m_svn->deleteLater();
     emit done(status);
 }

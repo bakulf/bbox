@@ -17,6 +17,16 @@ class BBSendReceive : public QObject
 {
     Q_OBJECT
 
+    enum BBCommitStatus {
+        BBCommitUnknown = 0,
+        BBCommitOk,
+        BBCommitFailed1,
+        BBCommitFailed2,
+        BBCommitFailed3,
+        BBCommitLast,
+        BBCommitTooMuch
+    };
+
 public:
     BBSendReceive(QObject *parent = 0);
     virtual ~BBSendReceive();
@@ -26,26 +36,34 @@ public:
     bool isRunning() { return m_running; }
 
 Q_SIGNALS:
-    // The order of this signal is:
-    // localChanges -> update -> commit -> revision -> done
+    // The order of this signal is (this stuff could return back for N times):
+
+    // localChanges -> commit -> revision -> done
+    //       ^__________/          /
+    //       ^____________________/
+
     // if something goes wrong, done is emitted with false
     void localChangesDone(bool status);
-    void updateDone(bool status);
     void commitDone(bool status);
     void revisionDone(bool status);
     void done(bool status);
 
 private Q_SLOTS:
     void onActionLocalChangesDone(bool status);
-    void onActionUpdateDone(bool status);
     void onActionCommitDone(bool status);
+    void onActionUpdateDone(bool status);
     void onActionRevisionDone(bool status);
     void onDone(bool status);
 
-private:
-    BBAction *m_action;
+    void onCommitTimeout();
 
+private:
+    void checkCommitStatus();
+
+private:
     bool m_running;
+
+    BBCommitStatus m_commitStatus;
 };
 
 #endif

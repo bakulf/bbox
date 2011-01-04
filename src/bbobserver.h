@@ -12,6 +12,7 @@
 #include <QObject>
 #include <QPointer>
 #include <QStringList>
+#include <QTimer>
 
 #ifdef BBFILESYSTEMWATCHER
 class BBFileSystemWatcher;
@@ -28,18 +29,26 @@ public:
     ~BBObserver();
 
 public:
+    static bool checkObstructedFiles(bool *found);
+
+private:
+    static bool checkObstructedFiles(const QString& dirname, bool *found);
+
+public:
     void operationOnFileSystemRef();
     void operationOnFileSystemUnref();
 
+    void scheduleRemoteChanges();
+
 private:
     void addDirectory(const QString &dirname);
-    void timerEvent(QTimerEvent *event);
     void checkEmptyDirectory(const QString &dirname);
 
 private Q_SLOTS:
     void directoryChanged();
     void onSomethingChanged(const QString &filename);
     void onAboutToQuit();
+    void onTimeout();
 
 private:
 #ifdef BBFILESYSTEMWATCHER
@@ -48,9 +57,11 @@ private:
     QPointer<QFileSystemWatcher> m_watcher;
 #endif
 
-    QStringList m_changes;
-
     uint m_operationOnFs;
+    QStringList m_changes;
+    QTimer m_timer;
+
+    bool m_remoteChangesScheduled;
 };
 
 #endif

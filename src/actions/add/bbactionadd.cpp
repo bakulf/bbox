@@ -61,18 +61,22 @@ void BBActionAdd::runAdd()
 
     QStringList list;
     for (int i=0; i<BB_SVN_ADD_MAX && !m_files.isEmpty(); i++) {
-        QString filename = m_files.takeLast();
+        QString filename = m_files.takeFirst();
 
         BBDEBUG << "Adding " << filename;
         list << filename;
     }
 
-    m_svn = new BBSvn(this);
-    connect(m_svn,
+    BBSvn *svn = new BBSvn(this);
+    connect(svn,
             SIGNAL(done(bool)),
             SLOT(onSvnDone(bool)));
+    connect(svn,
+            SIGNAL(done(bool)),
+            svn,
+            SLOT(deleteLater()));
 
-    m_svn->addFile(list);
+    svn->addFile(list);
 }
 
 void BBActionAdd::onSvnDone(bool status)
@@ -81,9 +85,9 @@ void BBActionAdd::onSvnDone(bool status)
 
     if (status == false) {
         BBApplication::instance()->addError(tr("Error adding files."));
+        emit done(false);
+        return;
     }
-
-    m_svn->deleteLater();
 
     runAdd();
 }
@@ -105,6 +109,9 @@ QStringList BBActionAdd::addDirectory(const QString& dirname)
 
     if (info.isDir()) {
         QDir dir(dirname);
+
+        BBSvn::removeDir(dir);
+
         QFileInfoList files = dir.entryInfoList(QDir::AllEntries | QDir::Hidden | QDir::NoSymLinks);
         foreach (QFileInfo file, files) {
             if (file.fileName().startsWith(".") && file.fileName() != BB_KEEP_EMPTY)

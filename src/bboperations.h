@@ -39,7 +39,6 @@ private:
 
 private Q_SLOTS:
     void onLocalChangesDone(bool status);
-    void onUpdateDone(bool status);
     void onCommitDone(bool status);
     void onRevisionDone(bool status);
     void onDone(bool status);
@@ -48,7 +47,6 @@ private Q_SLOTS:
 
 private:
     QLabel *m_localChangesStatus;
-    QLabel *m_updateStatus;
     QLabel *m_commitStatus;
     QLabel *m_revisionStatus;
     QPushButton *m_closeButton;

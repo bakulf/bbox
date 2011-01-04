@@ -10,13 +10,13 @@
 
 #include "bbsettings.h"
 #include "bbactionmanager.h"
-#include "bbdebug.h"
 #include "bbconst.h"
+#include "bbdebug.h"
 
 #ifdef BBFILESYSTEMWATCHER
-#include "bbfilesystemwatcher.h"
+    #include "bbfilesystemwatcher.h"
 #else
-#include <QFileSystemWatcher>
+    #include <QFileSystemWatcher>
 #endif
 
 #include <QCoreApplication>
@@ -31,7 +31,8 @@
 
 BBObserver::BBObserver(QObject *parent) :
     QObject(parent),
-    m_operationOnFs(0)
+    m_operationOnFs(0),
+    m_remoteChangesScheduled(false)
 {
     BBDEBUG;
 
@@ -39,13 +40,21 @@ BBObserver::BBObserver(QObject *parent) :
             SIGNAL(directoryChanged()),
             SLOT(directoryChanged()));
 
+    // Maybe some crash:
+    checkObstructedFiles(0);
+
     directoryChanged();
+    checkEmptyDirectory(BBSettings::instance()->directory());
 
     connect(QCoreApplication::instance(),
             SIGNAL(aboutToQuit()),
             SLOT(onAboutToQuit()));
 
-    startTimer(1000);
+    m_timer.setInterval(BB_OBSERVER_TIMEOUT);
+    m_timer.setSingleShot(false);
+    connect(&m_timer,
+            SIGNAL(timeout()),
+            SLOT(onTimeout()));
 }
 
 BBObserver::~BBObserver()
@@ -58,7 +67,6 @@ void BBObserver::directoryChanged()
     BBDEBUG;
 
     BBActionManager::instance()->actionCleanup();
-    BBActionManager::instance()->actionAdd(BBSettings::instance()->directory());
     BBActionManager::instance()->actionLocalChanges();
 
     if (!m_watcher.isNull())
@@ -97,7 +105,7 @@ void BBObserver::addDirectory(const QString& dirname)
     m_watcher->addPath(dirname);
 
     QDir dir(dirname);
-    QFileInfoList list = dir.entryInfoList(QDir::AllEntries | QDir::NoSymLinks);
+    QFileInfoList list = dir.entryInfoList(QDir::AllEntries | QDir::NoSymLinks | QDir::NoDotAndDotDot);
     foreach (QFileInfo info, list) {
         if (info.fileName().startsWith("."))
             continue;
@@ -113,15 +121,10 @@ void BBObserver::onSomethingChanged(const QString &filename)
     if (m_operationOnFs)
         return;
 
-    QFileInfo info(filename);
-
-    if (!info.exists())
-        m_watcher->removePath(filename);
-    else if (info.isDir())
-        addDirectory(filename);
-
     if (!m_changes.contains(filename))
         m_changes << filename;
+
+    m_timer.start();
 }
 
 void BBObserver::checkEmptyDirectory(const QString &dirname)
@@ -141,25 +144,39 @@ void BBObserver::checkEmptyDirectory(const QString &dirname)
         SetFileAttributes(filename.utf16(), FILE_ATTRIBUTE_HIDDEN);
 #endif
     }
+
+    QFileInfoList list = dir.entryInfoList(QDir::AllEntries | QDir::NoSymLinks | QDir::NoDotAndDotDot);
+    foreach (QFileInfo info, list) {
+        if (info.fileName().startsWith("."))
+            continue;
+
+        if (info.isDir())
+            checkEmptyDirectory(info.absoluteFilePath());
+    }
 }
 
-void BBObserver::timerEvent(QTimerEvent *event)
+void BBObserver::onTimeout()
 {
-    Q_UNUSED(event);
+    BBDEBUG;
 
-    if (m_changes.isEmpty())
-        return;
-
-    foreach(QString filename, m_changes) {
+    while (!m_changes.isEmpty()) {
+        QString filename = m_changes.takeFirst();
         QFileInfo info(filename);
-        if (info.isDir())
-            checkEmptyDirectory(filename);
 
-        BBActionManager::instance()->actionAdd(filename);
+        if (!info.exists())
+            m_watcher->removePath(filename);
+        else if (info.isDir())
+            addDirectory(filename);
+    }
+
+    checkEmptyDirectory(BBSettings::instance()->directory());
+
+    if (m_remoteChangesScheduled) {
+        m_remoteChangesScheduled = false;
+        BBActionManager::instance()->actionRemoteChanges();
     }
 
     BBActionManager::instance()->actionLocalChanges();
-    m_changes.clear();
 }
 
 void BBObserver::operationOnFileSystemRef()
@@ -180,9 +197,49 @@ void BBObserver::operationOnFileSystemUnref()
     }
 }
 
+void BBObserver::scheduleRemoteChanges()
+{
+    BBDEBUG;
+    m_remoteChangesScheduled = true;
+
+    if (m_timer.isActive() == false)
+        m_timer.start();
+}
+
 void BBObserver::onAboutToQuit()
 {
     BBDEBUG;
     if (!m_watcher.isNull())
         delete m_watcher;
+}
+
+bool BBObserver::checkObstructedFiles(bool *found)
+{
+    BBDEBUG;
+    return checkObstructedFiles(BBSettings::instance()->directory(), found);
+}
+
+bool BBObserver::checkObstructedFiles(const QString& dirname, bool *found)
+{
+    BBDEBUG << dirname;
+
+    QDir dir(dirname);
+    QFileInfoList list = dir.entryInfoList(QDir::AllEntries | QDir::NoSymLinks | QDir::Hidden | QDir::NoDotAndDotDot);
+    foreach (QFileInfo info, list) {
+        if (info.fileName().startsWith(QString(".%1.").arg(BBPACKAGE))) {
+            if (found)
+                *found = true;
+
+            QString oldFile(info.fileName());
+            QString newFile(info.fileName().remove(QString(".%1.").arg(BBPACKAGE)));
+
+            if (dir.rename(oldFile, newFile) == false)
+                return false;
+        }
+
+        if (info.isDir() && checkObstructedFiles(info.absoluteFilePath(), found) == false)
+            return false;
+    }
+
+    return true;
 }

@@ -13,6 +13,7 @@
 #include "bbsvnlog.h"
 #include "bbsettings.h"
 #include "bbdebug.h"
+#include "bbconst.h"
 
 #include <QDir>
 #include <QDateTime>
@@ -73,13 +74,13 @@ void BBSvn::addFile(const QStringList &filenames)
 void BBSvn::deleteFile(const QString &filename)
 {
     BBDEBUG << filename;
-    start(QStringList() << "delete" << "--keep-local" << filename);
+    start(QStringList() << "delete" << "--non-interactive" << "--keep-local" << filename);
 }
 
 void BBSvn::status()
 {
     BBDEBUG;
-    start(QStringList() << "status" << BBSettings::instance()->directory());
+    start(QStringList() << "status" << "--non-interactive" << BBSettings::instance()->directory());
 }
 
 QList<BBSvnStatus*> BBSvn::parseStatus()
@@ -87,6 +88,8 @@ QList<BBSvnStatus*> BBSvn::parseStatus()
     BBDEBUG;
 
     QByteArray output = readAllStandardOutput();
+    BBDEBUG << output;
+
     QList<QByteArray> files = output.split('\n');
 
     QList<BBSvnStatus*> list;
@@ -121,6 +124,7 @@ QList<BBSvnStatus*> BBSvn::parseStatus()
                 break;
 
             case '?': // item is not under version control
+                status->setStatus(BBSvnStatus::StatusNew);
                 break;
 
             case '!': // item is missing (removed by non-svn command) or incomplete
@@ -128,6 +132,7 @@ QList<BBSvnStatus*> BBSvn::parseStatus()
                 break;
 
             case '~': // versioned item obstructed by some item of a different kind
+                status->setStatus(BBSvnStatus::StatusObstructed);
                 break;
         }
 
@@ -166,6 +171,8 @@ BBSvnInfo* BBSvn::parseInfo()
     BBDEBUG;
 
     QByteArray output = readAllStandardOutput();
+    BBDEBUG << output;
+
     QList<QByteArray> lines = output.split('\n');
 
     BBSvnInfo *info = new BBSvnInfo(this);
@@ -223,6 +230,8 @@ QList<BBSvnStatus*> BBSvn::parseUpdate()
     BBDEBUG;
 
     QByteArray output = readAllStandardOutput();
+    BBDEBUG << output;
+
     QList<QByteArray> files = output.split('\n');
 
     QList<BBSvnStatus*> list;
@@ -309,6 +318,8 @@ QList<BBSvnLog*> BBSvn::parseLog()
     BBDEBUG;
 
     QByteArray output = readAllStandardOutput();
+    BBDEBUG << output;
+
     QList<QByteArray> lines = output.split('\n');
 
     QList<BBSvnLog*> list;
@@ -415,4 +426,31 @@ void BBSvn::openFile(const QString& file, const QString& name)
     QFile::copy(file, newFile);
 
     QDesktopServices::openUrl(QUrl::fromLocalFile(newFile));
+}
+
+void BBSvn::removeDir(const QDir& dir)
+{
+    BBDEBUG << dir;
+
+    if (!dir.exists(BB_SVN_DIR))
+        return;
+
+    BBSvn::removeDir(dir, BB_SVN_DIR);
+}
+
+void BBSvn::removeDir(const QDir& dir, const QString& dirname)
+{
+    BBDEBUG << dir << dirname;
+
+    QDir child(dir.absoluteFilePath(dirname));
+
+    QFileInfoList files = child.entryInfoList(QDir::AllEntries | QDir::Hidden | QDir::NoDotAndDotDot);
+    foreach (QFileInfo file, files) {
+        if (file.isDir())
+            removeDir(child, file.fileName());
+        else
+            child.remove(file.fileName());
+    }
+
+    dir.rmdir(dirname);
 }

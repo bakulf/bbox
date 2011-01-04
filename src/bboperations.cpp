@@ -8,9 +8,6 @@
 
 #include "bboperations.h"
 
-#include "bbactionlocalchanges.h"
-#include "bbactionupdate.h"
-#include "bbactioncommit.h"
 #include "bbsendreceive.h"
 #include "bbsettings.h"
 #include "bbdebug.h"
@@ -54,17 +51,6 @@ BBOperations::BBOperations()
 
     row++;
     {
-        QLabel *label = new QLabel(tr("Update directory"));
-        layout->addWidget(label, row, 0);
-
-        m_updateStatus = new QLabel();
-        m_updateStatus->setAlignment(Qt::AlignRight);
-        layout->addWidget(m_updateStatus, row, 1);
-        updateStatus(m_updateStatus, Waiting);
-    }
-
-    row++;
-    {
         QLabel *label = new QLabel(tr("Commit"));
         layout->addWidget(label, row, 0);
 
@@ -76,7 +62,7 @@ BBOperations::BBOperations()
 
     row++;
     {
-        QLabel *label = new QLabel(tr("Revision update"));
+        QLabel *label = new QLabel(tr("Update"));
         layout->addWidget(label, row, 0);
 
         m_revisionStatus = new QLabel();
@@ -147,9 +133,6 @@ void BBOperations::start()
             SIGNAL(localChangesDone(bool)),
             SLOT(onLocalChangesDone(bool)));
     connect(m_sendReceive,
-            SIGNAL(updateDone(bool)),
-            SLOT(onUpdateDone(bool)));
-    connect(m_sendReceive,
             SIGNAL(commitDone(bool)),
             SLOT(onCommitDone(bool)));
     connect(m_sendReceive,
@@ -172,22 +155,13 @@ void BBOperations::onLocalChangesDone(bool status)
     }
 
     updateStatus(m_localChangesStatus, Done);
-    updateStatus(m_updateStatus, Running);
-}
-
-void BBOperations::onUpdateDone(bool status)
-{
-    if (status == false) {
-        updateStatus(m_updateStatus, Error);
-        return;
-    }
-
-    updateStatus(m_updateStatus, Done);
     updateStatus(m_commitStatus, Running);
 }
 
 void BBOperations::onCommitDone(bool status)
 {
+    BBDEBUG;
+
     if (status == false) {
         updateStatus(m_commitStatus, Error);
         return;
@@ -199,6 +173,8 @@ void BBOperations::onCommitDone(bool status)
 
 void BBOperations::onRevisionDone(bool status)
 {
+    BBDEBUG;
+
     if (status == false) {
         updateStatus(m_commitStatus, Error);
         return;
@@ -209,6 +185,8 @@ void BBOperations::onRevisionDone(bool status)
 
 void BBOperations::onDone(bool status)
 {
+    BBDEBUG;
+
     if (status == false) {
         m_closeButton->setEnabled(true);
         return;
@@ -222,6 +200,8 @@ void BBOperations::onDone(bool status)
 
 void BBOperations::onClosedStateChanged(int state)
 {
+    BBDEBUG;
+
     if ((Qt::CheckState)state == Qt::Checked)
         BBSettings::instance()->setOperationClosed(true);
     else

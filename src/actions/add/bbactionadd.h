@@ -13,7 +13,6 @@
 
 #include <QStringList>
 
-class BBSvn;
 class QFileInfo;
 
 class BBActionAdd : public BBAction
@@ -41,8 +40,6 @@ private Q_SLOTS:
 private:
     QString m_dirname;
     QStringList m_files;
-
-    BBSvn *m_svn;
 };
 
 #endif

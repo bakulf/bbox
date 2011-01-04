@@ -13,6 +13,10 @@
 #include "bbconflict.h"
 #include "bbapplication.h"
 #include "bbactionmanager.h"
+#include "bbactionadd.h"
+#include "bbactiondelete.h"
+#include "bbactionobstructed.h"
+#include "bbconst.h"
 #include "bbdebug.h"
 
 BBActionLocalChanges::BBActionLocalChanges(bool commit, QObject *parent) :
@@ -51,7 +55,37 @@ void BBActionLocalChanges::onSvnDone(bool status)
     }
 
     m_svn->deleteLater();
-    emit done(status);
+
+    runActions(status);
+}
+
+void BBActionLocalChanges::runActions(bool status)
+{
+    BBDEBUG << status << m_actions;
+
+    if (status == false) {
+        while (!m_actions.isEmpty())
+            m_actions.takeFirst()->deleteLater();
+
+        emit done(status);
+        return;
+    }
+
+    if (m_actions.isEmpty()) {
+        emit done(status);
+        return;
+    }
+
+    BBAction *action = m_actions.takeFirst();
+    connect(action,
+            SIGNAL(done(bool)),
+            SLOT(runActions(bool)));
+    connect(action,
+            SIGNAL(done(bool)),
+            action,
+            SLOT(deleteLater()));
+
+    action->run();
 }
 
 void BBActionLocalChanges::checkStatus(const QList<BBSvnStatus *>& list)
@@ -64,10 +98,10 @@ void BBActionLocalChanges::checkStatus(const QList<BBSvnStatus *>& list)
     BBConflict::check(list);
 
     foreach (BBSvnStatus *status, list) {
-        if (status->locked() == true) {
-            BBApplication::instance()->addError(tr("Directory is locked."));
-            return;
-        }
+
+        QString fileName(QFileInfo(status->file()).fileName());
+        if (fileName.startsWith(".") && fileName != BB_KEEP_EMPTY)
+            continue;
 
         switch (status->status()) {
             case BBSvnStatus::StatusUnknown:
@@ -82,13 +116,24 @@ void BBActionLocalChanges::checkStatus(const QList<BBSvnStatus *>& list)
             case BBSvnStatus::StatusReplaced:
                 break;
 
+            case BBSvnStatus::StatusNew:
+                if (!m_commit)
+                    m_actions <<  new BBActionAdd(status->file(), this);
+                break;
+
             case BBSvnStatus::StatusMissing:
-                BBActionManager::instance()->actionDelete(status->file());
+                if (!m_commit)
+                    m_actions <<  new BBActionDelete(status->file(), this);
                 break;
 
             case BBSvnStatus::StatusUpdated:
             case BBSvnStatus::StatusMerged:
             case BBSvnStatus::StatusExisted:
+                break;
+
+            case BBSvnStatus::StatusObstructed:
+                if (!m_commit)
+                    m_actions << new BBActionObstructed(status->file(), this);
                 break;
         }
     }

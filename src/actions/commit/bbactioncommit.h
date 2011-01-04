@@ -11,25 +11,27 @@
 
 #include "bbaction.h"
 
-class BBSvn;
-
 class BBActionCommit : public BBAction
 {
     Q_OBJECT
 
 public:
-    BBActionCommit(QObject *parent = 0);
+    BBActionCommit(bool withError, QObject *parent = 0);
     ~BBActionCommit();
 
 public:
     void run();
     bool compare(const BBAction *action);
 
+private:
+    bool checkObstructedFiles(const QString& dirname, bool *founded);
+
 private Q_SLOTS:
     void onSvnDone(bool status);
+    void onLocalChangesDone(bool status);
 
 private:
-    BBSvn *m_svn;
+    bool m_withError;
 };
 
 #endif

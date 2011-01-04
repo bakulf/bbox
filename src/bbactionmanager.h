@@ -27,8 +27,6 @@ public:
 
 public Q_SLOTS:
     void actionCleanup();
-    void actionAdd(const QString &dirname);
-    void actionDelete(const QString &filename);
     void actionLocalChanges();
     void actionRemoteChanges();
     void actionScheduleCommit();
