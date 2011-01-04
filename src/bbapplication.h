@@ -43,6 +43,8 @@ private:
     void systemTray();
     void blink(bool enabled);
     void timerEvent(QTimerEvent *event);
+    void showMessage(const QString &title, const QString &message, bool isWarning = false);
+    void resetLastMessage();
 
 public Q_SLOTS:
     void init();
@@ -54,7 +56,6 @@ private Q_SLOTS:
     void scheduleRemoteAction();
     void onActionsQueued(int counter);
 
-    void onMessageClicked();
     void onActivated(QSystemTrayIcon::ActivationReason);
 
     void onCommitTriggered();
@@ -71,7 +72,6 @@ private:
 
     QMenu *m_menuChanges;
 
-    bool m_errorShown;
     int m_timer;
     bool m_iconBlink;
 
@@ -79,6 +79,8 @@ private:
     QPointer<BBSendReceive> m_sendReceive;
 
     static QPointer<BBApplication> m_instance;
+
+    QString m_lastMessage;
 };
 
 #endif

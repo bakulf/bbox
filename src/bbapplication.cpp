@@ -40,7 +40,6 @@ QPointer<BBApplication> BBApplication::m_instance;
 
 BBApplication::BBApplication(int argc, char **argv) :
     QApplication(argc, argv),
-    m_errorShown(false),
     m_timer(0),
     m_iconBlink(false)
 {
@@ -170,9 +169,6 @@ void BBApplication::systemTray()
     m_systemTray->show();
 
     connect(m_systemTray,
-            SIGNAL(messageClicked()),
-            SLOT(onMessageClicked()));
-    connect(m_systemTray,
             SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
             SLOT(onActivated(QSystemTrayIcon::ActivationReason)));
 
@@ -212,12 +208,6 @@ void BBApplication::onActionsQueued(int counter)
     m_actionCounter->setText(tr("Actions in queue: %1").arg(counter));
 }
 
-void BBApplication::onMessageClicked()
-{
-    BBDEBUG;
-    m_errorShown = false;
-}
-
 void BBApplication::scheduleRemoteAction()
 {
     BBDEBUG;
@@ -237,13 +227,7 @@ void BBApplication::addError(const QString& error)
 {
     BBDEBUG;
 
-    if (m_errorShown)
-        return;
-
-    if (m_systemTray->supportsMessages()) {
-        m_systemTray->showMessage(tr("Error!"), error, QSystemTrayIcon::Warning);
-        m_errorShown = true;
-    }
+    showMessage(tr("Error!"), error, true);
 }
 
 void BBApplication::commit()
@@ -260,12 +244,13 @@ void BBApplication::commit()
         }
 
         if (m_sendReceive->isRunning() == false) {
-            m_systemTray->showMessage(tr("Sending and receiving..."), tr("Your changes will be shared soon."), QSystemTrayIcon::Information);
             m_sendReceive->start();
         }
 
+        resetLastMessage();
+
     } else {
-        m_systemTray->showMessage(tr("Something new!"), tr("Click to share your changes to other users"), QSystemTrayIcon::Information);
+        showMessage(tr("Something new!"), tr("Click to share your changes to other users"));
     }
 }
 
@@ -274,7 +259,7 @@ void BBApplication::update()
     BBDEBUG;
     blink(true);
 
-    m_systemTray->showMessage(tr("Something new!"), tr("Click to have changes from other users"), QSystemTrayIcon::Information);
+    showMessage(tr("Something new!"), tr("Click to have changes from other users"));
 }
 
 void BBApplication::blink(bool enabled)
@@ -308,6 +293,7 @@ void BBApplication::onCommitTriggered()
 {
     BBDEBUG;
     blink(false);
+    resetLastMessage();
 
     BBOperations operations;
     operations.exec();
@@ -323,8 +309,6 @@ void BBApplication::onSendReceiveDone(bool status)
     BBDEBUG;
     Q_UNUSED(status);
 
-    if (status == true)
-        m_systemTray->showMessage(tr("Sending and receiving done"), tr("Your changes have been shared!"), QSystemTrayIcon::Information);
     blink(false);
 }
 
@@ -413,4 +397,27 @@ void BBApplication::changes(const QList<BBSvnStatus*>& changes)
         QAction* action = new QAction(message, this);
         m_menuChanges->addAction(action);
     }
+}
+
+void BBApplication::showMessage(const QString &title, const QString &message, bool isWarning)
+{
+    BBDEBUG << title << message << isWarning;
+
+    if (!m_systemTray->supportsMessages())
+        return;
+
+    // The fastest way to have something 'unique':
+    QString hash(QString("%1|%2|%3").arg(title).arg(message).arg(isWarning));
+    if (hash == m_lastMessage)
+        return;
+
+    m_lastMessage = hash;
+
+    m_systemTray->showMessage(title, message, isWarning ? QSystemTrayIcon::Warning :
+                                                          QSystemTrayIcon::Information);
+}
+
+void BBApplication::resetLastMessage()
+{
+    m_lastMessage.clear();
 }
