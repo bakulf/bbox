@@ -120,5 +120,8 @@ unix {
     desktop.path = $$DATADIR/applications
     desktop.files += ../utils/$${TARGET}.desktop
 
-    INSTALLS += target desktop
+    icon.path = $$DATADIR/icons
+    icon.files += ../utils/$${TARGET}.xpm
+
+    INSTALLS += target desktop icon
 }
