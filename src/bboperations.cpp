@@ -19,6 +19,7 @@
 #include <QPushButton>
 #include <QCheckBox>
 #include <QTimer>
+#include <QMovie>
 
 BBOperations::BBOperations()
 {
@@ -32,7 +33,6 @@ BBOperations::BBOperations()
     setLayout(box);
 
     QFrame *frame = new QFrame();
-    frame->setFrameStyle(QFrame::Panel);
     box->addWidget(frame);
 
     QGridLayout *layout = new QGridLayout();
@@ -111,7 +111,11 @@ void BBOperations::updateStatus(QLabel *label, Status status)
             label->setPixmap(QPixmap::fromImage(QImage(BB_STATE_WAITING_IMAGE)));
             break;
         case Running:
-            label->setPixmap(QPixmap::fromImage(QImage(BB_STATE_RUNNING_IMAGE)));
+            {
+                QMovie *movie = new QMovie(BB_STATE_RUNNING_IMAGE);
+                label->setMovie(movie);
+                movie->start();
+            }
             break;
         case Error:
             label->setPixmap(QPixmap::fromImage(QImage(BB_STATE_ERROR_IMAGE)));
