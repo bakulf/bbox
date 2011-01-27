@@ -24,7 +24,6 @@
 #include <QScrollArea>
 #include <QComboBox>
 #include <QFileInfo>
-#include <QMovie>
 
 QPointer<BBConflict> BBConflict::m_dialog;
 
@@ -230,11 +229,7 @@ void BBConflict::updateStatus(QLabel *label, Status status)
             label->setPixmap(QPixmap::fromImage(QImage(BB_STATE_WAITING_IMAGE)));
             break;
         case Running:
-            {
-                QMovie *movie = new QMovie(BB_STATE_RUNNING_IMAGE);
-                label->setMovie(movie);
-                movie->start();
-            }
+            label->setPixmap(QPixmap::fromImage(QImage(BB_STATE_RUNNING_IMAGE)));
             break;
         case Error:
             label->setPixmap(QPixmap::fromImage(QImage(BB_STATE_ERROR_IMAGE)));

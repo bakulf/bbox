@@ -149,13 +149,6 @@ void BBApplication::systemTray()
 
     menu->addSeparator();
 
-    m_actionCounter = new QAction(this);
-    m_actionCounter->setVisible(false);
-    menu->addAction(m_actionCounter);
-    connect(BBActionManager::instance(),
-            SIGNAL(actionsQueued(int)),
-            SLOT(onActionsQueued(int)));
-
     QAction *actionQuit = new QAction(tr("&Quit"), this);
     menu->addAction(actionQuit);
     connect (actionQuit,
@@ -171,8 +164,6 @@ void BBApplication::systemTray()
     connect(m_systemTray,
             SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
             SLOT(onActivated(QSystemTrayIcon::ActivationReason)));
-
-    onActionsQueued(0);
 }
 
 bool BBApplication::preferences()
@@ -198,14 +189,6 @@ void BBApplication::about()
 
     BBAbout about;
     about.exec();
-}
-
-void BBApplication::onActionsQueued(int counter)
-{
-    BBDEBUG << "Counter: " << counter;
-
-    m_actionCounter->setVisible((counter > 0));
-    m_actionCounter->setText(tr("Actions in queue: %1").arg(counter));
 }
 
 void BBApplication::scheduleRemoteAction()

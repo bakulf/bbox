@@ -32,9 +32,6 @@ public Q_SLOTS:
     void actionScheduleCommit();
     void actionScheduleUpdate();
 
-Q_SIGNALS:
-    void actionsQueued(int actions);
-
 private Q_SLOTS:
     void onActionDone(bool status);
 
@@ -43,7 +40,6 @@ protected:
 
 private:
     void addAction(BBAction *action);
-    void emitActionsQueued();
 
 private:
     QList<BBAction *> m_actions;

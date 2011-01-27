@@ -54,7 +54,6 @@ private Q_SLOTS:
     void about();
 
     void scheduleRemoteAction();
-    void onActionsQueued(int counter);
 
     void onActivated(QSystemTrayIcon::ActivationReason);
 
@@ -67,7 +66,6 @@ private Q_SLOTS:
 private:
     QSystemTrayIcon *m_systemTray;
 
-    QAction *m_actionCounter;
     QAction *m_actionCommit;
 
     QMenu *m_menuChanges;

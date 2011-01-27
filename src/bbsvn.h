@@ -29,6 +29,9 @@ public:
     static void openFile(const QString& file, bool local);
     static void removeDir(const QDir& dir);
 
+public: // Just for BBSvnManager:
+    void schedule();
+
 public:
     void cleanup();
     void addFile(const QStringList &filenames);
@@ -63,7 +66,7 @@ Q_SIGNALS:
 
 private:
     static void openFile(const QString& file, const QString& name);
-    static void removeDir(const QDir& dir, const QString& filename);
+    static bool removeDir(const QDir& dir, const QString& filename);
 
 private:
     QString commitMessage();
@@ -76,6 +79,7 @@ private Q_SLOTS:
 
 private:
     QString m_errorMessage;
+    QStringList m_arguments;
 };
 
 #endif

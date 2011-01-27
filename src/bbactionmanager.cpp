@@ -85,14 +85,6 @@ void BBActionManager::addAction(BBAction *action)
     }
 
     m_actions << action;
-    emitActionsQueued();
-}
-
-void BBActionManager::emitActionsQueued()
-{
-    BBDEBUG;
-
-    emit actionsQueued(m_actions.size());
 }
 
 void BBActionManager::timerEvent(QTimerEvent *event)
@@ -106,7 +98,6 @@ void BBActionManager::timerEvent(QTimerEvent *event)
         return;
 
     m_currentAction = m_actions.takeFirst();
-    emitActionsQueued();
 
     connect(m_currentAction,
             SIGNAL(done(bool)),

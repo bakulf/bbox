@@ -11,12 +11,14 @@
 
 #include "bbaction.h"
 
+class QDir;
+
 class BBActionObstructed : public BBAction
 {
     Q_OBJECT
 
 public:
-    BBActionObstructed(const QString& dirname, QObject *parent = 0);
+    BBActionObstructed(const QString &dirname, QObject *parent = 0);
     ~BBActionObstructed();
 
 public:
@@ -24,6 +26,9 @@ public:
     bool compare(const BBAction *action);
 
     const QString& dirname() const { return m_dirname; }
+
+private:
+    bool removeDir(const QDir &dir, const QString &dirname);
 
 private Q_SLOTS:
     void onSvnDone(bool status);

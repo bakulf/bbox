@@ -159,6 +159,9 @@ void BBObserver::onTimeout()
 {
     BBDEBUG;
 
+    if (m_changes.isEmpty())
+        return;
+
     while (!m_changes.isEmpty()) {
         QString filename = m_changes.takeFirst();
         QFileInfo info(filename);

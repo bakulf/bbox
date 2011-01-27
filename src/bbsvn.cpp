@@ -8,6 +8,7 @@
 
 #include "bbsvn.h"
 
+#include "bbsvnmanager.h"
 #include "bbsvnstatus.h"
 #include "bbsvninfo.h"
 #include "bbsvnlog.h"
@@ -44,7 +45,15 @@ BBSvn::~BBSvn()
 void BBSvn::start(const QStringList &arguments)
 {
     BBDEBUG << arguments;
-    QProcess::start(BBSettings::instance()->svn(), arguments, QIODevice::ReadOnly);
+
+    m_arguments = arguments;
+    BBSvnManager::instance()->registerForSchedule(this);
+}
+
+void BBSvn::schedule()
+{
+    BBDEBUG;
+    QProcess::start(BBSettings::instance()->svn(), m_arguments, QIODevice::ReadOnly);
 }
 
 void BBSvn::onFinished(int exitCode, QProcess::ExitStatus exitStatus)
@@ -438,19 +447,28 @@ void BBSvn::removeDir(const QDir& dir)
     BBSvn::removeDir(dir, BB_SVN_DIR);
 }
 
-void BBSvn::removeDir(const QDir& dir, const QString& dirname)
+bool BBSvn::removeDir(const QDir& dir, const QString& dirname)
 {
     BBDEBUG << dir << dirname;
 
     QDir child(dir.absoluteFilePath(dirname));
 
+    bool result(true);
+
     QFileInfoList files = child.entryInfoList(QDir::AllEntries | QDir::Hidden | QDir::NoDotAndDotDot);
     foreach (QFileInfo file, files) {
         if (file.isDir())
-            removeDir(child, file.fileName());
-        else
-            child.remove(file.fileName());
+            result = removeDir(child, file.fileName());
+        else {
+            // For windows we need the permission to delete this file:
+            QFile f(file.absoluteFilePath());
+            f.setPermissions(QFile::WriteUser | QFile::ReadUser | QFile::ReadOwner | QFile::WriteOwner);
+            result = f.remove();
+        }
+
+        if (result == false)
+            return false;
     }
 
-    dir.rmdir(dirname);
+    return dir.rmdir(dirname);
 }

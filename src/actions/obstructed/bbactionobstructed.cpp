@@ -47,11 +47,26 @@ void BBActionObstructed::run()
     QFileInfo info(m_dirname);
     QDir dir(info.dir());
 
-    QString newName(QString(".%1.%2").arg(BBPACKAGE).arg(info.fileName()));
-    if (dir.exists(newName)) {
-        BBApplication::instance()->addError(tr("The filesystem is not clean"));
+    if (QFile::exists(m_dirname) == false) {
         emit done(false);
         return;
+    }
+
+#ifdef Q_OS_WIN32
+    QString newName(QString("%1.%2").arg(BBPACKAGE).arg(info.fileName()));
+#else
+    QString newName(QString(".%1.%2").arg(BBPACKAGE).arg(info.fileName()));
+#endif
+
+    if (dir.exists(newName)) {
+        // THIS IS SEEEEEED....
+
+        QFileInfo info(m_dirname);
+        if (removeDir(info.dir(), newName) == false) {
+            BBApplication::instance()->addError(tr("Error renaming files/directories."));
+            emit done(false);
+            return;
+        }
     }
 
     if (dir.rename(info.fileName(), newName) == false) {
@@ -79,4 +94,30 @@ void BBActionObstructed::onSvnDone(bool status)
     }
 
     emit done(status);
+}
+
+bool BBActionObstructed::removeDir(const QDir &dir, const QString& dirname)
+{
+    BBDEBUG << dir << dirname;
+
+    QDir child(dir.absoluteFilePath(dirname));
+
+    bool result(true);
+
+    QFileInfoList files = child.entryInfoList(QDir::AllEntries | QDir::Hidden | QDir::NoDotAndDotDot);
+    foreach (QFileInfo file, files) {
+        if (file.isDir())
+            result = removeDir(child, file.fileName());
+        else {
+            // For windows we need the permission to delete this file:
+            QFile f(file.absoluteFilePath());
+            f.setPermissions(QFile::WriteUser | QFile::ReadUser | QFile::ReadOwner | QFile::WriteOwner);
+            result =f.remove();
+        }
+
+        if (result == false)
+            return result;
+    }
+
+    return dir.rmdir(dirname);
 }

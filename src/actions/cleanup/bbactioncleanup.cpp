@@ -54,10 +54,8 @@ void BBActionCleanup::run()
 void BBActionCleanup::onSvnDone(bool status)
 {
     BBDEBUG << status;
+    Q_UNUSED(status);
 
-    if (status == false) {
-        BBApplication::instance()->addError(tr("Error cleaning the directory."));
-    }
-
-    emit done(status);
+    // No error for the cleannup
+    emit done(true);
 }

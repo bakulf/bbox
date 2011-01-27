@@ -1,7 +1,9 @@
 #!/bin/bash
 
 max=30
+folder=stressTest
 [ "$2" = "" ] || max=$2
+[ "$3" = "" ] || folder=$3
 
 withTimeout=1
 [ "$3" = "no" ] && withTimeout=0
@@ -9,12 +11,18 @@ withTimeout=1
 function die {
     echo "$1"
     cd ..
-    [ -d stressTest ] && rm -rf stressTest
+    [ -d $folder ] && rm -rf $folder
     exit 1
 }
 
 function sequence {
-    seq 1 $1 2>/dev/null || jot $1
+    for ((index=1; $index < $1; index++)); do
+        echo $index
+    done
+}
+
+function mySleep {
+    sleep $1 &>/dev/null
 }
 
 function waitSvnStatus {
@@ -29,7 +37,7 @@ function waitSvnStatus {
             5)   echo -en '\b.'; status=0 ;;
         esac
 
-        sleep .10
+        mySleep .10
 
         if [ "$(svn status 2>&1)" = "" ]; then
             echo -en '\b'
@@ -56,9 +64,9 @@ fi
 cd "$1" || die
 
 echo -n "Creating the tmp directory... "
-rm -rf stressTest || die
-mkdir stressTest || die
-cd stressTest || die
+rm -rf $folder || die
+mkdir $folder || die
+cd $folder || die
 echo "done."
 
 echo "Let's start with the stress test!"
@@ -71,7 +79,7 @@ for l in `sequence 5`; do
     echo -n ". Random files (loop $l)... "
     for i in `sequence $max`; do
         touch $l"_file_"$i
-        sleep 0.$timeout
+        mySleep 0.$timeout
     done
     waitSvnStatus || die "Failed!"
     echo "ok."
@@ -79,7 +87,7 @@ for l in `sequence 5`; do
     echo -n ". Random empty directories (loop $l)... "
     for i in `sequence $max`; do
         mkdir $l"_dir_"$i
-        sleep 0.$timeout
+        mySleep 0.$timeout
     done
     waitSvnStatus || die "Failed!"
     echo "ok."
@@ -87,7 +95,7 @@ for l in `sequence 5`; do
     echo -n ". Moving files in directories (loop $l)... "
     for i in `sequence $max`; do
         mv $l"_file_"$i $l"_dir_"$i
-        sleep 0.$timeout
+        mySleep 0.$timeout
     done
     waitSvnStatus || die "Failed!"
     echo "ok."
@@ -96,7 +104,7 @@ for l in `sequence 5`; do
     for i in `sequence $max`; do
         ((next=i+1))
         [ -d $l"_dir_"$next ] && mv $l"_dir_"$i $l"_dir_"$next
-        sleep 0.$timeout
+        mySleep 0.$timeout
     done
     waitSvnStatus || die "Failed!"
     echo "ok."
