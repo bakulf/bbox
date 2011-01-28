@@ -14,8 +14,9 @@ unix {
 }
 
 win32 {
-    LIBS = -lAdvapi32
-    RC_FILE = win32.rc
+    LIBS    += -lAdvapi32
+    RC_FILE  = win32.rc
+    DEFINES += BBFILESYSTEMWATCHER
 }
 
 macx {
