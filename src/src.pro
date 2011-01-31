@@ -11,6 +11,7 @@ OBJECTS_DIR = .obj
 
 unix {
     QMAKE_CXXFLAGS *= -Werror
+    TARGET = bbox.n3
 }
 
 win32 {
