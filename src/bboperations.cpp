@@ -89,7 +89,7 @@ BBOperations::BBOperations()
         m_closeButton = new QPushButton(tr("Close"));
         m_closeButton->setEnabled(false);
         buttonLayout->addWidget(m_closeButton, 0, 0);
-        connect(m_closeButton, SIGNAL(clicked()), SLOT(accept()));
+        connect(m_closeButton, SIGNAL(clicked()), SLOT(onClose()));
     }
 
     setFocus();
@@ -199,7 +199,7 @@ void BBOperations::onDone(bool status)
     m_closeButton->setEnabled(true);
 
     if (BBSettings::instance()->operationClosed() == true)
-        QTimer::singleShot(1500, this, SLOT(accept()));
+        QTimer::singleShot(1500, this, SLOT(onClose()));
 }
 
 void BBOperations::onClosedStateChanged(int state)
@@ -210,4 +210,12 @@ void BBOperations::onClosedStateChanged(int state)
         BBSettings::instance()->setOperationClosed(true);
     else
         BBSettings::instance()->setOperationClosed(false);
+}
+
+void BBOperations::onClose()
+{
+    BBDEBUG;
+
+    hide();
+    deleteLater();
 }

@@ -275,11 +275,26 @@ void BBApplication::timerEvent(QTimerEvent *event)
 void BBApplication::onCommitTriggered()
 {
     BBDEBUG;
-    blink(false);
-    resetLastMessage();
 
-    BBOperations operations;
-    operations.exec();
+    if (m_operations.isNull()) {
+        blink(true);
+
+        resetLastMessage();
+        m_operations = new BBOperations();
+        connect(m_operations.data(),
+                SIGNAL(destroyed()),
+                SLOT(onOperationsDestroyed()));
+    }
+
+    m_operations->show();
+}
+
+void BBApplication::onOperationsDestroyed()
+{
+    BBDEBUG;
+
+    blink(false);
+    m_operations = 0;
 }
 
 BBObserver* BBApplication::observer()

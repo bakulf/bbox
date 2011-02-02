@@ -17,6 +17,7 @@ class QMenu;
 class QAction;
 class BBObserver;
 class BBSvnStatus;
+class BBOperations;
 class BBSendReceive;
 
 class BBApplication : public QApplication
@@ -63,6 +64,8 @@ private Q_SLOTS:
 
     void onSendReceiveDone(bool status);
 
+    void onOperationsDestroyed();
+
 private:
     QSystemTrayIcon *m_systemTray;
 
@@ -79,6 +82,8 @@ private:
     static QPointer<BBApplication> m_instance;
 
     QString m_lastMessage;
+
+    QPointer<BBOperations> m_operations;
 };
 
 #endif

@@ -17,7 +17,7 @@ class QCheckBox;
 class QPushButton;
 class BBSendReceive;
 
-class BBOperations : public QDialog
+class BBOperations : public QWidget
 {
     Q_OBJECT
 
@@ -44,6 +44,8 @@ private Q_SLOTS:
     void onDone(bool status);
 
     void onClosedStateChanged(int state);
+
+    void onClose();
 
 private:
     QLabel *m_localChangesStatus;
