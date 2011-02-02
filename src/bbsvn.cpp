@@ -29,17 +29,36 @@
 #endif
 
 BBSvn::BBSvn(QObject *parent) :
-    QProcess(parent)
+    QProcess(0)
 {
     BBDEBUG;
     connect(this,
             SIGNAL(finished(int, QProcess::ExitStatus)),
             SLOT(onFinished(int, QProcess::ExitStatus)));
+
+    if (parent) {
+        connect(parent,
+                SIGNAL(destroyed()),
+                SLOT(onParentDestroyed()));
+    }
 }
 
 BBSvn::~BBSvn()
 {
     BBDEBUG;
+}
+
+void BBSvn::onParentDestroyed()
+{
+    BBDEBUG;
+
+    if (state() == NotRunning)
+        deleteLater();
+    else {
+        connect(this,
+                SIGNAL(done(bool)),
+                SLOT(deleteLater()));
+    }
 }
 
 void BBSvn::start(const QStringList &arguments)

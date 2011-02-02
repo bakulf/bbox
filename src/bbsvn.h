@@ -76,6 +76,7 @@ private:
 
 private Q_SLOTS:
     void onFinished(int exitCode, QProcess::ExitStatus extiStatus);
+    void onParentDestroyed();
 
 private:
     QString m_errorMessage;
