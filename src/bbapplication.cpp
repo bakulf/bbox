@@ -284,6 +284,9 @@ void BBApplication::onCommitTriggered()
         connect(m_operations.data(),
                 SIGNAL(destroyed()),
                 SLOT(onOperationsDestroyed()));
+
+    } else {
+        m_operations->activateWindow();
     }
 
     m_operations->show();
