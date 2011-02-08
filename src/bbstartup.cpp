@@ -71,8 +71,10 @@ void BBStartup::addStartup()
     QDir dir(QString("%1/%2").arg(QDir::homePath()).arg(BB_MAC_STARTUP_PATH));
     QFile file(dir.absoluteFilePath(BB_MAC_STARTUP_FILE));
 
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        BBDEBUG << "Error creating the file:" << file.fileName();
         return;
+    }
 
     file.write(BB_MAC_STARTUP_CONTENT.arg(QCoreApplication::applicationFilePath()).toUtf8());
     file.close();
@@ -85,8 +87,10 @@ void BBStartup::addStartup()
     QDir dir(QString("%1/%2").arg(QDir::homePath()).arg(BB_LINUX_STARTUP_PATH));
     QFile file(dir.absoluteFilePath(BB_LINUX_STARTUP_FILE));
 
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        BBDEBUG << "Error creating the file:" << file.fileName();
         return;
+    }
 
     file.write(BB_LINUX_STARTUP_CONTENT.toUtf8());
     file.close();

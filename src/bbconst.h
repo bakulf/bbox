@@ -44,7 +44,7 @@
 "Hidden=false\n" \
 )
 
-#define BB_MAC_STARTUP_PATH    "Library/Startupitems"
+#define BB_MAC_STARTUP_PATH    "Library/LaunchAgents"
 #define BB_MAC_STARTUP_FILE    "com.nois3lab.bbox.plist"
 #define BB_MAC_STARTUP_CONTENT QString( \
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" \
