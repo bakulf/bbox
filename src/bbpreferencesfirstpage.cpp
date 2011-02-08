@@ -145,15 +145,15 @@ void BBPreferencesFirstPage::onSVNSearchClicked()
         m_svnDialog->setWindowTitle(tr("Select the 'subversion' tool."));
         m_svnDialog->setWindowIcon(QIcon(BB_ICON_IMAGE));
         m_svnDialog->setModal(true);
-
-        connect(m_svnDialog,
-                SIGNAL(fileSelected(QString)),
-                m_svnWidget,
-                SLOT(setText(QString)));
     }
 
-    m_svnDialog->show();
-    m_svnDialog->setFocus();
+    m_svnDialog->exec();
+
+    if (m_svnDialog->result() == QDialog::Accepted) {
+        QStringList files = m_svnDialog->selectedFiles();
+        if (!files.isEmpty())
+            m_svnWidget->setText(files[0]);
+    }
 }
 
 void BBPreferencesFirstPage::onDirectorySearchClicked()
@@ -167,15 +167,16 @@ void BBPreferencesFirstPage::onDirectorySearchClicked()
         m_directoryDialog->setWindowTitle(tr("Select the subversion directory."));
         m_directoryDialog->setWindowIcon(QIcon(BB_ICON_IMAGE));
         m_directoryDialog->setModal(true);
-
-        connect(m_directoryDialog,
-                SIGNAL(fileSelected(QString)),
-                m_directoryWidget,
-                SLOT(setText(QString)));
     }
 
-    m_directoryDialog->show();
-    m_directoryDialog->setFocus();
+    m_directoryDialog->exec();
+
+    if (m_directoryDialog->result() == QDialog::Accepted) {
+        QStringList files = m_directoryDialog->selectedFiles();
+        if (!files.isEmpty())
+            m_directoryWidget->setText(files[0]);
+
+    }
 }
 
 void BBPreferencesFirstPage::initializePage()
