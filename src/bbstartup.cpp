@@ -55,7 +55,7 @@ void BBStartup::reset()
         removeStartup();
 }
 
-#if Q_OS_WIN32
+#if defined(Q_OS_WIN32)
 void BBStartup::addStartup()
 {
     BBDEBUG;
@@ -63,7 +63,7 @@ void BBStartup::addStartup()
     QSettings settings(BB_WIN_STARTUP_REGEDIT, QSettings::NativeFormat);
     settings.setValue(BB_WIN_STARTUP_KEY, QCoreApplication::applicationFilePath().replace('/','\\'));
 }
-#elif Q_OS_MAC
+#elif defined(Q_OS_MAC)
 void BBStartup::addStartup()
 {
     BBDEBUG;
@@ -93,7 +93,7 @@ void BBStartup::addStartup()
 }
 #endif
 
-#if Q_OS_WIN32
+#if defined(Q_OS_WIN32)
 void BBStartup::removeStartup()
 {
     BBDEBUG;
@@ -101,7 +101,7 @@ void BBStartup::removeStartup()
     QSettings settings(BB_WIN_STARTUP_REGEDIT, QSettings::NativeFormat);
     settings.remove(BB_WIN_STARTUP_KEY);
 }
-#elif Q_OS_MAC
+#elif defined(Q_OS_MAC)
 void BBStartup::removeStartup()
 {
     BBDEBUG;
