@@ -124,6 +124,15 @@ BBPreferencesFirstPage::BBPreferencesFirstPage()
 
     ++row;
     {
+        QLabel *label = new QLabel(tr("Run on Startup"));
+        layout->addWidget(label, row, 0);
+
+        m_runonstartupWidget = new QCheckBox(tr("Enabled"));
+        layout->addWidget(m_runonstartupWidget, row, 1);
+    }
+
+    ++row;
+    {
         QSpacerItem *spacer = new QSpacerItem(20, 20, QSizePolicy::Expanding, QSizePolicy::Expanding);
         layout->addItem(spacer, row, 0, 1, 2);
     }
@@ -201,6 +210,8 @@ void BBPreferencesFirstPage::initializePage()
         m_timerWidget->setCurrentIndex(5);
 
     m_autocommitWidget->setChecked(BBSettings::instance()->autoCommit());
+
+    m_runonstartupWidget->setChecked(BBSettings::instance()->runOnStartup());
 }
 
 bool BBPreferencesFirstPage::validatePage()
@@ -211,6 +222,7 @@ bool BBPreferencesFirstPage::validatePage()
     BBSettings::instance()->setDirectory(m_directoryWidget->text());
     BBSettings::instance()->setTimerRemoteAction(m_timerWidget->itemData(m_timerWidget->currentIndex()).toUInt());
     BBSettings::instance()->setAutoCommit(m_autocommitWidget->checkState() == Qt::Checked);
+    BBSettings::instance()->setRunOnStartup(m_runonstartupWidget->checkState() == Qt::Checked);
 
     if (BBSvn::isACheckout()) {
         wizard()->reject();

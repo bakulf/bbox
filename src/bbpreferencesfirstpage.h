@@ -42,6 +42,7 @@ private:
 
     QComboBox *m_timerWidget;
     QCheckBox *m_autocommitWidget;
+    QCheckBox *m_runonstartupWidget;
 };
 
 #endif

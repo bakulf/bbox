@@ -10,6 +10,7 @@ core.*
 *.a
 *.o
 bbox
+bbox.n3
 qrc_*
 builddir
 build-stamp

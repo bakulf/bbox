@@ -11,6 +11,7 @@
 #include "bbpreferences.h"
 #include "bbabout.h"
 #include "bbsettings.h"
+#include "bbstartup.h"
 #include "bbobserver.h"
 #include "bbactionmanager.h"
 #include "bboperations.h"
@@ -89,6 +90,9 @@ void BBApplication::init()
         quit();
         return;
     }
+
+    // Instance of startup created:
+    BBStartup::instance();
 
     m_observer = new BBObserver(this);
 

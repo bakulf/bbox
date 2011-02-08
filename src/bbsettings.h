@@ -36,6 +36,9 @@ public:
     bool autoCommit() const;
     void setAutoCommit(const bool &autoCommit);
 
+    bool runOnStartup() const;
+    void setRunOnStartup(const bool &runOnStartup);
+
     bool operationClosed() const;
     void setOperationClosed(const bool &operationClosed);
 
@@ -44,6 +47,7 @@ Q_SIGNALS:
     void directoryChanged();
     void timerRemoteActionChanged();
     void autoCommitChanged();
+    void runOnStartupChanged();
     void operationClosedChanged();
 
 private:

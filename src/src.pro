@@ -54,6 +54,7 @@ HEADERS   = bbconst.h \
             bblogsmodel.h \
             bboperations.h \
             bbsettings.h \
+            bbstartup.h \
             bbobserver.h \
             bbfilesystemwatcher.h \
             bbsvn.h \
@@ -89,6 +90,7 @@ SOURCES   = main.cpp \
             bblogsmodel.cpp \
             bboperations.cpp \
             bbsettings.cpp \
+            bbstartup.cpp \
             bbobserver.cpp \
             bbfilesystemwatcher.cpp \
             bbsvn.cpp \

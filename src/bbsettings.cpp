@@ -15,6 +15,7 @@
 #include <QPointer>
 #include <QCoreApplication>
 
+#define BB_SETTINGS_RUNONSTARTUP      "runOnStartup"
 #define BB_SETTINGS_AUTOCOMMIT        "autoCommit"
 #define BB_SETTINGS_OPERATIONCLOSED   "operationClosed"
 #define BB_SETTINGS_TIMERREMOTEACTION "timerRemoteAction"
@@ -129,6 +130,23 @@ void BBSettings::setAutoCommit(const bool &aAutoCommit)
     if (aAutoCommit != autoCommit()) {
         m_settings.setValue(BB_SETTINGS_AUTOCOMMIT, aAutoCommit);
         emit autoCommitChanged();
+    }
+}
+
+bool BBSettings::runOnStartup() const
+{
+    BBDEBUG;
+
+    return m_settings.value(BB_SETTINGS_RUNONSTARTUP).toBool();
+}
+
+void BBSettings::setRunOnStartup(const bool &aRunOnStartup)
+{
+    BBDEBUG << aRunOnStartup;
+
+    if (aRunOnStartup != runOnStartup()) {
+        m_settings.setValue(BB_SETTINGS_RUNONSTARTUP, aRunOnStartup);
+        emit runOnStartupChanged();
     }
 }
 

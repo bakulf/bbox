@@ -2,7 +2,7 @@
 Encoding=UTF-8
 Name=BBox
 Comment=...something like dropbox based on subversion.
-Exec=bbox
+Exec=bbox.n3
 Icon=bbox
 Terminal=false
 Type=Application
