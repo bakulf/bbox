@@ -49,7 +49,7 @@ BBOperations::BBOperations()
         updateStatus(m_localChangesStatus, Waiting);
     }
 
-    row++;
+    ++row;
     {
         QLabel *label = new QLabel(tr("Commit"));
         layout->addWidget(label, row, 0);
@@ -60,7 +60,7 @@ BBOperations::BBOperations()
         updateStatus(m_commitStatus, Waiting);
     }
 
-    row++;
+    ++row;
     {
         QLabel *label = new QLabel(tr("Update"));
         layout->addWidget(label, row, 0);

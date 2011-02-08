@@ -39,13 +39,13 @@ BBPreferencesFirstPage::BBPreferencesFirstPage()
         layout->addItem(spacer, row, 0, 1, 2);
     }
 
-    row++;
+    ++row;
     {
         QLabel *label = new QLabel(tr("Choose the directory for your checkout. This will be keet in sync by bbox."));
         layout->addWidget(label, row, 0, 1, 2);
     }
 
-    row++;
+    ++row;
     {
         QLabel *label = new QLabel(tr("Directory:"));
         layout->addWidget(label, row, 0);
@@ -64,19 +64,19 @@ BBPreferencesFirstPage::BBPreferencesFirstPage()
                 SLOT(onDirectorySearchClicked()));
     }
 
-    row++;
+    ++row;
     {
         QSpacerItem *spacer = new QSpacerItem(20, 20, QSizePolicy::Expanding, QSizePolicy::Expanding);
         layout->addItem(spacer, row, 0, 1, 2);
     }
 
-    row++;
+    ++row;
     {
         QLabel *label = new QLabel(tr("Advanced configuration fields: change only if you know what you are doing."));
         layout->addWidget(label, row, 0, 1, 2);
     }
 
-    row++;
+    ++row;
     {
         QLabel *label = new QLabel(tr("Subversion:"));
         layout->addWidget(label, row, 0);
@@ -95,7 +95,7 @@ BBPreferencesFirstPage::BBPreferencesFirstPage()
                 SLOT(onSVNSearchClicked()));
     }
 
-    row++;
+    ++row;
     {
         QLabel *label = new QLabel(tr("Timer for remote check:"));
         layout->addWidget(label, row, 0);
@@ -113,7 +113,7 @@ BBPreferencesFirstPage::BBPreferencesFirstPage()
         m_timerWidget->insertItem(index++, tr("60 minutes"), 60);
     }
 
-    row++;
+    ++row;
     {
         QLabel *label = new QLabel(tr("AutoCommit on changes:"));
         layout->addWidget(label, row, 0);
@@ -122,7 +122,7 @@ BBPreferencesFirstPage::BBPreferencesFirstPage()
         layout->addWidget(m_autocommitWidget, row, 1);
     }
 
-    row++;
+    ++row;
     {
         QSpacerItem *spacer = new QSpacerItem(20, 20, QSizePolicy::Expanding, QSizePolicy::Expanding);
         layout->addItem(spacer, row, 0, 1, 2);

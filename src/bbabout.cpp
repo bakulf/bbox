@@ -34,7 +34,7 @@ BBAbout::BBAbout() :
         layout->addWidget(label, row, 0, 1, 3);
     }
 
-    row++;
+    ++row;
     {
         QLabel *label = new QLabel(QString(BBPACKAGE " " BBVERSION));
         label->setAlignment(Qt::AlignCenter);
@@ -45,14 +45,14 @@ BBAbout::BBAbout() :
         label->setFont(font);
     }
 
-    row++;
+    ++row;
     {
         QLabel *label = new QLabel(tr("copyright(c) 2010 Andrea Marchesini"));
         label->setAlignment(Qt::AlignCenter);
         layout->addWidget(label, row, 0, 1, 3);
     }
 
-    row++;
+    ++row;
     {
         QPushButton *button = new QPushButton(tr("Close"));
         connect(button, SIGNAL(clicked()), SLOT(accept()));

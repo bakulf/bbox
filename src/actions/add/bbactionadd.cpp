@@ -60,7 +60,7 @@ void BBActionAdd::runAdd()
     }
 
     QStringList list;
-    for (int i=0; i<BB_SVN_ADD_MAX && !m_files.isEmpty(); i++) {
+    for (int i=0; i<BB_SVN_ADD_MAX && !m_files.isEmpty(); ++i) {
         QString filename = m_files.takeFirst();
 
         BBDEBUG << "Adding " << filename;

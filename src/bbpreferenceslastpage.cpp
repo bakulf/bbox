@@ -138,7 +138,7 @@ void BBPreferencesLastPage::onSvnRead()
 
         m_listWidget->addItem(QString(array.remove(0, 1)).remove(path).trimmed());
 
-        m_counter++;
+        ++m_counter;
         m_counterLabel->setText(tr("Downloading files: %1").arg(m_counter));
     }
 }

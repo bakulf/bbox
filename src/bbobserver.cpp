@@ -185,7 +185,7 @@ void BBObserver::onTimeout()
 void BBObserver::operationOnFileSystemRef()
 {
     BBDEBUG << m_operationOnFs;
-    m_operationOnFs++;
+    ++m_operationOnFs;
 }
 
 void BBObserver::operationOnFileSystemUnref()
@@ -193,7 +193,7 @@ void BBObserver::operationOnFileSystemUnref()
     BBDEBUG << m_operationOnFs;
 
     if (m_operationOnFs > 0)
-        m_operationOnFs--;
+        --m_operationOnFs;
 
     if (m_operationOnFs == 0) {
         onSomethingChanged(BBSettings::instance()->directory());

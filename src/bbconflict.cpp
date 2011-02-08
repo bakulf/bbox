@@ -101,10 +101,10 @@ BBConflict::BBConflict(const QList<BBSvnStatus*> list)
         QLabel *label = new QLabel(QFileInfo(status->file()).fileName());
         layout->addWidget(label, row, 0);
 
-        col++;
+        ++col;
         layout->addItem(new QSpacerItem(20, 20, QSizePolicy::Expanding), row, col);
 
-        col++;
+        ++col;
         {
             QComboBox *actionsWidget = new QComboBox();
             layout->addWidget(actionsWidget, row, col);
@@ -118,12 +118,12 @@ BBConflict::BBConflict(const QList<BBSvnStatus*> list)
                     SLOT(onActionIndexChanged(int)));
         }
 
-        col++;
+        ++col;
         layout->addItem(new QSpacerItem(20, 20, QSizePolicy::Expanding), row, col);
 
         QButtonGroup *group = new QButtonGroup();
 
-        col++;
+        ++col;
         {
             QRadioButton *button = new QRadioButton(tr("Local"));
             button->setChecked(true);
@@ -132,14 +132,14 @@ BBConflict::BBConflict(const QList<BBSvnStatus*> list)
             file->setLocalButton(button);
         }
 
-        col++;
+        ++col;
         {
             QRadioButton *button = new QRadioButton(tr("Remote"));
             group->addButton(button);
             layout->addWidget(button, row, col);
         }
 
-        col++;
+        ++col;
         {
             QLabel *label = new QLabel();
             label->setAlignment(Qt::AlignRight);
@@ -148,7 +148,7 @@ BBConflict::BBConflict(const QList<BBSvnStatus*> list)
             updateStatus(label, Waiting);
         }
 
-        row++;
+        ++row;
     }
 
     QScrollArea *scrollArea = new QScrollArea;

@@ -68,7 +68,7 @@ void BBApplication::splash()
     QSplashScreen splash(pixmap);
     splash.show();
 
-    for(int i=0; i<20; i++) {
+    for(int i=0; i<20; ++i) {
         processEvents();
 #ifdef Q_OS_WIN32
         Sleep(100);

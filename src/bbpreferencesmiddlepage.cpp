@@ -37,7 +37,7 @@ BBPreferencesMiddlePage::BBPreferencesMiddlePage()
         layout->addItem(spacer, row, 0, 1, 2);
     }
 
-    row++;
+    ++row;
     {
         QLabel *label = new QLabel(tr("URL:"));
         layout->addWidget(label, row, 0);
@@ -47,19 +47,19 @@ BBPreferencesMiddlePage::BBPreferencesMiddlePage()
         registerField("urlField*", urlWidget);
     }
 
-    row++;
+    ++row;
     {
         QSpacerItem *spacer = new QSpacerItem(20, 20, QSizePolicy::Expanding, QSizePolicy::Expanding);
         layout->addItem(spacer, row, 0, 1, 2);
     }
 
-    row++;
+    ++row;
     {
         QLabel *label = new QLabel(tr("The next fields are optional but probably you must add them too."));
         layout->addWidget(label, row, 0, 1, 2);
     }
 
-    row++;
+    ++row;
     {
         QLabel *label = new QLabel(tr("Username:"));
         layout->addWidget(label, row, 0);
@@ -69,7 +69,7 @@ BBPreferencesMiddlePage::BBPreferencesMiddlePage()
         registerField("usernameField", usernameWidget);
     }
 
-    row++;
+    ++row;
     {
         QLabel *label = new QLabel(tr("Password:"));
         layout->addWidget(label, row, 0);
@@ -80,7 +80,7 @@ BBPreferencesMiddlePage::BBPreferencesMiddlePage()
         registerField("passwordField", passwordWidget);
     }
 
-    row++;
+    ++row;
     {
         QSpacerItem *spacer = new QSpacerItem(20, 20, QSizePolicy::Expanding, QSizePolicy::Expanding);
         layout->addItem(spacer, row, 0, 1, 2);
