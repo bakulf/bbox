@@ -8,6 +8,8 @@
 
 #include "bbapplication.h"
 
+#include "bbdebug.h"
+
 #include <QtGui>
 
 #ifdef BBDEBUG_ENABLED
@@ -30,7 +32,7 @@ void debugHandler(QtMsgType type, const char *msg)
             abort();
     }
 
-    QFile outFile(QDir::home().absoluteFilePath("BBOX.log.txt"));
+    QFile outFile(QDir::home().absoluteFilePath(BBDEBUG_LOGFILE));
     outFile.open(QIODevice::WriteOnly | QIODevice::Append);
     QTextStream ts(&outFile);
     ts << txt << endl;
@@ -40,6 +42,7 @@ void debugHandler(QtMsgType type, const char *msg)
 int main(int argc, char **argv)
 {
 #ifdef BBDEBUG_ENABLED
+    QDir::home().remove(BBDEBUG_LOGFILE);
     qInstallMsgHandler(debugHandler);
 #endif
 

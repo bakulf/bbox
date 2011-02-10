@@ -13,4 +13,6 @@
 
 #define BBDEBUG qDebug() << Q_FUNC_INFO
 
+#define BBDEBUG_LOGFILE "BBox.log.txt"
+
 #endif
