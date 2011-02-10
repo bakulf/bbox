@@ -25,7 +25,8 @@ macx {
 }
 
 DEFINES += BBPACKAGE=\\\"BBox\\\" \
-           BBVERSION=\\\"$$BBVERSION\\\"
+           BBVERSION=\\\"$$BBVERSION\\\" \
+           BBDEBUG_ENABLED
 
 INCLUDEPATH += . \
                actions \
