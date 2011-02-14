@@ -181,10 +181,11 @@ void BBConflict::apply()
 {
     BBDEBUG;
 
-    m_svn = new BBSvn();
+    m_svn = new BBSvn(this);
     connect(m_svn,
             SIGNAL(done(bool)),
-            SLOT(applyMerge(bool)));
+            SLOT(applyMerge(bool)),
+            Qt::QueuedConnection);
 
     BBApplication::instance()->observer()->operationOnFileSystemRef();
 

@@ -78,11 +78,13 @@ void BBActionObstructed::run()
     BBSvn *svn = new BBSvn(this);
     connect(svn,
             SIGNAL(done(bool)),
-            SLOT(onSvnDone(bool)));
+            SLOT(onSvnDone(bool)),
+            Qt::QueuedConnection);
     connect(svn,
             SIGNAL(done(bool)),
             svn,
-            SLOT(deleteLater()));
+            SLOT(deleteLater()),
+            Qt::QueuedConnection);
 
     svn->deleteFile(m_dirname);
 }

@@ -64,7 +64,8 @@ BBLogs::BBLogs(QObject *parent) :
     m_svn = new BBSvn(this);
     connect(m_svn,
             SIGNAL(done(bool)),
-            SLOT(onLocalInfoDone(bool)));
+            SLOT(onLocalInfoDone(bool)),
+            Qt::QueuedConnection);
     m_svn->localInfo();
 }
 
@@ -91,7 +92,8 @@ void BBLogs::onLocalInfoDone(bool status)
     m_svn->disconnect(this);
     connect(m_svn,
             SIGNAL(done(bool)),
-            SLOT(onRemoteLogsDone(bool)));
+            SLOT(onRemoteLogsDone(bool)),
+            Qt::QueuedConnection);
 
     m_url = info->URL();
     m_svn->remoteLog(m_url);
@@ -225,7 +227,8 @@ void BBLogs::onOpen()
     m_svn->disconnect(this);
     connect(m_svn,
             SIGNAL(done(bool)),
-            SLOT(onOpenDone(bool)));
+            SLOT(onOpenDone(bool)),
+            Qt::QueuedConnection);
 
     m_svn->restoreFile(QString("%1%2").arg(m_url).arg(item->file()), item->revision(), m_tempFile);
 }

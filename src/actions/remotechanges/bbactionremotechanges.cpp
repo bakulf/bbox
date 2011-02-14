@@ -34,7 +34,8 @@ void BBActionRemoteChanges::run()
     m_svn = new BBSvn(this);
     connect(m_svn,
             SIGNAL(done(bool)),
-            SLOT(onLocalSvnDone(bool)));
+            SLOT(onLocalSvnDone(bool)),
+            Qt::QueuedConnection);
 
     m_svn->localInfo();
 }
@@ -55,7 +56,8 @@ void BBActionRemoteChanges::onLocalSvnDone(bool status)
     m_svn = new BBSvn(this);
     connect(m_svn,
             SIGNAL(done(bool)),
-            SLOT(onRemoteSvnDone(bool)));
+            SLOT(onRemoteSvnDone(bool)),
+            Qt::QueuedConnection);
 
     m_svn->remoteInfo(info->URL());
 }

@@ -58,10 +58,16 @@ void BBSendReceive::checkCommitStatus()
 
     m_commitStatus = (BBCommitStatus) ((int)m_commitStatus + 1);
 
-    if (m_commitStatus == BBCommitOk) {
-        onCommitTimeout();
-    } else {
-        QTimer::singleShot(BB_COMMIT_TIMEOUT, this, SLOT(onCommitTimeout()));
+    switch (m_commitStatus) {
+        case BBCommitUnknown:
+        case BBCommitOk:
+        case BBCommitFailed1:
+            onCommitTimeout();
+            break;
+
+        default:
+            QTimer::singleShot(BB_COMMIT_TIMEOUT, this, SLOT(onCommitTimeout()));
+            break;
     }
 }
 

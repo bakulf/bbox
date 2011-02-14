@@ -38,7 +38,8 @@ void BBActionLocalChanges::run()
     m_svn = new BBSvn(this);
     connect(m_svn,
             SIGNAL(done(bool)),
-            SLOT(onSvnDone(bool)));
+            SLOT(onSvnDone(bool)),
+            Qt::QueuedConnection);
 
     m_svn->status();
 }

@@ -95,7 +95,8 @@ void BBPreferencesLastPage::initializePage()
         m_svn = new BBSvn(this);
         connect(m_svn,
                 SIGNAL(done(bool)),
-                SLOT(onSvnDone(bool)));
+                SLOT(onSvnDone(bool)),
+                Qt::QueuedConnection);
         connect(m_svn,
                 SIGNAL(readyReadStandardOutput()),
                 SLOT(onSvnRead()));
