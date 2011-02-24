@@ -42,7 +42,6 @@ public:
 
 private:
     void addDirectory(const QString &dirname);
-    void checkEmptyDirectory(const QString &dirname);
 
 private Q_SLOTS:
     void directoryChanged();

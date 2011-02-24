@@ -44,7 +44,6 @@ BBObserver::BBObserver(QObject *parent) :
     checkObstructedFiles(0);
 
     directoryChanged();
-    checkEmptyDirectory(BBSettings::instance()->directory());
 
     connect(QCoreApplication::instance(),
             SIGNAL(aboutToQuit()),
@@ -127,34 +126,6 @@ void BBObserver::onSomethingChanged(const QString &filename)
     m_timer.start();
 }
 
-void BBObserver::checkEmptyDirectory(const QString &dirname)
-{
-    BBDEBUG << dirname;
-
-    QDir dir(dirname);
-
-    QString filename(dir.absoluteFilePath(BB_KEEP_EMPTY));
-    if (!QFile::exists(filename)) {
-        {
-            QFile file(filename);
-            file.open(QIODevice::WriteOnly | QIODevice::Text);
-        }
-
-#ifdef Q_OS_WIN32
-        SetFileAttributes(filename.utf16(), FILE_ATTRIBUTE_HIDDEN);
-#endif
-    }
-
-    QFileInfoList list = dir.entryInfoList(QDir::AllEntries | QDir::NoSymLinks | QDir::NoDotAndDotDot);
-    foreach (QFileInfo info, list) {
-        if (info.fileName().startsWith("."))
-            continue;
-
-        if (info.isDir())
-            checkEmptyDirectory(info.absoluteFilePath());
-    }
-}
-
 void BBObserver::onTimeout()
 {
     BBDEBUG;
@@ -171,8 +142,6 @@ void BBObserver::onTimeout()
         else if (info.isDir())
             addDirectory(filename);
     }
-
-    checkEmptyDirectory(BBSettings::instance()->directory());
 
     if (m_remoteChangesScheduled) {
         m_remoteChangesScheduled = false;

@@ -101,7 +101,7 @@ void BBActionLocalChanges::checkStatus(const QList<BBSvnStatus *>& list)
     foreach (BBSvnStatus *status, list) {
 
         QString fileName(QFileInfo(status->file()).fileName());
-        if (fileName.startsWith(".") && fileName != BB_KEEP_EMPTY)
+        if (fileName.startsWith("."))
             continue;
 
         switch (status->status()) {

@@ -116,7 +116,7 @@ QStringList BBActionAdd::addDirectory(const QString& dirname)
 
         QFileInfoList files = dir.entryInfoList(QDir::AllEntries | QDir::Hidden | QDir::NoSymLinks);
         foreach (QFileInfo file, files) {
-            if (file.fileName().startsWith(".") && file.fileName() != BB_KEEP_EMPTY)
+            if (file.fileName().startsWith("."))
                 continue;
 
             list << addDirectory(file.absoluteFilePath());

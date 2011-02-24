@@ -20,7 +20,6 @@
 #define BB_STATE_COMPLETE_IMAGE	":images/completed.png"
 
 #define BB_SVN_ADD_MAX 15
-#define BB_KEEP_EMPTY  ".keepForBBox"
 #define BB_SVN_DIR     ".svn"
 
 #define BB_COMMIT_TIMEOUT   10000 /* 10 seconds */
