@@ -72,6 +72,24 @@ void BBSvn::start(const QStringList &arguments)
 void BBSvn::schedule()
 {
     BBDEBUG;
+
+     QProcessEnvironment env = processEnvironment();
+     QStringList sysEnv = systemEnvironment();
+     bool toAdd(false);
+
+     if (!env.contains("LC_CTYPE") && !sysEnv.contains("LC_CTYPE")) {
+         env.insert("LC_CTYPE", "UTF-8");
+         toAdd = true;
+     }
+
+     if (!env.contains("LANG") && !sysEnv.contains("LANG")) {
+         env.insert("LANG", "en_EN.UTF-8");
+         toAdd = true;
+     }
+
+     if (toAdd)
+         setProcessEnvironment(env);
+
     QProcess::start(BBSettings::instance()->svn(), m_arguments, QIODevice::ReadOnly);
 }
 
