@@ -12,5 +12,7 @@
      <!--file>images/warning.png</file-->
 
      <file>images/loader.gif</file>
+
+     <file>config/config</file>
  </qresource>
 </RCC>

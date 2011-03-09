@@ -22,6 +22,10 @@
 #define BB_SVN_ADD_MAX 15
 #define BB_SVN_DIR     ".svn"
 
+#define BB_SVN_CONFIG_DIR     "bbox"
+#define BB_SVN_CONFIG_FILE    "config"
+#define BB_SVN_CONFIG_CONTENT ":config/config"
+
 #define BB_COMMIT_TIMEOUT   10000 /* 10 seconds */
 #define BB_OBSERVER_TIMEOUT 5000  /* 5 seconds */
 #define BB_BLINK_TIMEOUT    1000  /* 1 second */

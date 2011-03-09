@@ -9,6 +9,7 @@
 #include "bbsvnmanager.h"
 
 #include "bbsvn.h"
+#include "bbconst.h"
 #include "bbdebug.h"
 
 #include <QCoreApplication>
@@ -17,6 +18,8 @@ BBSvnManager::BBSvnManager() :
     QObject(QCoreApplication::instance())
 {
     BBDEBUG;
+
+    createTmpConfig();
 }
 
 BBSvnManager::~BBSvnManager()
@@ -103,4 +106,39 @@ void BBSvnManager::onScheduledSvnDestroyed(QObject *object)
         BBSvn *svn = m_svnList.takeFirst();
         schedule(svn);
     }
+}
+
+void BBSvnManager::createTmpConfig()
+{
+    BBDEBUG;
+
+    QString homePath = QDir::homePath();
+    QDir dir(homePath);
+
+    if (!dir.exists(BB_SVN_CONFIG_DIR)) {
+        if (!dir.mkdir(BB_SVN_CONFIG_DIR))
+            return;
+    }
+
+    if (!dir.cd(BB_SVN_CONFIG_DIR))
+        return;
+
+
+    QFile::copy(BB_SVN_CONFIG_CONTENT, dir.absoluteFilePath(BB_SVN_CONFIG_FILE));
+
+    m_svnConfigPath = dir.absolutePath();
+    BBDEBUG << m_svnConfigPath;
+}
+
+const QStringList BBSvnManager::svnConfigParams()
+{
+    BBDEBUG;
+
+    if (m_svnConfigPath.isEmpty())
+        return QStringList();
+
+    QStringList params;
+    params << "--config-dir" << m_svnConfigPath;
+
+    return params;
 }

@@ -28,8 +28,11 @@ public:
 public:
     void registerForSchedule(BBSvn *svn);
 
+    const QStringList svnConfigParams();
+
 private:
     void schedule(BBSvn *svn);
+    void createTmpConfig();
 
 private Q_SLOTS:
     void unregister(QObject *obj);
@@ -40,6 +43,8 @@ private Q_SLOTS:
 private:
     QList <BBSvn*> m_svnList;
     QPointer<BBSvn> m_svnScheduled;
+
+    QString m_svnConfigPath;
 };
 
 #endif

@@ -73,23 +73,6 @@ void BBSvn::schedule()
 {
     BBDEBUG;
 
-     QProcessEnvironment env = processEnvironment();
-     QStringList sysEnv = systemEnvironment();
-     bool toAdd(false);
-
-     if (!env.contains("LC_CTYPE") && !sysEnv.contains("LC_CTYPE")) {
-         env.insert("LC_CTYPE", "UTF-8");
-         toAdd = true;
-     }
-
-     if (!env.contains("LANG") && !sysEnv.contains("LANG")) {
-         env.insert("LANG", "en_EN.UTF-8");
-         toAdd = true;
-     }
-
-     if (toAdd)
-         setProcessEnvironment(env);
-
     QProcess::start(BBSettings::instance()->svn(), m_arguments, QIODevice::ReadOnly);
 }
 
@@ -108,25 +91,38 @@ void BBSvn::onFinished(int exitCode, QProcess::ExitStatus exitStatus)
 void BBSvn::cleanup()
 {
     BBDEBUG;
-    start(QStringList() << "cleanup" << "--non-interactive" << BBSettings::instance()->directory());
+    start(QStringList() << "cleanup"
+                        << BBSvnManager::instance()->svnConfigParams()
+                        << "--non-interactive"
+                        << BBSettings::instance()->directory());
 }
 
 void BBSvn::addFile(const QStringList &filenames)
 {
     BBDEBUG << filenames;
-    start(QStringList() << "add" << filenames);
+    start(QStringList() << "add"
+                        << BBSvnManager::instance()->svnConfigParams()
+                        << "--non-interactive"
+                        << filenames);
 }
 
 void BBSvn::deleteFile(const QString &filename)
 {
     BBDEBUG << filename;
-    start(QStringList() << "delete" << "--non-interactive" << "--keep-local" << filename);
+    start(QStringList() << "delete"
+                        << BBSvnManager::instance()->svnConfigParams()
+                        << "--non-interactive"
+                        << "--keep-local"
+                        << filename);
 }
 
 void BBSvn::status()
 {
     BBDEBUG;
-    start(QStringList() << "status" << "--non-interactive" << BBSettings::instance()->directory());
+    start(QStringList() << "status"
+                        << BBSvnManager::instance()->svnConfigParams()
+                        << "--non-interactive"
+                        << BBSettings::instance()->directory());
 }
 
 QList<BBSvnStatus*> BBSvn::parseStatus()
@@ -203,13 +199,19 @@ QList<BBSvnStatus*> BBSvn::parseStatus()
 void BBSvn::remoteInfo(const QString& url)
 {
     BBDEBUG;
-    start(QStringList() << "info" << "--non-interactive" << url);
+    start(QStringList() << "info"
+                        << BBSvnManager::instance()->svnConfigParams()
+                        << "--non-interactive"
+                        << url);
 }
 
 void BBSvn::localInfo()
 {
     BBDEBUG;
-    start(QStringList() << "info" << "--non-interactive" << BBSettings::instance()->directory());
+    start(QStringList() << "info"
+                        << BBSvnManager::instance()->svnConfigParams()
+                        << "--non-interactive"
+                        << BBSettings::instance()->directory());
 }
 
 BBSvnInfo* BBSvn::parseInfo()
@@ -236,8 +238,11 @@ BBSvnInfo* BBSvn::parseInfo()
 void BBSvn::commit()
 {
     BBDEBUG;
-    start(QStringList() << "commit" << "--non-interactive"
-                        << "--trust-server-cert" << "-m" << commitMessage()
+    start(QStringList() << "commit"
+                        << BBSvnManager::instance()->svnConfigParams()
+                        << "--non-interactive"
+                        << "--trust-server-cert"
+                        << "-m" << commitMessage()
                         << BBSettings::instance()->directory());
 }
 
@@ -268,7 +273,11 @@ QString BBSvn::commitMessage()
 void BBSvn::update()
 {
     BBDEBUG;
-    start(QStringList() << "update" << "--non-interactive" << "--accept" << "postpone" << BBSettings::instance()->directory());
+    start(QStringList() << "update"
+                        << BBSvnManager::instance()->svnConfigParams()
+                        << "--non-interactive"
+                        << "--accept" << "postpone"
+                        << BBSettings::instance()->directory());
 }
 
 QList<BBSvnStatus*> BBSvn::parseUpdate()
@@ -325,7 +334,12 @@ QList<BBSvnStatus*> BBSvn::parseUpdate()
 void BBSvn::resolveConflict(const QString& file, bool isLocal)
 {
     BBDEBUG << file << isLocal;
-    start(QStringList() << "resolve" << "--non-interactive" << "--accept" << (isLocal ? "mine-full" : "theirs-full") << file);
+    start(QStringList() << "resolve"
+                        << BBSvnManager::instance()->svnConfigParams()
+                        << "--non-interactive"
+                        << "--accept"
+                        << (isLocal ? "mine-full" : "theirs-full")
+                        << file);
 }
 
 bool BBSvn::isACheckout()
@@ -341,7 +355,9 @@ void BBSvn::checkout(const QString& url, const QString& username, const QString&
     BBDEBUG << url << username << password;
 
     QStringList list;
-    list << "checkout" << "--non-interactive";
+    list << "checkout"
+         << BBSvnManager::instance()->svnConfigParams()
+         << "--non-interactive";
 
     if (!username.isEmpty())
        list << "--username" << username;
@@ -356,7 +372,10 @@ void BBSvn::checkout(const QString& url, const QString& username, const QString&
 void BBSvn::remoteLog(const QString& url)
 {
     BBDEBUG << url;
-    start(QStringList() << "log" << "--non-interactive" << "-v" << url);
+    start(QStringList() << "log"
+                        << BBSvnManager::instance()->svnConfigParams()
+                        << "--non-interactive"
+                        << "-v" << url);
 }
 
 QList<BBSvnLog*> BBSvn::parseLog()
@@ -411,7 +430,9 @@ QList<BBSvnLog*> BBSvn::parseLog()
 void BBSvn::restoreFile(const QString& file, int revision, const QString& destFile)
 {
     BBDEBUG << file << revision << destFile;
-    start(QStringList() << "export" << "--non-interactive"
+    start(QStringList() << "export"
+                        << BBSvnManager::instance()->svnConfigParams()
+                        << "--non-interactive"
                         << QString("%1@%2").arg(file).arg(revision)
                         << destFile);
 }
