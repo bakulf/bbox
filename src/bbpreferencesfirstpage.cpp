@@ -27,7 +27,7 @@ BBPreferencesFirstPage::BBPreferencesFirstPage()
     BBDEBUG;
 
     setTitle(tr("Preferences"));
-    setSubTitle(tr("Use this wizard to configure %1 and make the first checkout").arg(BBPACKAGE));
+    setSubTitle(tr("Use this wizard to configure %1 and get your first sync done").arg(BBPACKAGE));
     setButtonText(QWizard::NextButton, tr("&Save"));
 
     QGridLayout *layout = new QGridLayout();
@@ -41,13 +41,13 @@ BBPreferencesFirstPage::BBPreferencesFirstPage()
 
     ++row;
     {
-        QLabel *label = new QLabel(tr("Choose the directory for your checkout. This will be keet in sync by bbox."));
+        QLabel *label = new QLabel(tr("Choose the folder for your first sync. This is where BBox will keep your files synced."));
         layout->addWidget(label, row, 0, 1, 2);
     }
 
     ++row;
     {
-        QLabel *label = new QLabel(tr("Directory:"));
+        QLabel *label = new QLabel(tr("Folder:"));
         layout->addWidget(label, row, 0);
 
         QHBoxLayout *box = new QHBoxLayout();
@@ -72,7 +72,7 @@ BBPreferencesFirstPage::BBPreferencesFirstPage()
 
     ++row;
     {
-        QLabel *label = new QLabel(tr("Advanced configuration fields: change only if you know what you are doing."));
+        QLabel *label = new QLabel(tr("Advanced configuration fields: change them only if you know what you are doing."));
         layout->addWidget(label, row, 0, 1, 2);
     }
 
@@ -115,7 +115,7 @@ BBPreferencesFirstPage::BBPreferencesFirstPage()
 
     ++row;
     {
-        QLabel *label = new QLabel(tr("AutoCommit on changes:"));
+        QLabel *label = new QLabel(tr("AutoSync on changes:"));
         layout->addWidget(label, row, 0);
 
         m_autocommitWidget = new QCheckBox(tr("Enabled"));

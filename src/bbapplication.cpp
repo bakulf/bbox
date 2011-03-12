@@ -131,7 +131,7 @@ void BBApplication::systemTray()
 
     menu->addSeparator();
 
-    QAction *actionOpen = new QAction(tr("&Open directory"), this);
+    QAction *actionOpen = new QAction(tr("&Open folder"), this);
     menu->addAction(actionOpen);
     connect (actionOpen,
              SIGNAL(triggered()),
