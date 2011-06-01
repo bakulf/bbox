@@ -30,7 +30,7 @@ It might be obvious but you need to clone this git repository in order to get so
 
 So open a Terminal (or use your favorite git GUI) and type:
 
-    (user)$ git clone git@github.com:bakulf/bbox.git
+    (user)$ git clone git://github.com/bakulf/bbox.git
 
 There you go, you're done.
 Then go in the right folder:
