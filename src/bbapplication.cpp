@@ -123,7 +123,7 @@ void BBApplication::systemTray()
 
     menu->addSeparator();
 
-    m_actionCommit = new QAction(tr("See &logs"), this);
+    m_actionCommit = new QAction(tr("See &history"), this);
     menu->addAction(m_actionCommit);
     connect (m_actionCommit,
              SIGNAL(triggered()),
