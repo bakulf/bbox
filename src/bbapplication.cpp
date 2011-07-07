@@ -39,8 +39,8 @@
 
 QPointer<BBApplication> BBApplication::m_instance;
 
-BBApplication::BBApplication(int argc, char **argv) :
-    QApplication(argc, argv),
+BBApplication::BBApplication(int &argc, char **argv) :
+    QApplication(argc, argv, true),
     m_timer(0),
     m_iconBlink(false)
 {
@@ -203,7 +203,7 @@ void BBApplication::scheduleRemoteAction()
 
     uint time = BBSettings::instance()->timerRemoteAction() * 10;
     int when(qrand() % ((time / 2) * 6) + time); // Random between time/2 and time
-    BBDEBUG << "Next: " << when << " milliseconds.";
+    BBDEBUG << "Next: " << when << " seconds.";
 
     QTimer::singleShot(when * 1000,
                        this,

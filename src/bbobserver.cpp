@@ -130,8 +130,10 @@ void BBObserver::onTimeout()
 {
     BBDEBUG;
 
-    if (m_changes.isEmpty())
+    if (m_changes.isEmpty()) {
+        remoteChanges();
         return;
+    }
 
     while (!m_changes.isEmpty()) {
         QString filename = m_changes.takeFirst();
@@ -143,12 +145,17 @@ void BBObserver::onTimeout()
             addDirectory(filename);
     }
 
+    remoteChanges();
+
+    BBActionManager::instance()->actionLocalChanges();
+}
+
+void BBObserver::remoteChanges()
+{
     if (m_remoteChangesScheduled) {
         m_remoteChangesScheduled = false;
         BBActionManager::instance()->actionRemoteChanges();
     }
-
-    BBActionManager::instance()->actionLocalChanges();
 }
 
 void BBObserver::operationOnFileSystemRef()

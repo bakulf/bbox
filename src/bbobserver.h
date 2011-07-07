@@ -43,6 +43,8 @@ public:
 private:
     void addDirectory(const QString &dirname);
 
+    void remoteChanges();
+
 private Q_SLOTS:
     void directoryChanged();
     void onSomethingChanged(const QString &filename);

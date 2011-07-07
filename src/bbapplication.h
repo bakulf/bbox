@@ -25,7 +25,7 @@ class BBApplication : public QApplication
     Q_OBJECT
 
 public:
-    BBApplication(int argc, char **argv);
+    BBApplication(int &argc, char **argv);
     ~BBApplication();
 
     static BBApplication *instance();
