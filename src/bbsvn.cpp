@@ -94,6 +94,7 @@ void BBSvn::cleanup()
     start(QStringList() << "cleanup"
                         << BBSvnManager::instance()->svnConfigParams()
                         << "--non-interactive"
+                        << "--trust-server-cert"
                         << BBSettings::instance()->directory());
 }
 
@@ -103,6 +104,7 @@ void BBSvn::addFile(const QStringList &filenames)
     start(QStringList() << "add"
                         << BBSvnManager::instance()->svnConfigParams()
                         << "--non-interactive"
+                        << "--trust-server-cert"
                         << filenames);
 }
 
@@ -112,6 +114,7 @@ void BBSvn::deleteFile(const QString &filename)
     start(QStringList() << "delete"
                         << BBSvnManager::instance()->svnConfigParams()
                         << "--non-interactive"
+                        << "--trust-server-cert"
                         << "--keep-local"
                         << filename);
 }
@@ -122,6 +125,7 @@ void BBSvn::status()
     start(QStringList() << "status"
                         << BBSvnManager::instance()->svnConfigParams()
                         << "--non-interactive"
+                        << "--trust-server-cert"
                         << BBSettings::instance()->directory());
 }
 
@@ -202,6 +206,7 @@ void BBSvn::remoteInfo(const QString& url)
     start(QStringList() << "info"
                         << BBSvnManager::instance()->svnConfigParams()
                         << "--non-interactive"
+                        << "--trust-server-cert"
                         << url);
 }
 
@@ -211,6 +216,7 @@ void BBSvn::localInfo()
     start(QStringList() << "info"
                         << BBSvnManager::instance()->svnConfigParams()
                         << "--non-interactive"
+                        << "--trust-server-cert"
                         << BBSettings::instance()->directory());
 }
 
@@ -276,6 +282,7 @@ void BBSvn::update()
     start(QStringList() << "update"
                         << BBSvnManager::instance()->svnConfigParams()
                         << "--non-interactive"
+                        << "--trust-server-cert"
                         << "--accept" << "postpone"
                         << BBSettings::instance()->directory());
 }
@@ -337,6 +344,7 @@ void BBSvn::resolveConflict(const QString& file, bool isLocal)
     start(QStringList() << "resolve"
                         << BBSvnManager::instance()->svnConfigParams()
                         << "--non-interactive"
+                        << "--trust-server-cert"
                         << "--accept"
                         << (isLocal ? "mine-full" : "theirs-full")
                         << file);
@@ -357,7 +365,8 @@ void BBSvn::checkout(const QString& url, const QString& username, const QString&
     QStringList list;
     list << "checkout"
          << BBSvnManager::instance()->svnConfigParams()
-         << "--non-interactive";
+         << "--non-interactive"
+         << "--trust-server-cert";
 
     if (!username.isEmpty())
        list << "--username" << username;
@@ -375,6 +384,7 @@ void BBSvn::remoteLog(const QString& url)
     start(QStringList() << "log"
                         << BBSvnManager::instance()->svnConfigParams()
                         << "--non-interactive"
+                        << "--trust-server-cert"
                         << "-v" << url);
 }
 
@@ -433,6 +443,7 @@ void BBSvn::restoreFile(const QString& file, int revision, const QString& destFi
     start(QStringList() << "export"
                         << BBSvnManager::instance()->svnConfigParams()
                         << "--non-interactive"
+                        << "--trust-server-cert"
                         << QString("%1@%2").arg(file).arg(revision)
                         << destFile);
 }
