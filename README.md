@@ -49,6 +49,11 @@ then, this command should be enough:
     (user)$ make
     (root)# make install
 
+or these if you like to create/install .deb package:
+
+    (user)$ qmake && dpkg-buildpackage
+    (root)# dpkg -i ../bbox_0.1_i386.deb
+
 ### Windows
 
 I use Microsoft [Visual Studio Express 2010][msvc] and then [Qt4][qt] for visual studio 2008.
