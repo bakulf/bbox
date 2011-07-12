@@ -48,6 +48,9 @@ BBApplication::BBApplication(int &argc, char **argv) :
 
     m_instance = this;
 
+    setApplicationName(BB_APP_NAME);
+    setOrganizationName(BB_ORG_NAME);
+
     qsrand(QTime::currentTime().msec());
 }
 

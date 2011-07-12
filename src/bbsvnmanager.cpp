@@ -13,6 +13,7 @@
 #include "bbdebug.h"
 
 #include <QCoreApplication>
+#include <QDesktopServices>
 
 BBSvnManager::BBSvnManager() :
     QObject(QCoreApplication::instance())
@@ -112,11 +113,13 @@ void BBSvnManager::createTmpConfig()
 {
     BBDEBUG;
 
-    QString homePath = QDir::homePath();
+    QString homePath = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+    BBDEBUG << homePath;
+
     QDir dir(homePath);
 
     if (!dir.exists(BB_SVN_CONFIG_DIR)) {
-        if (!dir.mkdir(BB_SVN_CONFIG_DIR))
+        if (!dir.mkpath(BB_SVN_CONFIG_DIR))
             return;
     }
 

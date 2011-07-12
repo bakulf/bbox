@@ -22,7 +22,10 @@
 #define BB_SVN_ADD_MAX 15
 #define BB_SVN_DIR     ".svn"
 
-#define BB_SVN_CONFIG_DIR     "bbox"
+#define BB_APP_NAME "BBox"
+#define BB_ORG_NAME "BBox.n3"
+
+#define BB_SVN_CONFIG_DIR     "bboxSvnConfig"
 #define BB_SVN_CONFIG_FILE    "config"
 #define BB_SVN_CONFIG_CONTENT ":config/config"
 
