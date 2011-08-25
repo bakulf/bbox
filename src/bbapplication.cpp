@@ -14,7 +14,6 @@
 #include "bbstartup.h"
 #include "bbobserver.h"
 #include "bbactionmanager.h"
-#include "bboperations.h"
 #include "bbsendreceive.h"
 #include "bblogs.h"
 #include "bbsvn.h"
@@ -42,7 +41,8 @@ QPointer<BBApplication> BBApplication::m_instance;
 BBApplication::BBApplication(int &argc, char **argv) :
     QApplication(argc, argv, true),
     m_timer(0),
-    m_iconBlink(false)
+    m_iconBlink(false),
+    m_commitFromUI(false)
 {
     BBDEBUG;
 
@@ -111,14 +111,14 @@ void BBApplication::systemTray()
     QFont font;
     font.setBold(true);
 
-    m_actionCommit = new QAction(tr("&Sync"), this);
+    m_actionCommit = new QAction(BB_ACTION_MENU_COMMIT, this);
     m_actionCommit->setFont(font);
     menu->addAction(m_actionCommit);
     connect (m_actionCommit,
              SIGNAL(triggered()),
              SLOT(onCommitTriggered()));
 
-    QAction *actionChanges = new QAction(tr("&Changes"), this);
+    QAction *actionChanges = new QAction(BB_ACTION_MENU_CHANGES, this);
     menu->addAction(actionChanges);
     m_menuChanges = new QMenu();
     actionChanges->setMenu(m_menuChanges);
@@ -126,15 +126,15 @@ void BBApplication::systemTray()
 
     menu->addSeparator();
 
-    m_actionCommit = new QAction(tr("See &history"), this);
-    menu->addAction(m_actionCommit);
-    connect (m_actionCommit,
+    QAction *actionLog = new QAction(BB_ACTION_MENU_LOG, this);
+    menu->addAction(actionLog);
+    connect (actionLog,
              SIGNAL(triggered()),
              SLOT(onLogsTriggered()));
 
     menu->addSeparator();
 
-    QAction *actionOpen = new QAction(tr("&Open folder"), this);
+    QAction *actionOpen = new QAction(BB_ACTION_MENU_OPEN, this);
     menu->addAction(actionOpen);
     connect (actionOpen,
              SIGNAL(triggered()),
@@ -142,13 +142,13 @@ void BBApplication::systemTray()
 
     menu->addSeparator();
 
-    QAction *preferences = new QAction(tr("&Preferences"), this);
+    QAction *preferences = new QAction(BB_ACTION_MENU_PREFS, this);
     menu->addAction(preferences);
     connect (preferences,
              SIGNAL(triggered()),
              SLOT(preferences()));
 
-    QAction *about = new QAction(tr("&About"), this);
+    QAction *about = new QAction(BB_ACTION_MENU_ABOUT, this);
     menu->addAction(about);
     connect (about,
              SIGNAL(triggered()),
@@ -156,7 +156,7 @@ void BBApplication::systemTray()
 
     menu->addSeparator();
 
-    QAction *actionQuit = new QAction(tr("&Quit"), this);
+    QAction *actionQuit = new QAction(BB_ACTION_MENU_QUIT, this);
     menu->addAction(actionQuit);
     connect (actionQuit,
              SIGNAL(triggered()),
@@ -226,19 +226,7 @@ void BBApplication::commit()
     blink(true);
 
     if (BBSettings::instance()->autoCommit()) {
-        if (m_sendReceive.isNull()) {
-            m_sendReceive = new BBSendReceive(this);
-            connect(m_sendReceive,
-                    SIGNAL(done(bool)),
-                    SLOT(onSendReceiveDone(bool)));
-        }
-
-        if (m_sendReceive->isRunning() == false) {
-            m_sendReceive->start();
-        }
-
-        resetLastMessage();
-
+        commitStart();
     } else {
         showMessage(tr("Something new!"), tr("Click to share your changes to other users"));
     }
@@ -279,32 +267,43 @@ void BBApplication::timerEvent(QTimerEvent *event)
     m_iconBlink = !m_iconBlink;
 }
 
+void BBApplication::commitStart()
+{
+    BBDEBUG;
+
+    if (m_sendReceive.isNull()) {
+        m_sendReceive = new BBSendReceive(this);
+        connect(m_sendReceive,
+                SIGNAL(localChangeDone(bool)),
+                SLOT(onSendReceiveLocalChangeDone(bool)));
+        connect(m_sendReceive,
+                SIGNAL(commitDone(bool)),
+                SLOT(onSendReceiveCommitDone(bool)));
+        connect(m_sendReceive,
+                SIGNAL(revisionDone(bool)),
+                SLOT(onSendReceiveRevisionDone(bool)));
+        connect(m_sendReceive,
+                SIGNAL(done(bool)),
+                SLOT(onSendReceiveDone(bool)));
+    }
+
+    if (m_sendReceive->isRunning() == false) {
+        m_sendReceive->start();
+    }
+
+    resetLastMessage();
+}
+
 void BBApplication::onCommitTriggered()
 {
     BBDEBUG;
 
-    if (m_operations.isNull()) {
-        blink(true);
+    // This will enable the notification:
+    m_commitFromUI = true;
 
-        resetLastMessage();
-        m_operations = new BBOperations();
-        connect(m_operations.data(),
-                SIGNAL(destroyed()),
-                SLOT(onOperationsDestroyed()));
+    commitStart();
 
-    } else {
-        m_operations->activateWindow();
-    }
-
-    m_operations->show();
-}
-
-void BBApplication::onOperationsDestroyed()
-{
-    BBDEBUG;
-
-    blink(false);
-    m_operations = 0;
+    updateStatus(BB_ACTION_MENU_STATUS_FS);
 }
 
 BBObserver* BBApplication::observer()
@@ -312,12 +311,82 @@ BBObserver* BBApplication::observer()
     return m_observer;
 }
 
+void BBApplication::updateStatus(const QString &string)
+{
+    BBDEBUG;
+
+    if (m_actionCommit->text() != string)
+        m_actionCommit->setText(string);
+}
+
+void BBApplication::onSendReceiveLocalChangeDone(bool status)
+{
+    BBDEBUG;
+
+    if (m_commitFromUI) {
+        showMessage(tr("Syncing..."),
+                    status ? BB_ACTION_MENU_STATUS_FS_SUCCESS : BB_ACTION_MENU_STATUS_FS_FAILED,
+                    !status);
+    }
+
+    if (status == false) {
+        updateStatus(BB_ACTION_MENU_STATUS_FS_FAILED);
+        return;
+    }
+
+    updateStatus(BB_ACTION_MENU_STATUS_COMMIT);
+}
+
+void BBApplication::onSendReceiveCommitDone(bool status)
+{
+    BBDEBUG;
+
+    if (m_commitFromUI) {
+        showMessage(tr("Syncing..."),
+                    status ? BB_ACTION_MENU_STATUS_COMMIT_SUCCESS : BB_ACTION_MENU_STATUS_COMMIT_FAILED,
+                    !status);
+    }
+
+    if (status == false) {
+        updateStatus(BB_ACTION_MENU_STATUS_COMMIT_FAILED);
+        return;
+    }
+
+    updateStatus(BB_ACTION_MENU_STATUS_REVISION);
+}
+
+void BBApplication::onSendReceiveRevisionDone(bool status)
+{
+    BBDEBUG;
+
+    if (m_commitFromUI) {
+        showMessage(tr("Syncing..."),
+                    status ? BB_ACTION_MENU_STATUS_REVISION_SUCCESS : BB_ACTION_MENU_STATUS_REVISION_FAILED,
+                    !status);
+    }
+
+    if (status == false) {
+        updateStatus(BB_ACTION_MENU_STATUS_REVISION_FAILED);
+        return;
+    }
+}
+
 void BBApplication::onSendReceiveDone(bool status)
 {
     BBDEBUG;
-    Q_UNUSED(status);
 
     blink(false);
+
+    if (m_commitFromUI) {
+        showMessage(tr("Syncing..."),
+                    status ? BB_ACTION_MENU_STATUS_SUCCESS : BB_ACTION_MENU_STATUS_REVISION_FAILED,
+                    !status);
+
+        // Disable the notification for the next commit
+        m_commitFromUI = false;
+    }
+
+    updateStatus(BB_ACTION_MENU_COMMIT);
 }
 
 void BBApplication::onOpenTriggered()

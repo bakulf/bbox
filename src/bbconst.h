@@ -9,6 +9,26 @@
 #ifndef _BB_CONST_H_
 #define _BB_CONST_H_
 
+#define BB_ACTION_MENU_COMMIT  tr("&Sync")
+#define BB_ACTION_MENU_CHANGES tr("&Changes")
+#define BB_ACTION_MENU_LOG     tr("See &history")
+#define BB_ACTION_MENU_OPEN    tr("&Open folder")
+#define BB_ACTION_MENU_PREFS   tr("&Preferences")
+#define BB_ACTION_MENU_ABOUT   tr("&About")
+#define BB_ACTION_MENU_QUIT    tr("&Quit")
+
+#define BB_ACTION_MENU_STATUS_FS               tr("Checking local directories")
+#define BB_ACTION_MENU_STATUS_FS_FAILED        tr("Check local directories: failed")
+#define BB_ACTION_MENU_STATUS_FS_SUCCESS       tr("Check local directories: completed")
+#define BB_ACTION_MENU_STATUS_COMMIT           tr("Committing")
+#define BB_ACTION_MENU_STATUS_COMMIT_FAILED    tr("Commit: failed")
+#define BB_ACTION_MENU_STATUS_COMMIT_SUCCESS   tr("Commit: completed")
+#define BB_ACTION_MENU_STATUS_REVISION         tr("Updating revision")
+#define BB_ACTION_MENU_STATUS_REVISION_FAILED  tr("Update revision: failed")
+#define BB_ACTION_MENU_STATUS_REVISION_SUCCESS tr("Update revision: completed")
+#define BB_ACTION_MENU_STATUS_FAILED           tr("Sync failed")
+#define BB_ACTION_MENU_STATUS_SUCCESS          tr("Sync completed")
+
 #define BB_ICON_IMAGE	":/images/icon.png"
 #define BB_BLINK_IMAGE	":/images/blink.png"
 #define BB_LOGO_IMAGE	":images/logo.png"

@@ -53,7 +53,6 @@ HEADERS   = bbconst.h \
             bblogs.h \
             bblogsitem.h \
             bblogsmodel.h \
-            bboperations.h \
             bbsettings.h \
             bbstartup.h \
             bbobserver.h \
@@ -89,7 +88,6 @@ SOURCES   = main.cpp \
             bblogs.cpp \
             bblogsitem.cpp \
             bblogsmodel.cpp \
-            bboperations.cpp \
             bbsettings.cpp \
             bbstartup.cpp \
             bbobserver.cpp \

@@ -17,7 +17,6 @@ class QMenu;
 class QAction;
 class BBObserver;
 class BBSvnStatus;
-class BBOperations;
 class BBSendReceive;
 
 class BBApplication : public QApplication
@@ -47,6 +46,10 @@ private:
     void showMessage(const QString &title, const QString &message, bool isWarning = false);
     void resetLastMessage();
 
+    void commitStart();
+
+    void updateStatus(const QString &string);
+
 public Q_SLOTS:
     void init();
 
@@ -62,9 +65,10 @@ private Q_SLOTS:
     void onOpenTriggered();
     void onLogsTriggered();
 
+    void onSendReceiveLocalChangeDone(bool status);
+    void onSendReceiveCommitDone(bool status);
+    void onSendReceiveRevisionDone(bool status);
     void onSendReceiveDone(bool status);
-
-    void onOperationsDestroyed();
 
 private:
     QSystemTrayIcon *m_systemTray;
@@ -83,7 +87,7 @@ private:
 
     QString m_lastMessage;
 
-    QPointer<BBOperations> m_operations;
+    bool m_commitFromUI;
 };
 
 #endif

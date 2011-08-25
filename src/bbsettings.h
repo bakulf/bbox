@@ -39,16 +39,12 @@ public:
     bool runOnStartup() const;
     void setRunOnStartup(const bool &runOnStartup);
 
-    bool operationClosed() const;
-    void setOperationClosed(const bool &operationClosed);
-
 Q_SIGNALS:
     void svnChanged();
     void directoryChanged();
     void timerRemoteActionChanged();
     void autoCommitChanged();
     void runOnStartupChanged();
-    void operationClosedChanged();
 
 private:
     QSettings m_settings;
