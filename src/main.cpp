@@ -48,6 +48,12 @@ int main(int argc, char **argv)
 
     BBApplication app(argc, argv);
 
+    QLocale::setDefault(QLocale(QLocale::system().language(), QLocale::system().country()));
+    QTextCodec *qtc = QTextCodec::codecForName("UTF-8");
+    QTextCodec::setCodecForTr(qtc);
+    QTextCodec::setCodecForLocale(qtc);
+    QTextCodec::setCodecForCStrings(qtc);
+
     if(!QSystemTrayIcon::isSystemTrayAvailable()) {
        QMessageBox::critical(0,
                              QObject::tr("Systray"),

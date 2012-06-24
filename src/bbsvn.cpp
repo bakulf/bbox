@@ -21,6 +21,7 @@
 #include <QMessageBox>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QTextCodec>
 
 #ifdef Q_OS_WIN32
     #include <windows.h>
@@ -73,6 +74,7 @@ void BBSvn::schedule()
 {
     BBDEBUG;
 
+    QProcess::setEnvironment(QStringList() << "LC_CTYPE=" + QLocale::system().name() + ".UTF-8");
     QProcess::start(BBSettings::instance()->svn(), m_arguments, QIODevice::ReadOnly);
 }
 
