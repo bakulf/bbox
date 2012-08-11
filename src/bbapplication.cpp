@@ -34,6 +34,8 @@
 #ifdef Q_OS_WIN32
     #include <windows.h>
     #include <winbase.h>
+#else
+    #include <unistd.h>
 #endif
 
 QPointer<BBApplication> BBApplication::m_instance;
